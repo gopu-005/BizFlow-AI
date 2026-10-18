@@ -111,6 +111,9 @@ export interface Expense {
   amount: number;
   date: string;
   paymentMode: string;
+  vendorName?: string;
+  referenceNumber?: string;
+  taxAmount?: number;
 }
 
 export interface FollowUpTask {
@@ -120,6 +123,10 @@ export interface FollowUpTask {
   customerName: string;
   customerPhone: string;
   scheduledDate: string;
+  dueDate?: string;
+  title?: string;
+  description?: string;
+  amountDue?: number;
   notes: string;
   status: 'pending' | 'completed' | 'cancelled';
   createdAt: string;
@@ -140,10 +147,15 @@ export interface ConnectorStatus {
 export interface ImportPreviewRecord {
   id: string;
   productName: string;
+  name?: string;
+  sku?: string;
   category: string;
   quantity: number;
   unitPrice: number;
+  price?: number;
+  sellingPrice?: number;
   costPrice: number;
+  purchasePrice?: number;
   unit: string;
   confidence?: number;
   status: 'valid' | 'warning' | 'error';
