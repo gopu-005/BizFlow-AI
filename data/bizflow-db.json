@@ -1,0 +1,633 @@
+{
+  "businesses": [
+    {
+      "id": "biz_karthik_textiles",
+      "name": "Karthik Textiles & Garments",
+      "type": "Clothing & Retail",
+      "currency": "₹",
+      "ownerName": "Karthik Ramanathan",
+      "gstNumber": "33AAAAA0000A1Z5",
+      "address": "42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017",
+      "phone": "+91 98400 11223",
+      "email": "karthik@textiles.bizflow.in",
+      "createdAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id": "biz_murugan_bakery",
+      "name": "Sri Murugan Bakery & Sweets",
+      "type": "Bakery & Food Vendor",
+      "currency": "₹",
+      "ownerName": "Murugan Velayudham",
+      "gstNumber": "33BBBBB1111B2Z6",
+      "address": "15 Gandhi Road, Tambaram, Chennai 600045",
+      "phone": "+91 94441 55667",
+      "email": "murugan@bakery.bizflow.in",
+      "createdAt": "2024-03-01T09:00:00Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_1",
+      "businessId": "biz_karthik_textiles",
+      "name": "Kanchipuram Pure Silk Saree",
+      "sku": "SAR-KAN-001",
+      "category": "Sarees",
+      "price": 8500,
+      "costPrice": 5800,
+      "stock": 14,
+      "minStock": 5,
+      "unit": "pcs",
+      "lastRestocked": "2024-10-01"
+    },
+    {
+      "id": "prod_2",
+      "businessId": "biz_karthik_textiles",
+      "name": "Pure Cotton Formal Shirt (White)",
+      "sku": "SHR-COT-WHT",
+      "category": "Shirts",
+      "price": 1299,
+      "costPrice": 720,
+      "stock": 3,
+      "minStock": 15,
+      "unit": "pcs",
+      "lastRestocked": "2024-09-20"
+    },
+    {
+      "id": "prod_3",
+      "businessId": "biz_karthik_textiles",
+      "name": "Linen Casual Trousers",
+      "sku": "TRS-LIN-BEI",
+      "category": "Trousers",
+      "price": 1799,
+      "costPrice": 980,
+      "stock": 22,
+      "minStock": 10,
+      "unit": "pcs",
+      "lastRestocked": "2024-10-08"
+    },
+    {
+      "id": "prod_4",
+      "businessId": "biz_karthik_textiles",
+      "name": "Designer Embroidered Kurti Set",
+      "sku": "KRT-DSG-004",
+      "category": "Kurtis",
+      "price": 2499,
+      "costPrice": 1350,
+      "stock": 2,
+      "minStock": 12,
+      "unit": "sets",
+      "lastRestocked": "2024-09-15"
+    },
+    {
+      "id": "prod_5",
+      "businessId": "biz_karthik_textiles",
+      "name": "Traditional Dhotis (Pack of 2)",
+      "sku": "DHT-TRD-002",
+      "category": "Traditional",
+      "price": 899,
+      "costPrice": 450,
+      "stock": 38,
+      "minStock": 10,
+      "unit": "packs",
+      "lastRestocked": "2024-10-12"
+    },
+    {
+      "id": "prod_6",
+      "businessId": "biz_karthik_textiles",
+      "name": "Banarasi Zari Dupatta",
+      "sku": "DUP-BAN-008",
+      "category": "Dupattas",
+      "price": 1499,
+      "costPrice": 800,
+      "stock": 4,
+      "minStock": 10,
+      "unit": "pcs",
+      "lastRestocked": "2024-09-18"
+    },
+    {
+      "id": "prod_7",
+      "businessId": "biz_karthik_textiles",
+      "name": "Festive Sherwani for Kids",
+      "sku": "KID-SHR-007",
+      "category": "Kids Wear",
+      "price": 2199,
+      "costPrice": 1100,
+      "stock": 0,
+      "minStock": 5,
+      "unit": "pcs",
+      "lastRestocked": "2024-08-25"
+    },
+    {
+      "id": "prod_b1",
+      "businessId": "biz_murugan_bakery",
+      "name": "Special Milk Peda (500g)",
+      "sku": "SWT-PDA-500",
+      "category": "Sweets",
+      "price": 280,
+      "costPrice": 160,
+      "stock": 12,
+      "minStock": 15,
+      "unit": "boxes",
+      "expiryDate": "2024-10-20",
+      "lastRestocked": "2024-10-14"
+    },
+    {
+      "id": "prod_b2",
+      "businessId": "biz_murugan_bakery",
+      "name": "Butter Milk Loaf Bread",
+      "sku": "BK-BRD-MLK",
+      "category": "Bakery",
+      "price": 45,
+      "costPrice": 24,
+      "stock": 4,
+      "minStock": 25,
+      "unit": "loaves",
+      "expiryDate": "2024-10-17",
+      "lastRestocked": "2024-10-15"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust_1",
+      "businessId": "biz_karthik_textiles",
+      "name": "Priya Sundaram",
+      "phone": "+91 98401 23456",
+      "email": "priya.s@gmail.com",
+      "address": "14 Anna Nagar West, Chennai",
+      "totalSpent": 42500,
+      "balance": 0,
+      "lastContactDate": "2024-10-14",
+      "followUpDate": "2024-10-16",
+      "followUpNote": "Interested in Kanchipuram silk sarees for wedding on Nov 10",
+      "status": "active"
+    },
+    {
+      "id": "cust_2",
+      "businessId": "biz_karthik_textiles",
+      "name": "Rajesh Kumar",
+      "phone": "+91 98412 87654",
+      "email": "rajesh.k@rediffmail.com",
+      "address": "88 South Usman Road, T. Nagar, Chennai",
+      "totalSpent": 18400,
+      "balance": 3200,
+      "lastContactDate": "2024-10-10",
+      "followUpDate": "2024-10-15",
+      "followUpNote": "Pending balance payment of ₹3,200 for shirt purchases",
+      "status": "pending_payment"
+    },
+    {
+      "id": "cust_3",
+      "businessId": "biz_karthik_textiles",
+      "name": "Ananya Krishnan",
+      "phone": "+91 97909 11223",
+      "email": "ananya.k@yahoo.com",
+      "address": "22 Besant Nagar 3rd Main Rd, Chennai",
+      "totalSpent": 27800,
+      "balance": 0,
+      "lastContactDate": "2024-10-12",
+      "followUpDate": "2024-10-18",
+      "followUpNote": "Requested preview of new Diwali Kurti and Dupatta collection",
+      "status": "lead"
+    },
+    {
+      "id": "cust_4",
+      "businessId": "biz_karthik_textiles",
+      "name": "Murugan Traders (Wholesale)",
+      "phone": "+91 94440 98765",
+      "email": "accounts@murugantraders.com",
+      "gstin": "33ABCDE1234F1Z8",
+      "address": "102 Mint Street, Sowcarpet, Chennai 600079",
+      "totalSpent": 185000,
+      "balance": 14200,
+      "lastContactDate": "2024-10-13",
+      "followUpDate": "2024-10-17",
+      "followUpNote": "Follow up on bulk order for 50 traditional dhotis and GST invoice",
+      "status": "active"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_101",
+      "invoiceNumber": "INV-2024-00101",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_1",
+      "customerName": "Priya Sundaram",
+      "customerPhone": "+91 98401 23456",
+      "customerAddress": "14 Anna Nagar West, Chennai",
+      "items": [
+        {
+          "id": "item_1",
+          "productId": "prod_1",
+          "name": "Kanchipuram Pure Silk Saree",
+          "quantity": 1,
+          "unitPrice": 8500,
+          "taxRate": 5,
+          "total": 8500
+        },
+        {
+          "id": "item_2",
+          "productId": "prod_6",
+          "name": "Banarasi Zari Dupatta",
+          "quantity": 2,
+          "unitPrice": 1499,
+          "taxRate": 5,
+          "total": 2998
+        }
+      ],
+      "subtotal": 11498,
+      "taxAmount": 574.9,
+      "discount": 500,
+      "total": 11572.9,
+      "status": "paid",
+      "dueDate": "2024-10-15",
+      "createdAt": "2024-10-15T11:30:00Z",
+      "paymentMode": "UPI (Google Pay)",
+      "notes": "Thank you for shopping at Karthik Textiles!"
+    },
+    {
+      "id": "inv_102",
+      "invoiceNumber": "INV-2024-00102",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_2",
+      "customerName": "Rajesh Kumar",
+      "customerPhone": "+91 98412 87654",
+      "customerAddress": "88 South Usman Road, T. Nagar, Chennai",
+      "items": [
+        {
+          "id": "item_3",
+          "productId": "prod_2",
+          "name": "Pure Cotton Formal Shirt (White)",
+          "quantity": 2,
+          "unitPrice": 1299,
+          "taxRate": 5,
+          "total": 2598
+        },
+        {
+          "id": "item_4",
+          "productId": "prod_3",
+          "name": "Linen Casual Trousers",
+          "quantity": 1,
+          "unitPrice": 1799,
+          "taxRate": 5,
+          "total": 1799
+        }
+      ],
+      "subtotal": 4397,
+      "taxAmount": 219.85,
+      "discount": 0,
+      "total": 4616.85,
+      "status": "issued",
+      "dueDate": "2024-10-20",
+      "createdAt": "2024-10-15T14:15:00Z",
+      "paymentMode": "Partially Paid (Cash ₹1,416.85, Due ₹3,200)",
+      "notes": "Due balance ₹3,200 payable before 20 Oct"
+    },
+    {
+      "id": "inv_103",
+      "invoiceNumber": "INV-2024-00103",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_4",
+      "customerName": "Murugan Traders (Wholesale)",
+      "customerPhone": "+91 94440 98765",
+      "customerGstin": "33ABCDE1234F1Z8",
+      "customerAddress": "102 Mint Street, Sowcarpet, Chennai 600079",
+      "items": [
+        {
+          "id": "item_5",
+          "productId": "prod_5",
+          "name": "Traditional Dhotis (Pack of 2)",
+          "quantity": 12,
+          "unitPrice": 850,
+          "taxRate": 5,
+          "total": 10200
+        }
+      ],
+      "subtotal": 10200,
+      "taxAmount": 510,
+      "discount": 200,
+      "total": 10510,
+      "status": "paid",
+      "dueDate": "2024-10-15",
+      "createdAt": "2024-10-15T16:45:00Z",
+      "paymentMode": "NEFT / Bank Transfer",
+      "notes": "Wholesale lot delivered with GST e-way bill"
+    }
+  ],
+  "purchases": [
+    {
+      "id": "pur_001",
+      "purchaseNumber": "PO-2024-88",
+      "businessId": "biz_karthik_textiles",
+      "supplierId": "sup_1",
+      "supplierName": "Kanchi Weavers Co-operative",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Kanchipuram Pure Silk Saree",
+          "quantity": 5,
+          "unitCost": 5800,
+          "total": 29000
+        }
+      ],
+      "totalAmount": 29000,
+      "status": "completed",
+      "date": "2024-10-14"
+    },
+    {
+      "id": "pur_002",
+      "purchaseNumber": "PO-2024-89",
+      "businessId": "biz_karthik_textiles",
+      "supplierId": "sup_2",
+      "supplierName": "Coimbatore Cotton Mills Ltd",
+      "items": [
+        {
+          "productId": "prod_2",
+          "name": "Pure Cotton Fabric & Shirts",
+          "quantity": 20,
+          "unitCost": 700,
+          "total": 14000
+        }
+      ],
+      "totalAmount": 14000,
+      "status": "completed",
+      "date": "2024-10-15"
+    }
+  ],
+  "followUps": [
+    {
+      "id": "tsk_1",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_2",
+      "customerName": "Rajesh Kumar",
+      "customerPhone": "+91 98412 87654",
+      "scheduledDate": "2024-10-15",
+      "notes": "Follow up on pending balance ₹3,200 via WhatsApp / Phone",
+      "status": "pending",
+      "createdAt": "2024-10-14T09:00:00Z"
+    },
+    {
+      "id": "tsk_2",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_1",
+      "customerName": "Priya Sundaram",
+      "customerPhone": "+91 98401 23456",
+      "scheduledDate": "2024-10-16",
+      "notes": "Send pictures of new Bridal Kanchipuram sarees arriving tomorrow",
+      "status": "pending",
+      "createdAt": "2024-10-14T11:00:00Z"
+    },
+    {
+      "id": "tsk_3",
+      "businessId": "biz_karthik_textiles",
+      "customerId": "cust_4",
+      "customerName": "Murugan Traders",
+      "customerPhone": "+91 94440 98765",
+      "scheduledDate": "2024-10-17",
+      "notes": "Confirm delivery of 12 pack traditional dhotis lot and receive balance",
+      "status": "pending",
+      "createdAt": "2024-10-15T08:30:00Z"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "conn_gmail",
+      "type": "gmail",
+      "name": "Email (Gmail)",
+      "connected": true,
+      "statusText": "Connected",
+      "badgeCount": 12,
+      "badgeLabel": "12 new emails",
+      "lastSynced": "Just now",
+      "details": {
+        "apiKey": "demo_authorized_token",
+        "configured": true
+      }
+    },
+    {
+      "id": "conn_whatsapp",
+      "type": "whatsapp",
+      "name": "WhatsApp Business",
+      "connected": false,
+      "statusText": "Setup required",
+      "badgeCount": 8,
+      "badgeLabel": "8 new messages",
+      "lastSynced": "2024-10-15T16:00:00Z",
+      "details": {
+        "provider": "Meta WhatsApp Cloud API",
+        "configured": false,
+        "messageCount": 8,
+        "incomingOrders": [
+          {
+            "sender": "Priya Sundaram (+91 98401 23456)",
+            "message": "Can you show me the price for 2 silk shirts?",
+            "time": "11:02 AM"
+          },
+          {
+            "sender": "Rajesh Kumar (+91 98412 87654)",
+            "message": "Will transfer ₹3,200 this evening via GPay",
+            "time": "01:30 PM"
+          }
+        ]
+      }
+    },
+    {
+      "id": "conn_postgres",
+      "type": "postgres",
+      "name": "Database (PostgreSQL)",
+      "connected": true,
+      "statusText": "Connected",
+      "badgeLabel": "PostgreSQL 16",
+      "lastSynced": "Just now",
+      "details": {
+        "host": "localhost:5432 / Neon PG",
+        "database": "bizflow_production",
+        "tenantIsolation": "Active (businessId filter on all queries)"
+      }
+    },
+    {
+      "id": "conn_excel",
+      "type": "excel",
+      "name": "Excel / CSV Import",
+      "connected": true,
+      "statusText": "Ready",
+      "badgeLabel": "Ready for upload",
+      "lastSynced": "Ready",
+      "details": {
+        "supportedFormats": [
+          ".csv",
+          ".xlsx",
+          ".xls",
+          "photo/OCR (.jpg, .png)"
+        ]
+      }
+    }
+  ],
+  "subscriptions": {
+    "biz_karthik_textiles": {
+      "id": "sub_active_001",
+      "businessId": "biz_karthik_textiles",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 499,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2026-10-18T07:07:48.793Z",
+      "currentPeriodEnd": "2026-11-18T07:07:48.793Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2026-10-18T07:07:48.793Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_murugan_bakery": {
+      "id": "sub_active_001",
+      "businessId": "biz_murugan_bakery",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 499,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  },
+  "billingInvoices": [
+    {
+      "id": "binv_1792307268793",
+      "invoiceNumber": "BZF-2024-0005",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI All-in-One",
+      "billingPeriod": "18 Oct 2026 – 18 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 422.88,
+      "taxRate": 18,
+      "taxAmount": 76.12,
+      "totalPaid": 499,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "UPI / Cards (Razorpay)",
+      "gatewayTransactionRef": "pay_1792307268769_n2ol",
+      "createdAt": "2026-10-18T07:07:48.792Z"
+    },
+    {
+      "id": "binv_1792307201335",
+      "invoiceNumber": "BZF-2024-0004",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI All-in-One",
+      "billingPeriod": "18 Oct 2026 – 18 Oct 2027",
+      "billingCycle": "annual",
+      "baseAmount": 4236.44,
+      "taxRate": 18,
+      "taxAmount": 762.56,
+      "totalPaid": 4999,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "UPI / Cards (Razorpay)",
+      "gatewayTransactionRef": "pay_1792307201105_etgz",
+      "createdAt": "2026-10-18T07:06:41.332Z"
+    },
+    {
+      "id": "binv_1792258089720",
+      "invoiceNumber": "BZF-2024-0003",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI All-in-One",
+      "billingPeriod": "17 Oct 2026 – 17 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 422.88,
+      "taxRate": 18,
+      "taxAmount": 76.12,
+      "totalPaid": 499,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "UPI / Cards (Razorpay)",
+      "gatewayTransactionRef": "pay_test_smoke_123",
+      "createdAt": "2026-10-17T17:28:09.716Z"
+    },
+    {
+      "id": "binv_001",
+      "invoiceNumber": "BZF-2024-09-0045",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017",
+      "planName": "BizFlow AI All-in-One",
+      "billingPeriod": "01 Sep 2024 – 30 Sep 2024",
+      "billingCycle": "monthly",
+      "baseAmount": 422.88,
+      "taxRate": 18,
+      "taxAmount": 76.12,
+      "totalPaid": 499,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "UPI (rzp_pay_9824fga1)",
+      "gatewayTransactionRef": "pay_P98fXgLqK419a",
+      "createdAt": "2024-09-01T09:30:00Z"
+    },
+    {
+      "id": "binv_002",
+      "invoiceNumber": "BZF-2024-10-0082",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017",
+      "planName": "BizFlow AI All-in-One",
+      "billingPeriod": "01 Oct 2024 – 31 Oct 2024",
+      "billingCycle": "monthly",
+      "baseAmount": 422.88,
+      "taxRate": 18,
+      "taxAmount": 76.12,
+      "totalPaid": 499,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "UPI (rzp_pay_m41k092b)",
+      "gatewayTransactionRef": "pay_Q82mZnPqR720b",
+      "createdAt": "2024-10-01T09:12:00Z"
+    }
+  ],
+  "billingDetails": {
+    "biz_karthik_textiles": {
+      "businessId": "biz_karthik_textiles",
+      "legalName": "Karthik Textiles & Garments",
+      "gstin": "33AAAAA0000A1Z5",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "billingPhone": "+91 98400 11223",
+      "addressLine1": "42 Ranganathan Street",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600017",
+      "country": "India",
+      "isGstRegistered": true
+    },
+    "biz_murugan_bakery": {
+      "businessId": "biz_murugan_bakery",
+      "legalName": "Sri Murugan Bakery & Sweets",
+      "gstin": "33BBBBB1111B2Z6",
+      "billingEmail": "murugan@bakery.bizflow.in",
+      "billingPhone": "+91 94441 55667",
+      "addressLine1": "15 Gandhi Road, Tambaram, Chennai 600045",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "country": "India",
+      "isGstRegistered": true
+    }
+  },
+  "webhookEvents": []
+}
