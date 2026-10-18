@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -20,7 +20,7 @@ import { Footer } from '@/components/Footer';
 import { generateInvoicePDF } from '@/lib/erp/pdf-generator';
 import { Business, Invoice, Product } from '@/types/erp';
 
-export default function InvoicesPage() {
+function InvoicesContent() {
   const searchParams = useSearchParams();
   const initialAction = searchParams.get('action');
 
@@ -102,8 +102,8 @@ export default function InvoicesPage() {
           productId: prod.id,
           name: prod.name,
           quantity: 1,
-          unitPrice: prod.sellingPrice,
-          total: prod.sellingPrice,
+          unitPrice: prod.price ?? (prod as any).sellingPrice ?? 0,
+          total: prod.price ?? (prod as any).sellingPrice ?? 0,
         },
       ]);
     }
@@ -300,7 +300,7 @@ export default function InvoicesPage() {
                     <option value="">Select product item...</option>
                     {products.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} — ₹{p.sellingPrice} (Stock: {p.stock})
+                        {p.name} — ₹{p.price ?? (p as any).sellingPrice} (Stock: {p.stock})
                       </option>
                     ))}
                   </select>
@@ -501,5 +501,21 @@ export default function InvoicesPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function InvoicesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex flex-col bg-[#fbfbfe] items-center justify-center">
+          <div className="text-sm font-semibold text-purple-700 animate-pulse">
+            Loading Invoices &amp; Billing...
+          </div>
+        </div>
+      }
+    >
+      <InvoicesContent />
+    </Suspense>
   );
 }

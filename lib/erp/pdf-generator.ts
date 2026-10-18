@@ -261,7 +261,7 @@ export function generateReportPDF(summary: any, business: Business): jsPDF {
   return doc;
 }
 
-export function generateBillingInvoicePDF(invoice: BillingInvoice): jsPDF {
+export function generateBillingInvoicePDF(invoice: BillingInvoice, business?: Business): jsPDF {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
