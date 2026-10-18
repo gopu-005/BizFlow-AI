@@ -12,21 +12,12 @@ export interface VoiceState {
 }
 
 export class VoiceManager {
-  private recognition: any = null;
+  private activeRecognition: any = null;
   private synth: SpeechSynthesis | null = null;
   private voices: SpeechSynthesisVoice[] = [];
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-      if (SpeechRecognition) {
-        this.recognition = new SpeechRecognition();
-        this.recognition.continuous = false;
-        this.recognition.interimResults = true;
-      }
-
       if ('speechSynthesis' in window) {
         this.synth = window.speechSynthesis;
         this.loadVoices();
@@ -43,7 +34,8 @@ export class VoiceManager {
   }
 
   public isSpeechSupported(): boolean {
-    return !!this.recognition;
+    if (typeof window === 'undefined') return false;
+    return !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
   }
 
   public isSynthesisSupported(): boolean {
@@ -57,60 +49,94 @@ export class VoiceManager {
     onError: (err: string) => void,
     onEnd: () => void
   ) {
-    if (!this.recognition) {
-      onError('Speech recognition is not supported in this browser. Please type your message.');
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      onError('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+      onEnd();
       return;
     }
 
-    this.recognition.lang = lang === 'ta' ? 'ta-IN' : 'en-IN';
-
-    this.recognition.onresult = (event: any) => {
-      let interim = '';
-      let final = '';
-
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
-        } else {
-          interim += event.results[i][0].transcript;
-        }
-      }
-
-      if (final) {
-        onResult(final.trim());
-      } else if (interim) {
-        onInterim(interim.trim());
-      }
-    };
-
-    this.recognition.onerror = (event: any) => {
-      let msg = 'Microphone error occurred.';
-      if (event.error === 'not-allowed') {
-        msg = 'Microphone permission was denied. Please allow microphone access in your browser settings.';
-      } else if (event.error === 'no-speech') {
-        msg = 'No speech detected. Please speak clearly into your mic.';
-      }
-      onError(msg);
-    };
-
-    this.recognition.onend = () => {
-      onEnd();
-    };
+    // Stop any previously active recognition instance to prevent InvalidStateError on desktop
+    this.stopListening();
 
     try {
-      this.recognition.start();
+      // Create fresh SpeechRecognition instance on every session (Chromium best practice)
+      const recognition = new SpeechRecognition();
+      this.activeRecognition = recognition;
+
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      recognition.lang = lang === 'ta' ? 'ta-IN' : 'en-IN';
+
+      recognition.onresult = (event: any) => {
+        let interim = '';
+        let final = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        if (final) {
+          onResult(final.trim());
+        } else if (interim) {
+          onInterim(interim.trim());
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        const errorType = event.error;
+        console.warn('Speech recognition error event:', errorType);
+
+        // 'no-speech' and 'aborted' are normal lifecycle events when user pauses or cancels.
+        // DO NOT show an error banner for them!
+        if (errorType === 'no-speech' || errorType === 'aborted') {
+          return;
+        }
+
+        let msg = 'Microphone error occurred.';
+        if (errorType === 'not-allowed') {
+          msg = 'Microphone permission was denied. Please allow microphone access in your browser settings (click lock icon in address bar).';
+        } else if (errorType === 'audio-capture') {
+          msg = 'No microphone device was detected. Please connect or enable your microphone.';
+        } else if (errorType === 'network') {
+          msg = 'Speech recognition network error. Please check your internet connection.';
+        }
+        onError(msg);
+      };
+
+      recognition.onend = () => {
+        this.activeRecognition = null;
+        onEnd();
+      };
+
+      recognition.start();
     } catch (e: any) {
-      console.warn('Recognition already started or error:', e);
+      console.warn('Speech recognition start failed:', e);
+      this.activeRecognition = null;
+      if (e.name !== 'InvalidStateError') {
+        onError('Could not start microphone. Please check permissions.');
+      }
+      onEnd();
     }
   }
 
   public stopListening() {
-    if (this.recognition) {
+    if (this.activeRecognition) {
       try {
-        this.recognition.stop();
+        this.activeRecognition.abort();
       } catch (e) {
         // ignore
       }
+      this.activeRecognition = null;
     }
   }
 

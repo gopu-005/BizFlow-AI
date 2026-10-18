@@ -214,6 +214,9 @@ export default function BizFlowDashboard() {
       (err) => {
         setSpeechError(err);
         setIsListening(false);
+        setTimeout(() => {
+          setSpeechError(null);
+        }, 5000);
       },
       () => {
         setIsListening(false);
@@ -270,7 +273,7 @@ export default function BizFlowDashboard() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#fbfbfe] text-[#0f172a] font-sans antialiased overflow-x-hidden pb-16">
+    <div className="relative min-h-screen flex flex-col justify-between bg-[#fbfbfe] text-[#0f172a] font-sans antialiased overflow-x-hidden">
       {/* Subtle Background Radial Ambient Glows */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-radial-gradient blur-3xl opacity-80" />
       <div className="pointer-events-none absolute top-40 right-10 w-72 h-72 bg-purple-200/40 rounded-full blur-3xl" />
@@ -607,7 +610,7 @@ export default function BizFlowDashboard() {
       </aside>
 
       {/* TOP HEADER */}
-      <header className="relative z-20 max-w-7xl mx-auto px-3 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-2">
+      <header className="relative z-20 w-full max-w-7xl mx-auto px-3 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-2 shrink-0">
         {/* Brand Logo & Name (Optimized with responsive font size so BizFlow AI looks proper on mobile) */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-900 via-purple-600 to-fuchsia-400 p-[2px] shadow-sm">
@@ -736,10 +739,10 @@ export default function BizFlowDashboard() {
         </div>
       </header>
 
-      {/* MAIN CONTAINER — CLEAN, CENTER-FOCUSED DESKTOP VIEW WITHOUT UNWANTED FLOATING CARDS */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 mt-2 sm:mt-4">
-        {/* CENTER STAGE: GREETING, 3D GALAXY ORB WITH DYNAMIC AUDIO LINES, AND MAIN CAPSULE INPUT */}
-        <div className="w-full max-w-2xl sm:max-w-3xl mx-auto flex flex-col items-center text-center">
+      {/* MAIN CONTAINER — CLEAN, CENTER-FOCUSED DESKTOP & MOBILE VIEW */}
+      <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col justify-center items-center py-4 sm:py-6">
+        {/* CENTER STAGE: GREETING, REALISTIC NEON SPHERE WITH DYNAMIC AUDIO LINES, AND MAIN CAPSULE INPUT */}
+        <div className="w-full max-w-2xl sm:max-w-3xl mx-auto flex flex-col items-center text-center my-auto">
           {/* Greeting */}
           <div className="text-xs font-medium text-gray-500 mb-1">
             Good Morning, {currentBusiness.ownerName.split(' ')[0]}
@@ -1033,6 +1036,14 @@ export default function BizFlowDashboard() {
           )}
         </div>
       </main>
+
+      {/* FOOTER */}
+      <footer className="relative z-20 w-full py-4 text-center mt-auto border-t border-purple-100/60 bg-white/40 backdrop-blur-xs text-xs text-gray-500 font-medium shrink-0">
+        <div className="flex items-center justify-center gap-1.5">
+          <span>Product by</span>
+          <span className="font-bold text-gray-800 tracking-wide font-heading">LyKSpire</span>
+        </div>
+      </footer>
     </div>
   );
 }
