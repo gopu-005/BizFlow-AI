@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Mic,
-  MicOff,
   Paperclip,
   Camera,
   ArrowRight,
@@ -14,32 +14,22 @@ import {
   Mail,
   MessageCircle,
   BarChart3,
-  Calendar,
-  ChevronDown,
   Volume2,
-  VolumeX,
-  CreditCard,
-  Sparkles,
   Database,
   FileSpreadsheet,
-  CheckCircle2,
   X,
   Loader2,
-  RefreshCw,
-  Building,
+  Sparkles,
 } from 'lucide-react';
 import { AiVoiceOrb } from '@/components/AiVoiceOrb';
-import { SalesSummaryPanel } from '@/components/panels/SalesSummaryPanel';
-import { LowStockPanel } from '@/components/panels/LowStockPanel';
-import { InvoiceDraftPanel } from '@/components/panels/InvoiceDraftPanel';
-import { FollowUpsPanel } from '@/components/panels/FollowUpsPanel';
-import { ImportDataPanel } from '@/components/panels/ImportDataPanel';
-import { ConnectorsDialog } from '@/components/panels/ConnectorsDialog';
-import { BillingModal } from '@/components/panels/BillingModal';
-import { Business, ConnectorStatus, FollowUpTask, Product } from '@/types/erp';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { Business, ConnectorStatus } from '@/types/erp';
 import { voiceManager, VoiceLanguage } from '@/lib/voice/speech';
 
 export default function BizFlowDashboard() {
+  const router = useRouter();
+
   // Business Context
   const [businesses, setBusinesses] = useState<Business[]>([
     {
@@ -83,30 +73,17 @@ export default function BizFlowDashboard() {
   // Conversational Input & AI Response
   const [inputText, setInputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [redirectNotice, setRedirectNotice] = useState<string | null>(null);
   const [aiResponse, setAiResponse] = useState<{
     text: string;
     voiceText: string;
     lang: 'en' | 'ta';
   } | null>(null);
 
-  // Contextual Active Panel
-  const [activePanel, setActivePanel] = useState<
-    'sales_summary' | 'low_stock' | 'create_invoice' | 'follow_ups' | 'connectors' | 'report_preview' | 'import_flow' | 'billing_modal' | null
-  >(null);
-  const [panelData, setPanelData] = useState<any>(null);
-
-  // Connectors Status
+  // Connectors Status & Badges
   const [connectors, setConnectors] = useState<ConnectorStatus[]>([]);
   const [followUpsCount, setFollowUpsCount] = useState(3);
   const [lowStockCount, setLowStockCount] = useState(4);
-
-  // Date selection
-  const [selectedDateFilter, setSelectedDateFilter] = useState<'today' | 'week' | 'month'>('today');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showBusinessSwitcher, setShowBusinessSwitcher] = useState(false);
-
-  // Workspace reference for smooth scrolling when panel appears
-  const workspaceRef = useRef<HTMLDivElement>(null);
 
   // Initial data loading
   useEffect(() => {
@@ -138,13 +115,14 @@ export default function BizFlowDashboard() {
     }
   };
 
-  // Execute conversational query
+  // Execute conversational query and redirect to dedicated page
   const handleSendCommand = async (commandToRun?: string) => {
     const textToQuery = (commandToRun || inputText).trim();
     if (!textToQuery) return;
 
     setIsProcessing(true);
     setSpeechError(null);
+    setRedirectNotice(null);
     voiceManager.stopSpeaking();
 
     try {
@@ -168,13 +146,25 @@ export default function BizFlowDashboard() {
         // Trigger spoken response using single natural voice
         speakResponse(data.voiceText || data.textResponse, data.language || 'en');
 
-        // Open matched contextual panel
-        if (data.actionType) {
-          setActivePanel(data.actionType as any);
-          setPanelData(data.data);
+        // Route map for dedicated page redirection
+        const routeMap: Record<string, { route: string; label: string }> = {
+          sales_summary: { route: '/sales', label: 'Sales Ledger & Revenue' },
+          low_stock: { route: '/inventory', label: 'Inventory & Low Stock' },
+          inventory_low_stock: { route: '/inventory', label: 'Inventory & Low Stock' },
+          create_invoice: { route: '/invoices?action=create', label: 'GST Invoice Generator' },
+          follow_ups: { route: '/customers', label: 'Customer CRM & Follow-ups' },
+          connectors: { route: '/connectors', label: 'Connected Apps & Data Feeds' },
+          report_preview: { route: '/reports', label: 'Executive Business Reports' },
+          import_flow: { route: '/import', label: 'Smart Data & Ledger Import' },
+          billing_modal: { route: '/billing', label: 'Subscription & Invoicing' },
+        };
+
+        const target = data.actionType ? routeMap[data.actionType] : null;
+        if (target) {
+          setRedirectNotice(`Redirecting to ${target.label}...`);
           setTimeout(() => {
-            workspaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 150);
+            router.push(target.route);
+          }, 1200);
         }
       }
     } catch (e) {
@@ -235,41 +225,11 @@ export default function BizFlowDashboard() {
     );
   };
 
-  const stopSpeaking = () => {
-    voiceManager.stopSpeaking();
-    setIsSpeaking(false);
-  };
-
-  // Direct trigger helpers for left menu & chips
-  const triggerQuickAction = async (action: string) => {
-    switch (action) {
-      case 'sales':
-        handleSendCommand("Today's sales");
-        break;
-      case 'inventory':
-        handleSendCommand('Which products are low in stock?');
-        break;
-      case 'invoice':
-        handleSendCommand('Create invoice for Priya');
-        break;
-      case 'followups':
-        handleSendCommand('Show pending customer follow-ups');
-        break;
-      case 'mails':
-        handleSendCommand('Check my emails');
-        break;
-      case 'whatsapp':
-        handleSendCommand('Show WhatsApp orders');
-        break;
-      case 'report':
-        handleSendCommand('Prepare monthly business report');
-        break;
-      case 'billing':
-        setActivePanel('billing_modal');
-        break;
-      default:
-        break;
-    }
+  // Direct route navigation helpers for quick actions
+  const navigateTo = (path: string) => {
+    setIsLeftDrawerOpen(false);
+    setIsRightDrawerOpen(false);
+    router.push(path);
   };
 
   return (
@@ -279,11 +239,17 @@ export default function BizFlowDashboard() {
       <div className="pointer-events-none absolute top-40 right-10 w-72 h-72 bg-purple-200/40 rounded-full blur-3xl" />
       <div className="pointer-events-none absolute top-48 left-10 w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl" />
 
-      {/* FLOATING EDGE TABS (Desktop and Tablet Side Triggers for Drawers) */}
+      {/* Shared Navigation Bar across all routes */}
+      <Navbar
+        currentBusinessId={currentBusinessId}
+        onBusinessChange={(id) => setCurrentBusinessId(id)}
+      />
+
+      {/* FLOATING EDGE TABS (Side Triggers for Drawers) */}
       <button
         onClick={() => setIsLeftDrawerOpen(true)}
         className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-white/95 hover:bg-purple-50 backdrop-blur-md border border-l-0 border-purple-200/90 rounded-r-2xl py-3 px-1.5 shadow-md text-purple-700 hover:text-purple-900 transition-all flex flex-col items-center gap-1.5 group hover:pl-2.5 cursor-pointer"
-        title="Quick Business Commands"
+        title="Quick Business Pages"
       >
         <TrendingUp className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
         <span className="text-[9px] font-bold tracking-wider [writing-mode:vertical-rl] rotate-180 text-gray-500 group-hover:text-purple-700">
@@ -302,7 +268,7 @@ export default function BizFlowDashboard() {
         </span>
       </button>
 
-      {/* LEFT SLIDE-OUT DRAWER — Quick Business Commands */}
+      {/* LEFT SLIDE-OUT DRAWER — Quick Route Links */}
       {isLeftDrawerOpen && (
         <div
           onClick={() => setIsLeftDrawerOpen(false)}
@@ -322,8 +288,8 @@ export default function BizFlowDashboard() {
                 <TrendingUp className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 font-heading">Quick Actions</h3>
-                <p className="text-[11px] text-gray-500">Instant business shortcuts</p>
+                <h3 className="text-sm font-bold text-gray-900 font-heading">ERP Routes</h3>
+                <p className="text-[11px] text-gray-500">Go directly to specific page</p>
               </div>
             </div>
             <button
@@ -338,140 +304,104 @@ export default function BizFlowDashboard() {
           <div className="space-y-1">
             {/* 1. Today's Sales */}
             <button
-              onClick={() => {
-                triggerQuickAction('sales');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/80 flex items-center gap-3 transition-colors group"
+              onClick={() => navigateTo('/sales')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
                 <TrendingUp className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-gray-900">Today&apos;s Sales</div>
-                <div className="text-[11px] text-gray-500">Show today&apos;s sales summary</div>
+                <div className="text-xs font-bold text-gray-900">Sales Dashboard</div>
+                <div className="text-[11px] text-gray-500">Revenue, cash flow & invoices</div>
               </div>
             </button>
 
             {/* 2. Inventory Status */}
             <button
-              onClick={() => {
-                triggerQuickAction('inventory');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-amber-50/80 flex items-center gap-3 transition-colors group"
+              onClick={() => navigateTo('/inventory')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-amber-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors">
                 <Package className="w-4 h-4" />
               </div>
               <div>
                 <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Inventory Status
+                  Inventory & Stock
                   {lowStockCount > 0 && (
                     <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 py-0.2 rounded-full font-bold">
                       {lowStockCount}
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] text-gray-500">Which products are low in stock?</div>
+                <div className="text-[11px] text-gray-500">Catalog, thresholds & restock</div>
               </div>
             </button>
 
             {/* 3. Create Invoice */}
             <button
-              onClick={() => {
-                triggerQuickAction('invoice');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-blue-50/80 flex items-center gap-3 transition-colors group"
+              onClick={() => navigateTo('/invoices?action=create')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-blue-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                 <FileText className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-gray-900">Create Invoice</div>
-                <div className="text-[11px] text-gray-500">Make a new invoice</div>
+                <div className="text-xs font-bold text-gray-900">Invoices & Billing</div>
+                <div className="text-[11px] text-gray-500">Generate GST bill & PDF print</div>
               </div>
             </button>
 
             {/* 4. Customer Follow-ups */}
             <button
-              onClick={() => {
-                triggerQuickAction('followups');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-violet-50/80 flex items-center gap-3 transition-colors group"
+              onClick={() => navigateTo('/customers')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-violet-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-colors">
                 <Users className="w-4 h-4" />
               </div>
               <div>
                 <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Customer Follow-ups
+                  Customers & Follow-ups
                   <span className="bg-purple-100 text-purple-800 text-[9px] px-1.5 py-0.2 rounded-full font-bold">
                     {followUpsCount}
                   </span>
                 </div>
-                <div className="text-[11px] text-gray-500">Show pending follow-ups</div>
+                <div className="text-[11px] text-gray-500">CRM ledger & WhatsApp reminders</div>
               </div>
             </button>
 
-            {/* 5. Check My Mails */}
+            {/* 5. Monthly Report */}
             <button
-              onClick={() => {
-                triggerQuickAction('mails');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-red-50/80 flex items-center gap-3 transition-colors group"
-            >
-              <div className="w-8 h-8 rounded-xl bg-red-100 text-red-700 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white transition-colors">
-                <Mail className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">Check My Mails</div>
-                <div className="text-[11px] text-gray-500">How many new emails?</div>
-              </div>
-            </button>
-
-            {/* 6. WhatsApp Orders */}
-            <button
-              onClick={() => {
-                triggerQuickAction('whatsapp');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group"
-            >
-              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <MessageCircle className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">WhatsApp Orders</div>
-                <div className="text-[11px] text-gray-500">Show new WhatsApp orders</div>
-              </div>
-            </button>
-
-            {/* 7. Monthly Report */}
-            <button
-              onClick={() => {
-                triggerQuickAction('report');
-                setIsLeftDrawerOpen(false);
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-indigo-50/80 flex items-center gap-3 transition-colors group"
+              onClick={() => navigateTo('/reports')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-indigo-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                 <BarChart3 className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-gray-900">Monthly Report</div>
-                <div className="text-[11px] text-gray-500">Generate and download</div>
+                <div className="text-xs font-bold text-gray-900">Reports & Analytics</div>
+                <div className="text-[11px] text-gray-500">Profitability & official PDF</div>
+              </div>
+            </button>
+
+            {/* 6. Smart Import */}
+            <button
+              onClick={() => navigateTo('/import')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <FileSpreadsheet className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-gray-900">Data & Ledger Import</div>
+                <div className="text-[11px] text-gray-500">Photo OCR & Excel ingestion</div>
               </div>
             </button>
           </div>
         </div>
 
-        {/* Hand-drawn annotation note at bottom of drawer */}
         <div className="pt-4 border-t border-purple-100 font-handwritten text-purple-600 text-base rotate-[-1deg] flex items-center gap-1.5 opacity-90 select-none">
-          <span>Just ask or click.. Everything in one place.</span>
+          <span>Dedicated routes for each business workflow</span>
         </div>
       </aside>
 
@@ -514,11 +444,8 @@ export default function BizFlowDashboard() {
           <div className="space-y-2">
             {/* Email (Gmail) */}
             <button
-              onClick={() => {
-                setIsRightDrawerOpen(false);
-                setActivePanel('connectors');
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200"
+              onClick={() => navigateTo('/connectors')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
@@ -534,11 +461,8 @@ export default function BizFlowDashboard() {
 
             {/* WhatsApp Business */}
             <button
-              onClick={() => {
-                setIsRightDrawerOpen(false);
-                setActivePanel('connectors');
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200"
+              onClick={() => navigateTo('/connectors')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -554,11 +478,8 @@ export default function BizFlowDashboard() {
 
             {/* Database (PostgreSQL) */}
             <button
-              onClick={() => {
-                setIsRightDrawerOpen(false);
-                setActivePanel('connectors');
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200"
+              onClick={() => navigateTo('/connectors')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
@@ -574,18 +495,15 @@ export default function BizFlowDashboard() {
 
             {/* Excel / CSV Import */}
             <button
-              onClick={() => {
-                setIsRightDrawerOpen(false);
-                setActivePanel('import_flow');
-              }}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200"
+              onClick={() => navigateTo('/import')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                   <FileSpreadsheet className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-gray-900">Excel / CSV Import</div>
+                  <div className="text-xs font-bold text-gray-900">Excel / Photo OCR</div>
                   <div className="text-[11px] text-emerald-600 font-medium">Ready</div>
                 </div>
               </div>
@@ -594,206 +512,40 @@ export default function BizFlowDashboard() {
           </div>
         </div>
 
-        {/* Bottom connector settings hint */}
         <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
           <span>Manage integrations</span>
           <button
-            onClick={() => {
-              setIsRightDrawerOpen(false);
-              setActivePanel('connectors');
-            }}
-            className="font-bold text-purple-700 hover:text-purple-900 transition-colors"
+            onClick={() => navigateTo('/connectors')}
+            className="font-bold text-purple-700 hover:text-purple-900 transition-colors cursor-pointer"
           >
             Configure →
           </button>
         </div>
       </aside>
 
-      {/* TOP HEADER */}
-      <header className="relative z-20 w-full max-w-7xl mx-auto px-3 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-2 shrink-0">
-        {/* Brand Logo & Name (Optimized with responsive font size so BizFlow AI looks proper on mobile) */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-900 via-purple-600 to-fuchsia-400 p-[2px] shadow-sm">
-            <div className="w-full h-full rounded-full bg-[#0a0518] flex items-center justify-center overflow-hidden">
-              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 blur-[2px] animate-pulse" />
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-base sm:text-xl font-bold tracking-tight text-gray-900 font-heading">
-                BizFlow AI
-              </span>
-              <span className="hidden md:inline-block text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded-full bg-purple-100 text-purple-800 border border-purple-200">
-                ERP
-              </span>
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-gray-500 font-medium leading-none">
-              Business Assistant
-            </div>
-          </div>
-        </div>
-
-        {/* Top Right Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-
-          {/* Subscription / Plan Badge (Click opens Billing Modal) */}
-          <button
-            onClick={() => setActivePanel('billing_modal')}
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-xs font-semibold text-purple-700 transition-all shadow-sm group"
-            title="Subscription & Billing Management"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-purple-600 group-hover:rotate-12 transition-transform" />
-            <span>Plan</span>
-          </button>
-
-          {/* Date Selector Pill (Optimized for mobile) */}
-          <div className="relative">
-            <button
-              onClick={() => setShowDatePicker(!showDatePicker)}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-2xl bg-white/90 border border-purple-100 shadow-card-soft text-xs font-medium text-gray-700 hover:border-purple-300 transition-all"
-            >
-              <Calendar className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-              <span className="hidden sm:inline">Today 15 Oct 2024</span>
-              <span className="sm:hidden text-[11px]">15 Oct</span>
-              <ChevronDown className="w-3 h-3 text-gray-400" />
-            </button>
-
-            {showDatePicker && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-30 text-xs">
-                <button
-                  onClick={() => {
-                    setSelectedDateFilter('today');
-                    setShowDatePicker(false);
-                    handleSendCommand("Today's sales");
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-purple-50 text-gray-700 font-medium"
-                >
-                  Today (15 Oct 2024)
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedDateFilter('week');
-                    setShowDatePicker(false);
-                    handleSendCommand('Show weekly sales and performance');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-purple-50 text-gray-700"
-                >
-                  This Week (09 – 15 Oct)
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedDateFilter('month');
-                    setShowDatePicker(false);
-                    handleSendCommand('Prepare monthly business report');
-                  }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-purple-50 text-gray-700"
-                >
-                  This Month (Oct 2024)
-                </button>
-              </div>
-            )}
+      {/* MAIN VIEWPORT: CENTERED 3D VOICE ORB & INTERACTION */}
+      <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 flex-1 flex flex-col items-center justify-center py-6 sm:py-10">
+        <div className="w-full flex flex-col items-center justify-center text-center">
+          {/* 3D Realistic Neon Fluid Sphere with dynamic speaking & listening state */}
+          <div className="relative mb-3 flex items-center justify-center">
+            <AiVoiceOrb isListening={isListening} isSpeaking={isSpeaking} />
           </div>
 
-          {/* User Avatar & Business Switcher */}
-          <div className="relative">
-            <button
-              onClick={() => setShowBusinessSwitcher(!showBusinessSwitcher)}
-              className="flex items-center gap-1.5 p-1 pl-1.5 sm:pl-2 rounded-2xl bg-white/90 border border-purple-100 shadow-card-soft hover:border-purple-300 transition-all"
-            >
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white text-xs font-bold flex items-center justify-center shadow-inner">
-                {currentBusiness.ownerName.charAt(0)}
-              </div>
-              <ChevronDown className="w-3 h-3 text-gray-400 mr-0.5" />
-            </button>
-
-            {showBusinessSwitcher && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-30 text-xs space-y-1">
-                <div className="px-2 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  Switch Business
-                </div>
-                {businesses.map((biz) => (
-                  <button
-                    key={biz.id}
-                    onClick={() => {
-                      setCurrentBusinessId(biz.id);
-                      setShowBusinessSwitcher(false);
-                    }}
-                    className={`w-full text-left p-2 rounded-lg flex items-center justify-between transition-colors ${
-                      biz.id === currentBusinessId
-                        ? 'bg-purple-50 text-purple-900 font-bold'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                  >
-                    <div>
-                      <div>{biz.name}</div>
-                      <div className="text-[10px] text-gray-400 font-normal">{biz.type}</div>
-                    </div>
-                    {biz.id === currentBusinessId && (
-                      <CheckCircle2 className="w-4 h-4 text-purple-600" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* MAIN CONTAINER — CLEAN, CENTER-FOCUSED DESKTOP & MOBILE VIEW */}
-      <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 flex flex-col justify-center items-center py-4 sm:py-6">
-        {/* CENTER STAGE: GREETING, REALISTIC NEON SPHERE WITH DYNAMIC AUDIO LINES, AND MAIN CAPSULE INPUT */}
-        <div className="w-full max-w-2xl sm:max-w-3xl mx-auto flex flex-col items-center text-center my-auto">
-          {/* Greeting */}
-          <div className="text-xs font-medium text-gray-500 mb-1">
-            Good Morning, {currentBusiness.ownerName.split(' ')[0]}
+          {/* Assistant Title & Multilingual Subtitle */}
+          <div className="space-y-1 mb-4">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 font-heading">
+              How can I assist your business today?
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
+              Speak or ask in <span className="font-semibold text-purple-700">English</span> or{' '}
+              <span className="font-semibold text-purple-700">தமிழ் (Tamil)</span>. I will route and display your business data in dedicated pages.
+            </p>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-gray-900 font-heading mb-1.5">
-            Ask anything about{' '}
-            <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-              your business
-            </span>
-          </h1>
-
-          {/* Scope Subtitle */}
-          <div className="text-[11px] sm:text-xs text-gray-400 font-medium mb-3 flex flex-wrap justify-center gap-1">
-            <span>Sales</span> · <span>Inventory</span> · <span>Customers</span> ·{' '}
-            <span>Invoices</span> · <span>Reports</span> · <span>Mails</span> ·{' '}
-            <span>WhatsApp</span> · <span>and more...</span>
-          </div>
-
-          {/* 3D GALAXY ORB WITH FLANKING DYNAMIC AUDIO LINES (NO FLOATING SPEECH BUBBLES) */}
-          <div className="relative w-full flex items-center justify-center select-none my-0">
-            <AiVoiceOrb
-              isListening={isListening}
-              isSpeaking={isSpeaking}
-              isProcessing={isProcessing}
-              onClick={toggleListening}
-            />
-          </div>
-
-          {/* Voice Indicator: Only 1 Voice Used (Removed Male/Female toggle; Stop button shown only when speaking) */}
-          {isSpeaking && (
-            <div className="flex items-center gap-2 my-2 animate-in fade-in duration-200">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100/90 border border-purple-200 text-purple-800 text-xs font-semibold">
-                <Volume2 className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
-                <span>BizFlow Voice Responding...</span>
-              </div>
-              <button
-                type="button"
-                onClick={stopSpeaking}
-                className="flex items-center gap-1 text-[11px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full border border-rose-200 transition-colors shadow-sm"
-              >
-                <VolumeX className="w-3 h-3" /> Stop
-              </button>
-            </div>
-          )}
-
-          {/* Microphone permission or speech error banner */}
+          {/* Speech Error Banner */}
           {speechError && (
-            <div className="mb-2 text-[11px] text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-lg">
-              ⚠️ {speechError}
+            <div className="mb-4 px-4 py-2 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium animate-in fade-in">
+              {speechError}
             </div>
           )}
 
@@ -804,7 +556,7 @@ export default function BizFlowDashboard() {
               <button
                 type="button"
                 onClick={toggleListening}
-                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                   isListening
                     ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.6)]'
                     : 'bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_12px_rgba(147,51,234,0.4)]'
@@ -828,18 +580,18 @@ export default function BizFlowDashboard() {
                     ? 'Listening to your voice...'
                     : language === 'ta'
                     ? 'வணிகத்தைப் பற்றி எதையும் கேளுங்கள்... (தமிழ் / English)'
-                    : 'Ask anything about your business...'
+                    : 'Ask anything about your sales, stock, or invoices...'
                 }
                 className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-gray-400 focus:outline-none px-1"
               />
 
               {/* Action Icons */}
               <div className="flex items-center gap-1.5 shrink-0 pr-1">
-                {/* Paperclip (Excel / CSV Import) */}
+                {/* Paperclip (Go to Import Page) */}
                 <button
                   type="button"
-                  onClick={() => setActivePanel('import_flow')}
-                  className="p-1.5 text-gray-400 hover:text-white transition-colors"
+                  onClick={() => navigateTo('/import')}
+                  className="p-1.5 text-gray-400 hover:text-white transition-colors cursor-pointer"
                   title="Import CSV or Excel spreadsheet"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -848,8 +600,8 @@ export default function BizFlowDashboard() {
                 {/* Camera (Handwritten register / bill photo OCR) */}
                 <button
                   type="button"
-                  onClick={() => setActivePanel('import_flow')}
-                  className="p-1.5 text-gray-400 hover:text-white transition-colors"
+                  onClick={() => navigateTo('/import')}
+                  className="p-1.5 text-gray-400 hover:text-white transition-colors cursor-pointer"
                   title="Scan photo of handwritten register or receipt"
                 >
                   <Camera className="w-4 h-4" />
@@ -860,7 +612,7 @@ export default function BizFlowDashboard() {
                   type="button"
                   onClick={() => handleSendCommand()}
                   disabled={isProcessing}
-                  className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center hover:opacity-95 active:scale-95 transition-all shadow-md"
+                  className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center hover:opacity-95 active:scale-95 transition-all shadow-md cursor-pointer"
                   title="Send command"
                 >
                   {isProcessing ? (
@@ -872,47 +624,47 @@ export default function BizFlowDashboard() {
               </div>
             </div>
 
-            {/* Bottom Quick Command Chips */}
+            {/* Bottom Quick Command Chips - Redirect to each page */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs">
               <button
                 type="button"
-                onClick={() => triggerQuickAction('sales')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/sales')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
                 📥 Today&apos;s sales
               </button>
               <button
                 type="button"
-                onClick={() => triggerQuickAction('invoice')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/invoices?action=create')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
                 🧾 Create invoice
               </button>
               <button
                 type="button"
-                onClick={() => triggerQuickAction('inventory')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/inventory')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
                 🔔 Low stock items
               </button>
               <button
                 type="button"
-                onClick={() => triggerQuickAction('followups')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/customers')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
                 👥 Follow-up customers
               </button>
               <button
                 type="button"
-                onClick={() => triggerQuickAction('mails')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/connectors')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
-                ✉️ Check emails
+                ✉️ Check emails & WhatsApp
               </button>
               <button
                 type="button"
-                onClick={() => triggerQuickAction('report')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all"
+                onClick={() => navigateTo('/reports')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
                 📊 Generate report
               </button>
@@ -920,7 +672,7 @@ export default function BizFlowDashboard() {
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
-                className="px-3 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold rounded-full shadow-sm transition-all"
+                className="px-3 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold rounded-full shadow-sm transition-all cursor-pointer"
                 title="Switch speech & text language"
               >
                 🌐 {language === 'en' ? 'தமிழ்' : 'English'}
@@ -929,15 +681,23 @@ export default function BizFlowDashboard() {
           </div>
         </div>
 
-        {/* AI CONVERSATIONAL SPOKEN/TEXT RESPONSE BUBBLE (IF AVAILABLE) */}
+        {/* REDIRECT NOTICE TOAST */}
+        {redirectNotice && (
+          <div className="max-w-md mx-auto mt-4 px-4 py-2.5 rounded-full bg-purple-600 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <span>{redirectNotice}</span>
+          </div>
+        )}
+
+        {/* AI CONVERSATIONAL SPOKEN/TEXT RESPONSE BUBBLE */}
         {aiResponse && (
-          <div className="max-w-3xl mx-auto mt-6 p-4 rounded-2xl bg-white/95 border border-purple-200 shadow-md flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="max-w-3xl mx-auto mt-5 p-4 rounded-2xl bg-white/95 border border-purple-200 shadow-md flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm">
               <Sparkles className="w-4 h-4" />
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-900">BizFlow Assistant Response</span>
+                <span className="text-xs font-bold text-gray-900">BizFlow Assistant</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => speakResponse(aiResponse.voiceText, aiResponse.lang)}
@@ -961,89 +721,10 @@ export default function BizFlowDashboard() {
             </div>
           </div>
         )}
-
-        {/* CONTEXTUAL WORKSPACE — INLINE PREVIEWS & ACTION PANELS */}
-        <div ref={workspaceRef} className="max-w-4xl mx-auto mt-6">
-          {activePanel === 'sales_summary' && (
-            <SalesSummaryPanel
-              data={panelData}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-              onAction={(action) => {
-                if (action === 'create_invoice') setActivePanel('create_invoice');
-              }}
-            />
-          )}
-
-          {activePanel === 'low_stock' && (
-            <LowStockPanel
-              products={panelData?.lowStock || []}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-            />
-          )}
-
-          {activePanel === 'create_invoice' && (
-            <InvoiceDraftPanel
-              initialData={panelData}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-              onInvoiceCreated={() => {
-                loadBadges();
-              }}
-            />
-          )}
-
-          {activePanel === 'follow_ups' && (
-            <FollowUpsPanel
-              tasks={panelData?.tasks || []}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-              onRefresh={loadBadges}
-            />
-          )}
-
-          {activePanel === 'import_flow' && (
-            <ImportDataPanel
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-              onImportSuccess={loadBadges}
-            />
-          )}
-
-          {activePanel === 'connectors' && (
-            <ConnectorsDialog
-              connectors={connectors}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-              onUpdateConnector={loadConnectors}
-            />
-          )}
-
-          {activePanel === 'billing_modal' && (
-            <BillingModal
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-            />
-          )}
-
-          {activePanel === 'report_preview' && (
-            <SalesSummaryPanel
-              data={panelData}
-              business={currentBusiness}
-              onClose={() => setActivePanel(null)}
-            />
-          )}
-        </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="relative z-20 w-full py-4 text-center mt-auto border-t border-purple-100/60 bg-white/40 backdrop-blur-xs text-xs text-gray-500 font-medium shrink-0">
-        <div className="flex items-center justify-center gap-1.5">
-          <span>Product by</span>
-          <span className="font-bold text-gray-800 tracking-wide font-heading">LyKSpire</span>
-        </div>
-      </footer>
+      {/* Shared Footer with Product by LyKSpire */}
+      <Footer />
     </div>
   );
 }

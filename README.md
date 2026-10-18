@@ -49,10 +49,20 @@ BizFlow AI reimagines traditional enterprise resource planning into an intuitive
 BizFlow AI/
 ├── app/
 │   ├── api/                 # API route handlers (chat, connectors, ERP inventory/sales/invoices)
+│   ├── sales/               # Dedicated Sales ledger & performance route
+│   ├── inventory/           # Dedicated Inventory & low-stock route
+│   ├── invoices/            # Dedicated GST Invoice generator & history route
+│   ├── customers/           # Dedicated CRM & WhatsApp follow-ups route
+│   ├── reports/             # Dedicated Executive Business analytics route
+│   ├── connectors/          # Dedicated Connected Apps & data feeds route
+│   ├── import/              # Dedicated Handwritten register & Excel import route
+│   ├── billing/             # Dedicated All-in-One plan & Razorpay checkout route
 │   ├── globals.css          # Core design tokens, gradients, glassmorphism styles
 │   ├── layout.tsx           # Root HTML layout & fonts (Inter, Outfit, Caveat)
-│   └── page.tsx             # Main dashboard, header, drawer controls & contextual workspace
+│   └── page.tsx             # Main Voice Assistant dashboard & intelligent route redirector
 ├── components/
+│   ├── Navbar.tsx           # Unified top navigation bar across all routes
+│   ├── Footer.tsx           # Shared footer with Product by LyKSpire
 │   ├── AiVoiceOrb.tsx       # Realistic 3D spherical ball with swirling neon fluid & audio visualizer
 │   └── panels/              # Contextual slide panels & action dialogs
 │       ├── BillingModal.tsx
