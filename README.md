@@ -1,30 +1,47 @@
-# BizFlow AI — One-Screen Conversational ERP
+# BizFlow AI — Agentic Small Business Operating System
 
-> **A voice-first, one-screen Conversational ERP assistant tailored for small & medium businesses, retail shops, and local enterprises.**
+> **An autonomous, multi-agent operating system tailored for small businesses in India (retailers, grocery stores, clothing shops, distributors, and service providers).**
+> **Subscription: ₹299 / month ("BizFlow AI Starter") with server-enforced usage quotas and guardrails.**
 
 ![BizFlow AI](https://raw.githubusercontent.com/gopu-005/BizFlow-AI/main/public/banner.png)
 
-BizFlow AI reimagines traditional enterprise resource planning into an intuitive, distraction-free conversational experience. Speak or type in everyday English or Tamil to check today's sales, audit low-stock items, draft and download GST-compliant PDF invoices, and trigger customer follow-ups—all without leaving a single screen.
+BizFlow AI transforms traditional conversational ERP into an agentic small business operating system. Three integrated autonomous agents operate on a shared execution engine with server-enforced autonomy guardrails, human approvals, and deterministic financial accounting.
 
 ---
 
-## ✨ Key Features
+## ✨ Integrated Autonomous Agents
 
-- **Realistic 3D Spherical Neon Fluid Assistant:**
-  - Dynamic glass sphere rendered with 3D caustic caustics, Fresnel rim reflections, and volumetric swirling neon fluid ribbons.
-  - Flanking audio equalizer lines that react dynamically with vocal waveforms when the user speaks and when the AI responds.
-- **Multilingual Voice Interaction:**
-  - Natural speech recognition and speech synthesis supporting both **English** and **Tamil** (`en-IN` & `ta-IN`).
-  - Clean single natural assistant voice mode with one-click stop/mute controls.
-- **Unified One-Screen Operations:**
-  - **Today's Sales & Revenue:** Real-time breakdown of cash, UPI, and card sales with transaction histories.
-  - **Inventory Health:** Instant low-stock alerts, reorder thresholds, and unit metrics.
-  - **Instant GST Invoice Generator:** Contextual draft generation with automatic CGST/SGST calculations and one-click PDF downloads.
-  - **Customer CRM & Follow-ups:** Automated pending dues reminders and WhatsApp message drafts.
-- **Sliding Action Drawers:**
-  - Distraction-free interface with hidden drawers for **Quick Actions** and **Connected Apps** that slide smoothly into view from the screen edges on click.
-- **Connected Integrations:**
-  - Mock and live connectors for **Gmail**, **WhatsApp Business API**, **PostgreSQL**, and **Excel/CSV Data Import**.
+1. **Smart Entry Agent (`/agent?tab=entry`)**:
+   - Converts everyday document photos, PDF supplier invoices, purchase receipts, and natural-language expenses into structured records.
+   - Detects duplicate bills and mismatched line totals.
+   - **Stock Safety Rule:** Inventory stock is strictly updated only through verified goods-receipt workflows, never inflated by invoice upload alone.
+   - Prepares human-reviewable drafts for owner confirmation.
+
+2. **Udhaar & Collection Agent (`/udhaar`)**:
+   - Dedicated customer credit ledger with 4 aging buckets: Current (0–15d), 16–30d, 31–60d, and 60+ days.
+   - Schedules and tracks payment commitments/promises with fulfillment status.
+   - Generates personalized WhatsApp reminders with verified `wa.me` click-to-chat links.
+   - Transactionally logs verified payments, deducts customer balances, and prevents duplicate receipts.
+
+3. **Profit Leak & Daily Closing Agent (`/closing`)**:
+   - End-of-day financial reconciliation of finalized sales vs recorded digital/cash collections.
+   - Detects cash variance (expected vs recorded cash in hand).
+   - Audits margin anomalies: flags products selling below target margin (<15%) or with unusual discounts.
+   - Matches unmatched bank/UPI transactions to open invoices.
+   - Produces official Daily Closing Reports backed by verified database records.
+
+4. **Shared Agent Execution Engine (`/agent`)**:
+   - Shared multi-step orchestration across 16 typed backend business tools.
+   - 3 Server-enforced autonomy modes:
+     - `suggest_only`: Prepares drafts and recommendations only.
+     - `guarded_autopilot` (default): Consequential financial ledger mutations require human approval.
+     - `trusted_autopilot`: Autonomous execution within owner-defined thresholds (up to ₹50,000).
+   - Bounded execution loops, error recovery, step-by-step audit timelines, and source-record traceability.
+
+5. **Subscription & Quota Management (`/billing`)**:
+   - "BizFlow AI Starter" plan at **₹299/month** (or ₹2,999/year).
+   - Server-enforced monthly quotas: 100 AI workflow runs & 50 document extractions.
+   - Live usage meter with unblocked manual CRUD operations when quota limits are reached.
 
 ---
 
