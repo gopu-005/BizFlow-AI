@@ -79,17 +79,17 @@ export default function InventoryPage() {
       Category: p.category,
       Unit: p.unit,
       Stock: p.stock,
-      MinThreshold: p.minThreshold,
-      SellingPrice: p.sellingPrice,
+      MinThreshold: p.minStock,
+      SellingPrice: p.price,
       CostPrice: p.costPrice,
-      Status: p.stock === 0 ? 'Out of Stock' : p.stock <= p.minThreshold ? 'Low Stock' : 'In Stock',
+      Status: p.stock === 0 ? 'Out of Stock' : p.stock <= p.minStock ? 'Low Stock' : 'In Stock',
     }));
     downloadCSV(`Inventory_Report_${businessId}.csv`, rows);
   };
 
   const filteredProducts = products.filter((p) => {
     if (filter === 'out_of_stock' && p.stock > 0) return false;
-    if (filter === 'low_stock' && p.stock > p.minThreshold) return false;
+    if (filter === 'low_stock' && p.stock > p.minStock) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -99,7 +99,7 @@ export default function InventoryPage() {
     );
   });
 
-  const lowStockCount = products.filter((p) => p.stock <= p.minThreshold).length;
+  const lowStockCount = products.filter((p) => p.stock <= p.minStock).length;
   const outOfStockCount = products.filter((p) => p.stock === 0).length;
 
   return (
@@ -243,7 +243,7 @@ export default function InventoryPage() {
                 ) : (
                   filteredProducts.map((p) => {
                     const isOut = p.stock === 0;
-                    const isLow = !isOut && p.stock <= p.minThreshold;
+                    const isLow = !isOut && p.stock <= p.minStock;
 
                     return (
                       <tr key={p.id} className="hover:bg-purple-50/25 transition-colors">
@@ -253,7 +253,7 @@ export default function InventoryPage() {
                           <div className="text-[10px] text-gray-400 font-normal">Per {p.unit}</div>
                         </td>
                         <td className="p-3 text-gray-600">{p.category}</td>
-                        <td className="p-3 font-bold text-gray-900">₹{p.sellingPrice.toLocaleString('en-IN')}</td>
+                        <td className="p-3 font-bold text-gray-900">₹{(p.price ?? 0).toLocaleString('en-IN')}</td>
                         <td className="p-3 text-center">
                           <span
                             className={`font-extrabold text-sm ${
@@ -262,7 +262,7 @@ export default function InventoryPage() {
                           >
                             {p.stock}
                           </span>
-                          <span className="text-gray-400 text-[10px]"> / min {p.minThreshold}</span>
+                          <span className="text-gray-400 text-[10px]"> / min {p.minStock}</span>
                         </td>
                         <td className="p-3">
                           {isOut ? (

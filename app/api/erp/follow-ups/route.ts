@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const task = db.createFollowUp(businessId, {
+      businessId,
       customerId: customerId || 'cust_manual',
       customerName,
       customerPhone: customerPhone || '',

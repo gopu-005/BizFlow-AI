@@ -19,3 +19,23 @@ export async function GET(req: NextRequest) {
   const all = db.getProducts(businessId);
   return NextResponse.json({ products: all, type: 'all' });
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { businessId, productId, stock } = body;
+
+    if (!businessId || !productId || stock === undefined) {
+      return NextResponse.json({ error: 'Missing businessId, productId, or stock' }, { status: 400 });
+    }
+
+    const updated = db.updateProductStock(businessId, productId, Number(stock));
+    if (!updated) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, product: updated });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to update stock' }, { status: 500 });
+  }
+}

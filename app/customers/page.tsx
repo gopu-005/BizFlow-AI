@@ -97,8 +97,9 @@ export default function CustomersPage() {
     const q = searchQuery.toLowerCase();
     return (
       t.customerName.toLowerCase().includes(q) ||
-      t.title.toLowerCase().includes(q) ||
-      t.description.toLowerCase().includes(q)
+      (t.title?.toLowerCase().includes(q) ?? false) ||
+      (t.description?.toLowerCase().includes(q) ?? false) ||
+      (t.notes?.toLowerCase().includes(q) ?? false)
     );
   });
 
