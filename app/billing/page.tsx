@@ -80,6 +80,8 @@ export default function BillingPage() {
   const [billingEmail, setBillingEmail] = useState(currentBusiness.email);
   const [addressLine1, setAddressLine1] = useState(currentBusiness.address);
 
+  const [quota, setQuota] = useState<{ usedAiRuns: number; maxAiRuns: number; usedExtractions: number; maxExtractions: number } | null>(null);
+
   useEffect(() => {
     fetchBillingData();
   }, [businessId]);
@@ -97,6 +99,10 @@ export default function BillingPage() {
         setBillingEmail(data.billingDetails.billingEmail || currentBusiness.email);
         setAddressLine1(data.billingDetails.addressLine1 || currentBusiness.address);
       }
+
+      const qRes = await fetch(`/api/agent/quota?businessId=${businessId}`);
+      const qData = await qRes.json();
+      if (qData.quota) setQuota(qData.quota);
     } catch (e) {
       console.error(e);
     } finally {
@@ -212,7 +218,7 @@ export default function BillingPage() {
           currency: order.currency,
           name: 'BizFlow AI (LyKSpire)',
           description: `${BIZFLOW_PLAN.name} (${billingCycle.toUpperCase()})`,
-          order_id: order.id,
+          order_id: order.orderId || order.id,
           prefill: {
             name: legalName,
             email: billingEmail,
@@ -228,7 +234,7 @@ export default function BillingPage() {
           handler: function (response: any) {
             verifyPayment({
               businessId,
-              razorpayOrderId: response.razorpay_order_id || order.id,
+              razorpayOrderId: response.razorpay_order_id || order.orderId || order.id,
               razorpayPaymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
               razorpaySignature: response.razorpay_signature || `sig_${Date.now()}`,
               billingCycle,
@@ -252,7 +258,7 @@ export default function BillingPage() {
         setTimeout(async () => {
           await verifyPayment({
             businessId,
-            razorpayOrderId: order.id,
+            razorpayOrderId: order.orderId || order.id,
             razorpayPaymentId: `pay_sim_${Date.now()}`,
             razorpaySignature: `sig_sim_${Date.now()}`,
             billingCycle,
@@ -266,7 +272,7 @@ export default function BillingPage() {
   };
 
   const downloadInvoice = (invoice: BillingInvoice) => {
-    const doc = generateBillingInvoicePDF(invoice, currentBusiness);
+    const doc = generateBillingInvoicePDF(invoice);
     doc.save(`BizFlow_Tax_Invoice_${invoice.invoiceNumber}.pdf`);
   };
 
@@ -303,31 +309,28 @@ export default function BillingPage() {
           <div className="flex items-center gap-1.5 p-1 bg-white rounded-xl border border-gray-200 shadow-xs">
             <button
               onClick={() => setActiveTab('plan')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === 'plan'
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'plan'
                   ? 'bg-purple-600 text-white shadow-xs'
                   : 'text-gray-600 hover:bg-gray-100'
-              }`}
+                }`}
             >
               Subscription Plan
             </button>
             <button
               onClick={() => setActiveTab('invoices')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === 'invoices'
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'invoices'
                   ? 'bg-purple-600 text-white shadow-xs'
                   : 'text-gray-600 hover:bg-gray-100'
-              }`}
+                }`}
             >
               Tax Invoices ({invoices.length})
             </button>
             <button
               onClick={() => setActiveTab('settings')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === 'settings'
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'settings'
                   ? 'bg-purple-600 text-white shadow-xs'
                   : 'text-gray-600 hover:bg-gray-100'
-              }`}
+                }`}
             >
               GST & Billing Details
             </button>
@@ -359,23 +362,21 @@ export default function BillingPage() {
               <div className="flex items-center bg-white p-1 rounded-2xl border border-purple-200 shadow-xs">
                 <button
                   onClick={() => setBillingCycle('monthly')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    billingCycle === 'monthly'
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${billingCycle === 'monthly'
                       ? 'bg-purple-600 text-white shadow-sm'
                       : 'text-gray-600 hover:text-purple-600'
-                  }`}
+                    }`}
                 >
-                  Monthly Billing (₹499/mo)
+                  Monthly Billing (₹299/mo)
                 </button>
                 <button
                   onClick={() => setBillingCycle('annual')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    billingCycle === 'annual'
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === 'annual'
                       ? 'bg-purple-600 text-white shadow-sm'
                       : 'text-gray-600 hover:text-purple-600'
-                  }`}
+                    }`}
                 >
-                  <span>Annual Billing (₹4,999/yr)</span>
+                  <span>Annual Billing (₹2,999/yr)</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase tracking-wide">
                     Save 17%
                   </span>
@@ -405,7 +406,7 @@ export default function BillingPage() {
                   <div className="text-right">
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl sm:text-4xl font-black text-gray-900 font-heading">
-                        ₹{billingCycle === 'annual' ? '4,999' : '499'}
+                        ₹{billingCycle === 'annual' ? '2,999' : '299'}
                       </span>
                       <span className="text-xs text-gray-500 font-semibold">
                         /{billingCycle === 'annual' ? 'year' : 'month'}
@@ -507,6 +508,62 @@ export default function BillingPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Server-Enforced Live Quota Meter */}
+                {quota && (
+                  <div className="glass-card rounded-2xl p-6 border border-purple-200/80 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                        Monthly AI Usage Meter
+                      </h4>
+                      <span className="text-[10px] text-purple-700 font-bold bg-purple-100 px-2 py-0.5 rounded-full">
+                        Server Enforced
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-gray-600">AI Workflow Runs</span>
+                          <span className="font-bold text-gray-900">
+                            {quota.usedAiRuns} / {quota.maxAiRuns}{' '}
+                            <span className="text-[11px] text-emerald-600 font-normal">
+                              ({quota.maxAiRuns - quota.usedAiRuns} left)
+                            </span>
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-purple-600 rounded-full transition-all"
+                            style={{ width: `${Math.min(100, (quota.usedAiRuns / quota.maxAiRuns) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-gray-600">AI Document Extractions</span>
+                          <span className="font-bold text-gray-900">
+                            {quota.usedExtractions} / {quota.maxExtractions}{' '}
+                            <span className="text-[11px] text-indigo-600 font-normal">
+                              ({quota.maxExtractions - quota.usedExtractions} left)
+                            </span>
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-indigo-600 rounded-full transition-all"
+                            style={{ width: `${Math.min(100, (quota.usedExtractions / quota.maxExtractions) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-purple-50 text-[11px] text-purple-900 mt-2">
+                      <span className="font-bold">Unblocked Manual Operations:</span> Ordinary database CRUD, invoice generation, and manual ledger exports are never blocked even when AI quota is reached.
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -558,7 +615,7 @@ export default function BillingPage() {
                           {inv.planName} ({inv.billingCycle})
                         </td>
                         <td className="py-2.5 px-3 font-bold text-gray-900">
-                          ₹{inv.amount.toLocaleString('en-IN')}
+                          ₹{(inv.totalPaid ?? (inv as any).amount ?? 0).toLocaleString('en-IN')}
                         </td>
                         <td className="py-2.5 px-3 text-gray-600">
                           ₹{(inv.taxAmount || 0).toLocaleString('en-IN')}

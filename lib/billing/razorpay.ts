@@ -36,6 +36,7 @@ export function createSubscriptionOrder(params: CreateOrderParams) {
 
   return {
     orderId,
+    id: orderId,
     amount: totalAmount * 100, // in paise
     currency: 'INR',
     keyId: RAZORPAY_KEY_ID,

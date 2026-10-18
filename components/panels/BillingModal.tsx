@@ -269,31 +269,28 @@ export const BillingModal: React.FC<BillingModalProps> = ({
       <div className="flex items-center gap-2 my-4 border-b border-gray-100 pb-2">
         <button
           onClick={() => setActiveTab('plan')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-            activeTab === 'plan'
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${activeTab === 'plan'
               ? 'bg-purple-100 text-purple-900 shadow-sm'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           Subscription Plan
         </button>
         <button
           onClick={() => setActiveTab('invoices')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-            activeTab === 'invoices'
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${activeTab === 'invoices'
               ? 'bg-purple-100 text-purple-900 shadow-sm'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           Invoice History ({invoices.length})
         </button>
         <button
           onClick={() => setActiveTab('settings')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-            activeTab === 'settings'
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${activeTab === 'settings'
               ? 'bg-purple-100 text-purple-900 shadow-sm'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           GST & Billing Details
         </button>
@@ -343,24 +340,22 @@ export const BillingModal: React.FC<BillingModalProps> = ({
               <button
                 type="button"
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  billingCycle === 'monthly'
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${billingCycle === 'monthly'
                     ? 'bg-white text-purple-700 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900'
-                }`}
+                  }`}
               >
-                Monthly Billing (₹499/mo)
+                Monthly Billing (₹299/mo)
               </button>
               <button
                 type="button"
                 onClick={() => setBillingCycle('annual')}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  billingCycle === 'annual'
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${billingCycle === 'annual'
                     ? 'bg-white text-purple-700 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900'
-                }`}
+                  }`}
               >
-                Annual Billing (₹4,999/yr)
+                Annual Billing (₹2,999/yr)
                 <span className="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                   Save 17%
                 </span>
@@ -386,7 +381,7 @@ export const BillingModal: React.FC<BillingModalProps> = ({
 
               <div className="text-right">
                 <div className="text-3xl font-extrabold text-gray-900 font-heading">
-                  ₹{billingCycle === 'annual' ? '4,999' : '499'}
+                  ₹{billingCycle === 'annual' ? '2,999' : '299'}
                   <span className="text-xs text-gray-500 font-normal">
                     /{billingCycle === 'annual' ? 'year' : 'month'}
                   </span>
@@ -434,7 +429,7 @@ export const BillingModal: React.FC<BillingModalProps> = ({
                   <Sparkles className="w-4 h-4" />
                   {isProcessingPayment
                     ? 'Connecting to Razorpay...'
-                    : `Pay ₹${billingCycle === 'annual' ? '4,999' : '499'} & Activate`}
+                    : `Pay ₹${billingCycle === 'annual' ? '2,999' : '299'} & Activate`}
                 </button>
               </div>
             </div>
