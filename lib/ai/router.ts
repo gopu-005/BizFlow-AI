@@ -385,8 +385,8 @@ export function processUserCommand(input: string, businessId: string): AIRespons
     lower.includes('கட்டணம்')
   ) {
     const textResponse = lang === 'ta'
-      ? `BizFlow AI All-in-One சந்தா திட்டம்: மாதத்திற்கு ₹499 அல்லது வருடத்திற்கு ₹4,999. GST ரசீது மற்றும் அட்டை/UPI ஆதரவு.`
-      : `BizFlow AI All-in-One Subscription: ₹499/month or ₹4,999/year. Includes automatic GST invoicing, UPI/Cards via Razorpay, and invoice download history.`;
+      ? `BizFlow AI All-in-One சந்தா திட்டம்: மாதத்திற்கு ₹299 அல்லது வருடத்திற்கு ₹2,999. GST ரசீது மற்றும் அட்டை/UPI ஆதரவு.`
+      : `BizFlow AI All-in-One Subscription: ₹299/month or ₹2,999/year. Includes automatic GST invoicing, UPI/Cards via Razorpay, and invoice download history.`;
 
     const voiceText = lang === 'ta'
       ? `பிஸ்ஃப்ளோ ஆல்-இன்-ஒன் சந்தா விபரம்.`

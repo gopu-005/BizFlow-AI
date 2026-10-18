@@ -5,14 +5,14 @@ import React, { useEffect, useRef } from 'react';
 interface AiVoiceOrbProps {
   isListening: boolean;
   isSpeaking: boolean;
-  isProcessing: boolean;
+  isProcessing?: boolean;
   onClick?: () => void;
 }
 
 export const AiVoiceOrb: React.FC<AiVoiceOrbProps> = ({
   isListening,
   isSpeaking,
-  isProcessing,
+  isProcessing = false,
   onClick,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
