@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Mic,
   Paperclip,
@@ -20,12 +21,21 @@ import {
   X,
   Loader2,
   Sparkles,
+  ShieldAlert,
+  CheckCircle2,
+  Clock,
+  FileCheck,
+  AlertTriangle,
+  ChevronRight,
+  Calendar,
+  ExternalLink,
 } from 'lucide-react';
 import { AiVoiceOrb } from '@/components/AiVoiceOrb';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Business, ConnectorStatus } from '@/types/erp';
 import { voiceManager, VoiceLanguage } from '@/lib/voice/speech';
+import { AgentRun } from '@/types/agent';
 
 export default function BizFlowDashboard() {
   const router = useRouter();
@@ -85,10 +95,17 @@ export default function BizFlowDashboard() {
   const [followUpsCount, setFollowUpsCount] = useState(3);
   const [lowStockCount, setLowStockCount] = useState(4);
 
+  // Agentic Business Home Metrics & Attention Items
+  const [overdueTotal, setOverdueTotal] = useState(14200);
+  const [unmatchedCount, setUnmatchedCount] = useState(1);
+  const [pendingDraftsCount, setPendingDraftsCount] = useState(1);
+  const [recentAgentRuns, setRecentAgentRuns] = useState<AgentRun[]>([]);
+
   // Initial data loading
   useEffect(() => {
     loadConnectors();
     loadBadges();
+    loadAgenticData();
   }, [currentBusinessId]);
 
   const loadConnectors = async () => {
@@ -110,6 +127,37 @@ export default function BizFlowDashboard() {
       const fRes = await fetch(`/api/erp/follow-ups?businessId=${currentBusinessId}&filter=pending`);
       const fData = await fRes.json();
       if (fData.tasks) setFollowUpsCount(fData.tasks.length);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const loadAgenticData = async () => {
+    try {
+      const udhaarRes = await fetch(`/api/udhaar?businessId=${currentBusinessId}`);
+      const udhaarData = await udhaarRes.json();
+      if (udhaarData.summary) {
+        setOverdueTotal(udhaarData.summary.totalOverdue || 0);
+      }
+
+      const closingRes = await fetch(`/api/closing?businessId=${currentBusinessId}`);
+      const closingData = await closingRes.json();
+      if (closingData.payments) {
+        const unmatched = closingData.payments.filter((p: any) => !p.matched).length;
+        setUnmatchedCount(unmatched);
+      }
+
+      const entryRes = await fetch(`/api/entry?businessId=${currentBusinessId}`);
+      const entryData = await entryRes.json();
+      if (entryData.drafts) {
+        setPendingDraftsCount(entryData.drafts.filter((d: any) => d.status === 'draft').length);
+      }
+
+      const runsRes = await fetch(`/api/agent/runs?businessId=${currentBusinessId}&limit=4`);
+      const runsData = await runsRes.json();
+      if (runsData.runs) {
+        setRecentAgentRuns(runsData.runs);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -143,20 +191,18 @@ export default function BizFlowDashboard() {
           lang: data.language || 'en',
         });
 
-        // Trigger spoken response using single natural voice
         speakResponse(data.voiceText || data.textResponse, data.language || 'en');
 
-        // Route map for dedicated page redirection
         const routeMap: Record<string, { route: string; label: string }> = {
           sales_summary: { route: '/sales', label: 'Sales Ledger & Revenue' },
           low_stock: { route: '/inventory', label: 'Inventory & Low Stock' },
           inventory_low_stock: { route: '/inventory', label: 'Inventory & Low Stock' },
           create_invoice: { route: '/invoices?action=create', label: 'GST Invoice Generator' },
-          follow_ups: { route: '/customers', label: 'Customer CRM & Follow-ups' },
+          follow_ups: { route: '/udhaar', label: 'Customer Udhaar & Collections' },
           connectors: { route: '/connectors', label: 'Connected Apps & Data Feeds' },
-          report_preview: { route: '/reports', label: 'Executive Business Reports' },
-          import_flow: { route: '/import', label: 'Smart Data & Ledger Import' },
-          billing_modal: { route: '/billing', label: 'Subscription & Invoicing' },
+          report_preview: { route: '/closing', label: 'Daily Closing & Profit Leaks' },
+          import_flow: { route: '/agent?tab=entry', label: 'Smart Entry Agent' },
+          billing_modal: { route: '/billing', label: 'Subscription & Quota' },
         };
 
         const target = data.actionType ? routeMap[data.actionType] : null;
@@ -179,7 +225,6 @@ export default function BizFlowDashboard() {
     }
   };
 
-  // Voice Interaction Trigger
   const toggleListening = () => {
     if (isListening) {
       voiceManager.stopListening();
@@ -214,7 +259,6 @@ export default function BizFlowDashboard() {
     );
   };
 
-  // Speech Output (Single natural voice)
   const speakResponse = (text: string, lang: VoiceLanguage) => {
     voiceManager.speak(
       text,
@@ -225,7 +269,6 @@ export default function BizFlowDashboard() {
     );
   };
 
-  // Direct route navigation helpers for quick actions
   const navigateTo = (path: string) => {
     setIsLeftDrawerOpen(false);
     setIsRightDrawerOpen(false);
@@ -234,12 +277,12 @@ export default function BizFlowDashboard() {
 
   return (
     <div className="relative min-h-screen flex flex-col justify-between bg-[#fbfbfe] text-[#0f172a] font-sans antialiased overflow-x-hidden">
-      {/* Subtle Background Radial Ambient Glows */}
+      {/* Background Radial Ambient Glows */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-radial-gradient blur-3xl opacity-80" />
       <div className="pointer-events-none absolute top-40 right-10 w-72 h-72 bg-purple-200/40 rounded-full blur-3xl" />
       <div className="pointer-events-none absolute top-48 left-10 w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl" />
 
-      {/* Shared Navigation Bar across all routes */}
+      {/* Shared Navigation Bar */}
       <Navbar
         currentBusinessId={currentBusinessId}
         onBusinessChange={(id) => setCurrentBusinessId(id)}
@@ -249,26 +292,26 @@ export default function BizFlowDashboard() {
       <button
         onClick={() => setIsLeftDrawerOpen(true)}
         className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-white/95 hover:bg-purple-50 backdrop-blur-md border border-l-0 border-purple-200/90 rounded-r-2xl py-3 px-1.5 shadow-md text-purple-700 hover:text-purple-900 transition-all flex flex-col items-center gap-1.5 group hover:pl-2.5 cursor-pointer"
-        title="Quick Business Pages"
+        title="Quick Business Pages & Agent Workspaces"
       >
         <TrendingUp className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
         <span className="text-[9px] font-bold tracking-wider [writing-mode:vertical-rl] rotate-180 text-gray-500 group-hover:text-purple-700">
-          ACTIONS
+          OPERATIONS
         </span>
       </button>
 
       <button
         onClick={() => setIsRightDrawerOpen(true)}
         className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-white/95 hover:bg-purple-50 backdrop-blur-md border border-r-0 border-purple-200/90 rounded-l-2xl py-3 px-1.5 shadow-md text-indigo-700 hover:text-indigo-900 transition-all flex flex-col items-center gap-1.5 group hover:pr-2.5 cursor-pointer"
-        title="Connected Business Apps"
+        title="Integrations & Apps Status"
       >
         <Database className="w-3.5 h-3.5 text-indigo-600 group-hover:scale-110 transition-transform" />
         <span className="text-[9px] font-bold tracking-wider [writing-mode:vertical-rl] text-gray-500 group-hover:text-indigo-700">
-          APPS
+          CONNECTORS
         </span>
       </button>
 
-      {/* LEFT SLIDE-OUT DRAWER — Quick Route Links */}
+      {/* LEFT SLIDE-OUT DRAWER — Agentic OS Destinations */}
       {isLeftDrawerOpen && (
         <div
           onClick={() => setIsLeftDrawerOpen(false)}
@@ -277,7 +320,7 @@ export default function BizFlowDashboard() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-r border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
+        className={`fixed top-0 left-0 h-full w-84 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-r border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
           isLeftDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -285,11 +328,11 @@ export default function BizFlowDashboard() {
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4" />
+                <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 font-heading">ERP Routes</h3>
-                <p className="text-[11px] text-gray-500">Go directly to specific page</p>
+                <h3 className="text-sm font-bold text-gray-900 font-heading">Agentic OS Destinations</h3>
+                <p className="text-[11px] text-gray-500">Autonomous & Guided Workflows</p>
               </div>
             </div>
             <button
@@ -302,21 +345,84 @@ export default function BizFlowDashboard() {
           </div>
 
           <div className="space-y-1">
-            {/* 1. Today's Sales */}
+            {/* AGENT 1: Unified Agent Workspace */}
             <button
-              onClick={() => navigateTo('/sales')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+              onClick={() => navigateTo('/agent')}
+              className="w-full text-left p-2.5 rounded-2xl bg-purple-50/70 hover:bg-purple-100 flex items-center gap-3 transition-colors group cursor-pointer border border-purple-200"
             >
-              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <TrendingUp className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-gray-900">Sales Dashboard</div>
-                <div className="text-[11px] text-gray-500">Revenue, cash flow & invoices</div>
+                <div className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                  AI Agent Workspace
+                  <span className="bg-purple-200 text-purple-800 text-[9px] px-1.5 rounded-full font-bold">OS</span>
+                </div>
+                <div className="text-[11px] text-purple-700">Multi-step console & approvals</div>
               </div>
             </button>
 
-            {/* 2. Inventory Status */}
+            {/* AGENT 2: Udhaar & Collections */}
+            <button
+              onClick={() => navigateTo('/udhaar')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-indigo-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <Users className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                  Customer Credit & Udhaar
+                  {overdueTotal > 0 && (
+                    <span className="bg-rose-100 text-rose-800 text-[9px] px-1.5 rounded-full font-bold">
+                      ₹{Math.round(overdueTotal / 1000)}k
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-gray-500">Aging buckets & WhatsApp reminders</div>
+              </div>
+            </button>
+
+            {/* AGENT 3: Profit Leak & Daily Closing */}
+            <button
+              onClick={() => navigateTo('/closing')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <FileCheck className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                  Daily Closing & Profit Leaks
+                  {unmatchedCount > 0 && (
+                    <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 rounded-full font-bold">
+                      {unmatchedCount} unrec
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-gray-500">Reconciliation & margin audit</div>
+              </div>
+            </button>
+
+            <div className="py-2">
+              <div className="h-[1px] bg-gray-100" />
+            </div>
+
+            {/* Invoices & Billing */}
+            <button
+              onClick={() => navigateTo('/invoices?action=create')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-blue-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <FileText className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-gray-900">Invoices & Billing</div>
+                <div className="text-[11px] text-gray-500">GST tax bills & PDF export</div>
+              </div>
+            </button>
+
+            {/* Inventory Status */}
             <button
               onClick={() => navigateTo('/inventory')}
               className="w-full text-left p-2.5 rounded-2xl hover:bg-amber-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
@@ -328,63 +434,30 @@ export default function BizFlowDashboard() {
                 <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
                   Inventory & Stock
                   {lowStockCount > 0 && (
-                    <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 py-0.2 rounded-full font-bold">
+                    <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 rounded-full font-bold">
                       {lowStockCount}
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] text-gray-500">Catalog, thresholds & restock</div>
+                <div className="text-[11px] text-gray-500">Stock thresholds & restock</div>
               </div>
             </button>
 
-            {/* 3. Create Invoice */}
+            {/* Today's Sales */}
             <button
-              onClick={() => navigateTo('/invoices?action=create')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-blue-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
+              onClick={() => navigateTo('/sales')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
             >
-              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <FileText className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                <TrendingUp className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-gray-900">Invoices & Billing</div>
-                <div className="text-[11px] text-gray-500">Generate GST bill & PDF print</div>
+                <div className="text-xs font-bold text-gray-900">Sales Dashboard</div>
+                <div className="text-[11px] text-gray-500">Revenue & cash flow history</div>
               </div>
             </button>
 
-            {/* 4. Customer Follow-ups */}
-            <button
-              onClick={() => navigateTo('/customers')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-violet-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-colors">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Customers & Follow-ups
-                  <span className="bg-purple-100 text-purple-800 text-[9px] px-1.5 py-0.2 rounded-full font-bold">
-                    {followUpsCount}
-                  </span>
-                </div>
-                <div className="text-[11px] text-gray-500">CRM ledger & WhatsApp reminders</div>
-              </div>
-            </button>
-
-            {/* 5. Monthly Report */}
-            <button
-              onClick={() => navigateTo('/reports')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-indigo-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                <BarChart3 className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">Reports & Analytics</div>
-                <div className="text-[11px] text-gray-500">Profitability & official PDF</div>
-              </div>
-            </button>
-
-            {/* 6. Smart Import */}
+            {/* Smart Import */}
             <button
               onClick={() => navigateTo('/import')}
               className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
@@ -394,18 +467,21 @@ export default function BizFlowDashboard() {
               </div>
               <div>
                 <div className="text-xs font-bold text-gray-900">Data & Ledger Import</div>
-                <div className="text-[11px] text-gray-500">Photo OCR & Excel ingestion</div>
+                <div className="text-[11px] text-gray-500">Excel & Photo OCR ingestion</div>
               </div>
             </button>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-purple-100 font-handwritten text-purple-600 text-base rotate-[-1deg] flex items-center gap-1.5 opacity-90 select-none">
-          <span>Dedicated routes for each business workflow</span>
+        <div className="pt-4 border-t border-purple-100 text-purple-700 text-xs font-semibold flex items-center justify-between">
+          <span>₹299/mo Starter Plan</span>
+          <button onClick={() => navigateTo('/billing')} className="font-bold underline hover:text-purple-900">
+            Usage Meter →
+          </button>
         </div>
       </aside>
 
-      {/* RIGHT SLIDE-OUT DRAWER — Connected Apps Status */}
+      {/* RIGHT SLIDE-OUT DRAWER — Truthful Connected Apps Status */}
       {isRightDrawerOpen && (
         <div
           onClick={() => setIsRightDrawerOpen(false)}
@@ -414,7 +490,7 @@ export default function BizFlowDashboard() {
       )}
 
       <aside
-        className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-l border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full w-84 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-l border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
           isRightDrawerOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -425,10 +501,10 @@ export default function BizFlowDashboard() {
                 <Database className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 font-heading">Connected Apps</h3>
-                <span className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  All Connected
+                <h3 className="text-sm font-bold text-gray-900 font-heading">Integration Status</h3>
+                <span className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  1 Connected • Credentials Required
                 </span>
               </div>
             </div>
@@ -442,41 +518,7 @@ export default function BizFlowDashboard() {
           </div>
 
           <div className="space-y-2">
-            {/* Email (Gmail) */}
-            <button
-              onClick={() => navigateTo('/connectors')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">Email (Gmail)</div>
-                  <div className="text-[11px] text-gray-500">12 new emails</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-            </button>
-
-            {/* WhatsApp Business */}
-            <button
-              onClick={() => navigateTo('/connectors')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <MessageCircle className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">WhatsApp Business</div>
-                  <div className="text-[11px] text-gray-500">8 new messages</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-            </button>
-
-            {/* Database (PostgreSQL) */}
+            {/* Database (PostgreSQL) - Genuinely Connected */}
             <button
               onClick={() => navigateTo('/connectors')}
               className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
@@ -487,15 +529,15 @@ export default function BizFlowDashboard() {
                 </div>
                 <div>
                   <div className="text-xs font-bold text-gray-900">Database (PostgreSQL)</div>
-                  <div className="text-[11px] text-emerald-600 font-medium">Connected</div>
+                  <div className="text-[11px] text-emerald-600 font-medium">Connected & Isolated</div>
                 </div>
               </div>
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
             </button>
 
-            {/* Excel / CSV Import */}
+            {/* Excel / Photo OCR - Genuinely Ready */}
             <button
-              onClick={() => navigateTo('/import')}
+              onClick={() => navigateTo('/agent?tab=entry')}
               className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
@@ -503,17 +545,51 @@ export default function BizFlowDashboard() {
                   <FileSpreadsheet className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-gray-900">Excel / Photo OCR</div>
-                  <div className="text-[11px] text-emerald-600 font-medium">Ready</div>
+                  <div className="text-xs font-bold text-gray-900">Smart Document OCR</div>
+                  <div className="text-[11px] text-emerald-600 font-medium">Ready for Upload</div>
                 </div>
               </div>
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            </button>
+
+            {/* WhatsApp Business - Truthful Status */}
+            <button
+              onClick={() => navigateTo('/connectors')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <MessageCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-gray-900">WhatsApp Messaging</div>
+                  <div className="text-[10px] text-amber-600 font-medium">Click-to-chat active • API Setup Req</div>
+                </div>
+              </div>
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+            </button>
+
+            {/* Email (Gmail) - Truthful Status */}
+            <button
+              onClick={() => navigateTo('/connectors')}
+              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-gray-900">Email (Gmail API)</div>
+                  <div className="text-[10px] text-gray-400 font-medium">Credentials Setup Required</div>
+                </div>
+              </div>
+              <span className="w-2 h-2 rounded-full bg-rose-500" />
             </button>
           </div>
         </div>
 
         <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-          <span>Manage integrations</span>
+          <span>Truthful integration status</span>
           <button
             onClick={() => navigateTo('/connectors')}
             className="font-bold text-purple-700 hover:text-purple-900 transition-colors cursor-pointer"
@@ -523,22 +599,22 @@ export default function BizFlowDashboard() {
         </div>
       </aside>
 
-      {/* MAIN VIEWPORT: CENTERED 3D VOICE ORB & INTERACTION */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 flex-1 flex flex-col items-center justify-center py-6 sm:py-10">
+      {/* MAIN VIEWPORT: CENTERED VOICE ORB + ATTENTION & AGENT CENTER */}
+      <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 flex-1 flex flex-col items-center justify-center py-6 sm:py-8 space-y-8">
         <div className="w-full flex flex-col items-center justify-center text-center">
-          {/* 3D Realistic Neon Fluid Sphere with dynamic speaking & listening state */}
+          {/* 3D Realistic Neon Fluid Sphere */}
           <div className="relative mb-3 flex items-center justify-center">
             <AiVoiceOrb isListening={isListening} isSpeaking={isSpeaking} />
           </div>
 
-          {/* Assistant Title & Multilingual Subtitle */}
+          {/* Title & Subtitle */}
           <div className="space-y-1 mb-4">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 font-heading">
               How can I assist your business today?
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
-              Speak or ask in <span className="font-semibold text-purple-700">English</span> or{' '}
-              <span className="font-semibold text-purple-700">தமிழ் (Tamil)</span>. I will route and display your business data in dedicated pages.
+              Ask in <span className="font-semibold text-purple-700">English</span> or{' '}
+              <span className="font-semibold text-purple-700">தமிழ் (Tamil)</span>. Powered by the shared Agentic OS engine.
             </p>
           </div>
 
@@ -549,10 +625,9 @@ export default function BizFlowDashboard() {
             </div>
           )}
 
-          {/* MAIN PROMINENT CAPSULE INPUT BAR */}
+          {/* PROMINENT CAPSULE INPUT BAR */}
           <div className="w-full max-w-xl relative mt-2">
             <div className="bg-[#0b0819] text-white rounded-full p-2 pl-3 pr-2.5 shadow-capsule border border-purple-500/40 flex items-center gap-2 transition-all focus-within:border-purple-400 focus-within:shadow-[0_0_25px_rgba(168,85,247,0.4)]">
-              {/* Glowing Mic Button */}
               <button
                 type="button"
                 onClick={toggleListening}
@@ -566,10 +641,8 @@ export default function BizFlowDashboard() {
                 <Mic className="w-4 h-4" />
               </button>
 
-              {/* Vertical Divider */}
               <div className="w-[1px] h-6 bg-purple-900/80" />
 
-              {/* Input Text Box */}
               <input
                 type="text"
                 value={inputText}
@@ -580,34 +653,30 @@ export default function BizFlowDashboard() {
                     ? 'Listening to your voice...'
                     : language === 'ta'
                     ? 'வணிகத்தைப் பற்றி எதையும் கேளுங்கள்... (தமிழ் / English)'
-                    : 'Ask anything about your sales, stock, or invoices...'
+                    : 'Ask anything, or record expenses, close day, audit credit...'
                 }
                 className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-gray-400 focus:outline-none px-1"
               />
 
-              {/* Action Icons */}
               <div className="flex items-center gap-1.5 shrink-0 pr-1">
-                {/* Paperclip (Go to Import Page) */}
                 <button
                   type="button"
-                  onClick={() => navigateTo('/import')}
+                  onClick={() => navigateTo('/agent?tab=entry')}
                   className="p-1.5 text-gray-400 hover:text-white transition-colors cursor-pointer"
-                  title="Import CSV or Excel spreadsheet"
+                  title="Smart Document Entry"
                 >
                   <Paperclip className="w-4 h-4" />
                 </button>
 
-                {/* Camera (Handwritten register / bill photo OCR) */}
                 <button
                   type="button"
-                  onClick={() => navigateTo('/import')}
+                  onClick={() => navigateTo('/agent?tab=entry')}
                   className="p-1.5 text-gray-400 hover:text-white transition-colors cursor-pointer"
-                  title="Scan photo of handwritten register or receipt"
+                  title="Scan bill or receipt photo"
                 >
                   <Camera className="w-4 h-4" />
                 </button>
 
-                {/* Send Button */}
                 <button
                   type="button"
                   onClick={() => handleSendCommand()}
@@ -624,56 +693,40 @@ export default function BizFlowDashboard() {
               </div>
             </div>
 
-            {/* Bottom Quick Command Chips - Redirect to each page */}
+            {/* Quick Command Chips */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs">
               <button
                 type="button"
-                onClick={() => navigateTo('/sales')}
+                onClick={() => navigateTo('/agent')}
+                className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-full shadow-xs transition-all cursor-pointer"
+              >
+                🤖 AI Agent Console
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('/udhaar')}
                 className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
-                📥 Today&apos;s sales
+                👥 Udhaar & Collections
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('/closing')}
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
+              >
+                📑 Close Today&apos;s Books
               </button>
               <button
                 type="button"
                 onClick={() => navigateTo('/invoices?action=create')}
                 className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
               >
-                🧾 Create invoice
+                🧾 Create GST invoice
               </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('/inventory')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
-              >
-                🔔 Low stock items
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('/customers')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
-              >
-                👥 Follow-up customers
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('/connectors')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
-              >
-                ✉️ Check emails & WhatsApp
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('/reports')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
-              >
-                📊 Generate report
-              </button>
-              {/* Tamil language switch chip */}
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
                 className="px-3 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold rounded-full shadow-sm transition-all cursor-pointer"
-                title="Switch speech & text language"
               >
                 🌐 {language === 'en' ? 'தமிழ்' : 'English'}
               </button>
@@ -683,7 +736,7 @@ export default function BizFlowDashboard() {
 
         {/* REDIRECT NOTICE TOAST */}
         {redirectNotice && (
-          <div className="max-w-md mx-auto mt-4 px-4 py-2.5 rounded-full bg-purple-600 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="max-w-md mx-auto px-4 py-2.5 rounded-full bg-purple-600 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg animate-in fade-in">
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
             <span>{redirectNotice}</span>
           </div>
@@ -691,7 +744,7 @@ export default function BizFlowDashboard() {
 
         {/* AI CONVERSATIONAL SPOKEN/TEXT RESPONSE BUBBLE */}
         {aiResponse && (
-          <div className="max-w-3xl mx-auto mt-5 p-4 rounded-2xl bg-white/95 border border-purple-200 shadow-md flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="w-full max-w-3xl mx-auto p-4 rounded-2xl bg-white/95 border border-purple-200 shadow-md flex items-start gap-3 animate-in fade-in">
             <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm">
               <Sparkles className="w-4 h-4" />
             </div>
@@ -718,6 +771,221 @@ export default function BizFlowDashboard() {
               <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line">
                 {aiResponse.text}
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* SECTION: ITEMS NEEDING OWNER ATTENTION (Primary Priority per spec) */}
+        <div className="w-full space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 font-heading">
+                Items Needing Owner Attention
+              </h2>
+            </div>
+            <span className="text-[11px] text-gray-400">Ranked by financial urgency</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {/* Attention Item 1: Overdue Udhaar */}
+            <div
+              onClick={() => navigateTo('/udhaar')}
+              className="p-4 rounded-2xl bg-white border border-rose-100 shadow-xs hover:border-rose-300 transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">
+                  Overdue Credit
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-gray-900">₹{overdueTotal.toLocaleString('en-IN')}</div>
+                <div className="text-[11px] text-gray-500">Overdue customer balances</div>
+              </div>
+              <div className="text-[10px] text-purple-700 font-semibold pt-1">
+                Open Udhaar Agent →
+              </div>
+            </div>
+
+            {/* Attention Item 2: Unmatched Payments */}
+            <div
+              onClick={() => navigateTo('/closing')}
+              className="p-4 rounded-2xl bg-white border border-amber-100 shadow-xs hover:border-amber-300 transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">
+                  Unmatched Payments
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-gray-900">{unmatchedCount} Entry</div>
+                <div className="text-[11px] text-gray-500">Bank entries awaiting invoice match</div>
+              </div>
+              <div className="text-[10px] text-purple-700 font-semibold pt-1">
+                Reconcile Payments →
+              </div>
+            </div>
+
+            {/* Attention Item 3: Low Stock Alerts */}
+            <div
+              onClick={() => navigateTo('/inventory')}
+              className="p-4 rounded-2xl bg-white border border-amber-100 shadow-xs hover:border-amber-300 transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">
+                  Stock Alert
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-gray-900">{lowStockCount} Products</div>
+                <div className="text-[11px] text-gray-500">Below minimum restock threshold</div>
+              </div>
+              <div className="text-[10px] text-purple-700 font-semibold pt-1">
+                View Inventory Catalog →
+              </div>
+            </div>
+
+            {/* Attention Item 4: Pending Transaction Drafts */}
+            <div
+              onClick={() => navigateTo('/agent?tab=entry')}
+              className="p-4 rounded-2xl bg-white border border-purple-100 shadow-xs hover:border-purple-300 transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full">
+                  Pending Review
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-gray-900">{pendingDraftsCount} Draft</div>
+                <div className="text-[11px] text-gray-500">Smart entry awaiting commit</div>
+              </div>
+              <div className="text-[10px] text-purple-700 font-semibold pt-1">
+                Review & Commit →
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION: THREE INTEGRATED AGENT WORKSPACES */}
+        <div className="w-full space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm sm:text-base font-bold text-gray-900 font-heading">
+              Agentic Operating System Workspaces
+            </h2>
+            <Link href="/agent" className="text-xs font-bold text-purple-700 hover:text-purple-900">
+              Open Agent Console →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Agent Card 1 */}
+            <div className="bg-white p-5 rounded-2xl border border-purple-100 shadow-xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2">
+                  <Paperclip className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 font-heading">Smart Entry Agent</h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Extracts bills, purchase receipts, OCR photos, and natural-language expenses without blind inventory updates.
+                </p>
+              </div>
+              <button
+                onClick={() => navigateTo('/agent?tab=entry')}
+                className="w-full py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Launch Smart Entry →
+              </button>
+            </div>
+
+            {/* Agent Card 2 */}
+            <div className="bg-white p-5 rounded-2xl border border-indigo-100 shadow-xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center mb-2">
+                  <Users className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 font-heading">Udhaar & Collection Agent</h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Tracks customer credit ledgers, 0–60+ aging buckets, payment promises, and pre-fills WhatsApp click-to-chat links.
+                </p>
+              </div>
+              <button
+                onClick={() => navigateTo('/udhaar')}
+                className="w-full py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Manage Udhaar & Reminders →
+              </button>
+            </div>
+
+            {/* Agent Card 3 */}
+            <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2">
+                  <FileCheck className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 font-heading">Profit Leak & Daily Closing</h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Reconciles sales vs collections, detects cash variance, audits low margin products, and produces official closing reports.
+                </p>
+              </div>
+              <button
+                onClick={() => navigateTo('/closing')}
+                className="w-full py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Close Accounts & Audit →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION: RECENT AGENT TASKS COMPLETED */}
+        {recentAgentRuns.length > 0 && (
+          <div className="w-full bg-white p-5 rounded-2xl border border-purple-100 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-gray-900 font-heading flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                Tasks Recently Completed by Agents
+              </h3>
+              <Link href="/agent?tab=activity" className="text-xs font-semibold text-purple-700 hover:underline">
+                Full Audit History →
+              </Link>
+            </div>
+
+            <div className="divide-y divide-gray-100 text-xs">
+              {recentAgentRuns.map((run) => (
+                <div key={run.id} className="py-2.5 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className={`w-2 h-2 rounded-full shrink-0 ${
+                        run.status === 'completed'
+                          ? 'bg-emerald-500'
+                          : run.status === 'awaiting_approval'
+                          ? 'bg-amber-500'
+                          : 'bg-rose-500'
+                      }`}
+                    />
+                    <div className="truncate">
+                      <span className="font-semibold text-gray-800">{run.userPrompt}</span>
+                      <span className="text-[10px] text-gray-400 ml-2">({run.steps.length} steps)</span>
+                    </div>
+                  </div>
+
+                  <span
+                    className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${
+                      run.status === 'completed'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : run.status === 'awaiting_approval'
+                        ? 'bg-amber-100 text-amber-800'
+                        : 'bg-rose-100 text-rose-800'
+                    }`}
+                  >
+                    {run.status}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
