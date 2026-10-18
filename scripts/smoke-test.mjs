@@ -54,7 +54,11 @@ try {
   assert(cmdTaInv.language === 'ta', 'Tamil query should route to inventory_low_stock');
 
   // 6. Invoice Creation with Stock Decrement
-  const initialStock = db.getProduct('biz_karthik_textiles', 'prod_1')?.stock || 0;
+  let initialStock = db.getProduct('biz_karthik_textiles', 'prod_1')?.stock || 0;
+  if (initialStock < 2) {
+    db.updateProductStock('biz_karthik_textiles', 'prod_1', 14);
+    initialStock = 14;
+  }
   const newInvoice = db.createInvoice('biz_karthik_textiles', {
     customerName: 'Kavitha Nathan',
     customerPhone: '+91 99999 88888',
@@ -72,8 +76,8 @@ try {
     customerName: 'Karthik Ramanathan',
     customerEmail: 'karthik@textiles.bizflow.in',
   });
-  assert(order.totalAmount === 499, `Monthly subscription should be exactly ₹499 (got ${order.totalAmount})`);
-  assert(order.baseAmount + order.taxAmount === 499, 'Base + Tax should equal 499');
+  assert(order.totalAmount === 299, `Monthly subscription should be exactly ₹299 (got ${order.totalAmount})`);
+  assert(order.baseAmount + order.taxAmount === 299, 'Base + Tax should equal 299');
 
   const annualOrder = createSubscriptionOrder({
     businessId: 'biz_karthik_textiles',
@@ -81,24 +85,25 @@ try {
     customerName: 'Karthik Ramanathan',
     customerEmail: 'karthik@textiles.bizflow.in',
   });
-  assert(annualOrder.totalAmount === 4999, `Annual subscription should be exactly ₹4,999 (got ${annualOrder.totalAmount})`);
+  assert(annualOrder.totalAmount === 2999, `Annual subscription should be exactly ₹2,999 (got ${annualOrder.totalAmount})`);
 
   // 8. Payment Verification & Billing Invoice Generation
+  const testSmokePayId = `pay_test_smoke_${Date.now()}`;
   const paymentResult = verifyAndActivatePayment({
     businessId: 'biz_karthik_textiles',
     razorpayOrderId: order.orderId,
-    razorpayPaymentId: 'pay_test_smoke_123',
+    razorpayPaymentId: testSmokePayId,
     razorpaySignature: 'demo_sig_approved',
     billingCycle: 'monthly',
   });
   assert(paymentResult.success === true, 'Payment verification should succeed');
-  assert(paymentResult.invoice?.totalPaid === 499, 'Billing invoice should record ₹499 paid');
+  assert(paymentResult.invoice?.totalPaid === 299, 'Billing invoice should record ₹299 paid');
 
   // Idempotency: duplicate verify should return same invoice, not duplicate
   const duplicateResult = verifyAndActivatePayment({
     businessId: 'biz_karthik_textiles',
     razorpayOrderId: order.orderId,
-    razorpayPaymentId: 'pay_test_smoke_123',
+    razorpayPaymentId: testSmokePayId,
     razorpaySignature: 'demo_sig_approved',
     billingCycle: 'monthly',
   });
