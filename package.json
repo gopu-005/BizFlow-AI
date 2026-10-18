@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "set PORT=8080&& next start",
     "lint": "next lint",
-    "test": "npx tsx scripts/smoke-test.mjs"
+    "test": "npx tsx scripts/smoke-test.mjs",
+    "test:razorpay": "npx tsx scripts/test-razorpay.mjs",
+    "test:agent": "node scripts/test-agentic-os.mjs"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "^14.2.24",
