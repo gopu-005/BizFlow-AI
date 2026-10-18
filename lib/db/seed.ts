@@ -472,7 +472,7 @@ export const SEED_SUBSCRIPTION: Subscription = {
   planId: 'bizflow-all-in-one',
   planName: 'BizFlow AI All-in-One',
   billingCycle: 'monthly',
-  amount: 499,
+  amount: 299,
   currency: 'INR',
   status: 'active',
   currentPeriodStart: '2024-10-01T00:00:00Z',
