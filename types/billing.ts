@@ -1,30 +1,30 @@
 export interface SubscriptionPlan {
   id: 'bizflow-all-in-one';
-  name: 'BizFlow AI All-in-One';
-  description: 'Complete conversational ERP, inventory, invoicing, voice AI, automated reports, and integrations.';
-  monthlyPrice: 499;
-  annualPrice: 4999;
+  name: string;
+  description: string;
+  monthlyPrice: 299;
+  annualPrice: 2999;
   currency: 'INR';
   features: string[];
 }
 
 export const BIZFLOW_PLAN: SubscriptionPlan = {
   id: 'bizflow-all-in-one',
-  name: 'BizFlow AI All-in-One',
-  description: 'Complete conversational ERP, inventory, invoicing, voice AI, automated reports, and integrations.',
-  monthlyPrice: 499,
-  annualPrice: 4999,
+  name: 'BizFlow AI Starter',
+  description: 'Agentic Small Business Operating System: Smart Entry, Udhaar Collections, Profit Closing, and conversational ERP.',
+  monthlyPrice: 299,
+  annualPrice: 2999,
   currency: 'INR',
   features: [
-    'Unlimited conversational ERP queries',
-    'Tamil and English voice & text assistance',
-    'Smart invoice creation with PDF export',
-    'Real-time inventory & low-stock alerts',
-    'Customer follow-up reminder tracking',
-    'Daily, monthly & audit-pack reports (PDF/CSV)',
-    'Handwritten stock register & receipt OCR import',
-    'Gmail & WhatsApp connector integration',
-    'Multi-tenant business isolation & secure backup',
+    'Up to 100 AI workflow runs per month',
+    'Up to 50 AI document extractions (Bills & Receipts)',
+    'Smart Entry Agent (Document OCR, bills & draft commits)',
+    'Udhaar & Collection Agent (Aging buckets & WhatsApp click-to-chat)',
+    'Profit Leak & Daily Closing Agent (Reconciliation & margin audit)',
+    'Guarded Autopilot with server-side human approval controls',
+    'Standard GST invoices, customer credit ledgers & stock movements',
+    'Tamil and English voice & text conversational assistance',
+    'Deterministic financial calculations with audit trails',
   ],
 };
 
