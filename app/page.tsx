@@ -29,6 +29,9 @@ import {
   ChevronRight,
   Calendar,
   ExternalLink,
+  Lock,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 import { AiVoiceOrb } from '@/components/AiVoiceOrb';
 import { Navbar } from '@/components/Navbar';
@@ -37,6 +40,7 @@ import { Business, ConnectorStatus } from '@/types/erp';
 import { AgentRun } from '@/types/agent';
 import { voiceManager, VoiceLanguage } from '@/lib/voice/speech';
 import { useBusiness } from '@/components/BusinessProvider';
+import { loginUrlFor } from '@/components/AgenticAuthGate';
 
 export default function BizFlowDashboard() {
   const router = useRouter();
@@ -47,6 +51,8 @@ export default function BizFlowDashboard() {
     businessId: currentBusinessId,
     setBusinessId: setCurrentBusinessId,
     accessibleBusinesses: businesses,
+    isAuthenticated,
+    isLoading: isSessionLoading,
   } = useBusiness();
 
   // Voice Settings (Single unified high-quality voice)
@@ -55,9 +61,7 @@ export default function BizFlowDashboard() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechError, setSpeechError] = useState<string | null>(null);
 
-  // Sliding Side Drawers (Hidden by default, displayed only when toggled)
-  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
-  const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
+  // Note: Operations / Connectors side drawers are now global (components/NavigationDrawers.tsx)
 
   // Conversational Input & AI Response
   const [inputText, setInputText] = useState('');
@@ -80,13 +84,20 @@ export default function BizFlowDashboard() {
   const [pendingDraftsCount, setPendingDraftsCount] = useState(0);
   const [recentAgentRuns, setRecentAgentRuns] = useState<AgentRun[]>([]);
 
-  // Initial data loading
+  // Initial data loading (agentic data is members-only)
   useEffect(() => {
-    if (!currentBusinessId) return;
+    if (!currentBusinessId || isSessionLoading) return;
     loadConnectors();
     loadBadges();
-    loadAgenticData();
-  }, [currentBusinessId]);
+    if (isAuthenticated) {
+      loadAgenticData();
+    } else {
+      setOverdueTotal(0);
+      setUnmatchedCount(0);
+      setPendingDraftsCount(0);
+      setRecentAgentRuns([]);
+    }
+  }, [currentBusinessId, isAuthenticated, isSessionLoading]);
 
   const loadConnectors = async () => {
     try {
@@ -250,8 +261,6 @@ export default function BizFlowDashboard() {
   };
 
   const navigateTo = (path: string) => {
-    setIsLeftDrawerOpen(false);
-    setIsRightDrawerOpen(false);
     router.push(path);
   };
 
@@ -267,317 +276,6 @@ export default function BizFlowDashboard() {
         currentBusinessId={currentBusinessId}
         onBusinessChange={(id) => setCurrentBusinessId(id)}
       />
-
-      {/* FLOATING EDGE TABS (Side Triggers for Drawers) */}
-      <button
-        onClick={() => setIsLeftDrawerOpen(true)}
-        className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-white/95 hover:bg-purple-50 backdrop-blur-md border border-l-0 border-purple-200/90 rounded-r-2xl py-3 px-1.5 shadow-md text-purple-700 hover:text-purple-900 transition-all flex flex-col items-center gap-1.5 group hover:pl-2.5 cursor-pointer"
-        title="Quick Business Pages & Agent Workspaces"
-      >
-        <TrendingUp className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
-        <span className="text-[9px] font-bold tracking-wider [writing-mode:vertical-rl] rotate-180 text-gray-500 group-hover:text-purple-700">
-          OPERATIONS
-        </span>
-      </button>
-
-      <button
-        onClick={() => setIsRightDrawerOpen(true)}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-white/95 hover:bg-purple-50 backdrop-blur-md border border-r-0 border-purple-200/90 rounded-l-2xl py-3 px-1.5 shadow-md text-indigo-700 hover:text-indigo-900 transition-all flex flex-col items-center gap-1.5 group hover:pr-2.5 cursor-pointer"
-        title="Integrations & Apps Status"
-      >
-        <Database className="w-3.5 h-3.5 text-indigo-600 group-hover:scale-110 transition-transform" />
-        <span className="text-[9px] font-bold tracking-wider [writing-mode:vertical-rl] text-gray-500 group-hover:text-indigo-700">
-          CONNECTORS
-        </span>
-      </button>
-
-      {/* LEFT SLIDE-OUT DRAWER — Agentic OS Destinations */}
-      {isLeftDrawerOpen && (
-        <div
-          onClick={() => setIsLeftDrawerOpen(false)}
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 transition-opacity animate-in fade-in duration-200"
-        />
-      )}
-
-      <aside
-        className={`fixed top-0 left-0 h-full w-84 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-r border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
-          isLeftDrawerOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div>
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 font-heading">Agentic OS Destinations</h3>
-                <p className="text-[11px] text-gray-500">Autonomous & Guided Workflows</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsLeftDrawerOpen(false)}
-              className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors"
-              title="Close drawer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="space-y-1">
-            {/* AGENT 1: Unified Agent Workspace */}
-            <button
-              onClick={() => navigateTo('/agent')}
-              className="w-full text-left p-2.5 rounded-2xl bg-purple-50/70 hover:bg-purple-100 flex items-center gap-3 transition-colors group cursor-pointer border border-purple-200"
-            >
-              <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
-                  AI Agent Workspace
-                  <span className="bg-purple-200 text-purple-800 text-[9px] px-1.5 rounded-full font-bold">OS</span>
-                </div>
-                <div className="text-[11px] text-purple-700">Multi-step console & approvals</div>
-              </div>
-            </button>
-
-            {/* AGENT 2: Udhaar & Collections */}
-            <button
-              onClick={() => navigateTo('/udhaar')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-indigo-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Customer Credit & Udhaar
-                  {overdueTotal > 0 && (
-                    <span className="bg-rose-100 text-rose-800 text-[9px] px-1.5 rounded-full font-bold">
-                      ₹{Math.round(overdueTotal / 1000)}k
-                    </span>
-                  )}
-                </div>
-                <div className="text-[11px] text-gray-500">Aging buckets & WhatsApp reminders</div>
-              </div>
-            </button>
-
-            {/* AGENT 3: Profit Leak & Daily Closing */}
-            <button
-              onClick={() => navigateTo('/closing')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <FileCheck className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Daily Closing & Profit Leaks
-                  {unmatchedCount > 0 && (
-                    <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 rounded-full font-bold">
-                      {unmatchedCount} unrec
-                    </span>
-                  )}
-                </div>
-                <div className="text-[11px] text-gray-500">Reconciliation & margin audit</div>
-              </div>
-            </button>
-
-            <div className="py-2">
-              <div className="h-[1px] bg-gray-100" />
-            </div>
-
-            {/* Invoices & Billing */}
-            <button
-              onClick={() => navigateTo('/invoices?action=create')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-blue-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <FileText className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">Invoices & Billing</div>
-                <div className="text-[11px] text-gray-500">GST tax bills & PDF export</div>
-              </div>
-            </button>
-
-            {/* Inventory Status */}
-            <button
-              onClick={() => navigateTo('/inventory')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-amber-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <Package className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                  Inventory & Stock
-                  {lowStockCount > 0 && (
-                    <span className="bg-amber-100 text-amber-800 text-[9px] px-1.5 rounded-full font-bold">
-                      {lowStockCount}
-                    </span>
-                  )}
-                </div>
-                <div className="text-[11px] text-gray-500">Stock thresholds & restock</div>
-              </div>
-            </button>
-
-            {/* Today's Sales */}
-            <button
-              onClick={() => navigateTo('/sales')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <TrendingUp className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">Sales Dashboard</div>
-                <div className="text-[11px] text-gray-500">Revenue & cash flow history</div>
-              </div>
-            </button>
-
-            {/* Smart Import */}
-            <button
-              onClick={() => navigateTo('/import')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/80 flex items-center gap-3 transition-colors group cursor-pointer"
-            >
-              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <FileSpreadsheet className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gray-900">Data & Ledger Import</div>
-                <div className="text-[11px] text-gray-500">Excel & Photo OCR ingestion</div>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-purple-100 text-purple-700 text-xs font-semibold flex items-center justify-between">
-          <span>₹299/mo Starter Plan</span>
-          <button onClick={() => navigateTo('/billing')} className="font-bold underline hover:text-purple-900">
-            Usage Meter →
-          </button>
-        </div>
-      </aside>
-
-      {/* RIGHT SLIDE-OUT DRAWER — Truthful Connected Apps Status */}
-      {isRightDrawerOpen && (
-        <div
-          onClick={() => setIsRightDrawerOpen(false)}
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 transition-opacity animate-in fade-in duration-200"
-        />
-      )}
-
-      <aside
-        className={`fixed top-0 right-0 h-full w-84 max-w-[85vw] bg-white/95 backdrop-blur-2xl z-50 shadow-2xl border-l border-purple-100 transform transition-transform duration-300 ease-in-out p-5 flex flex-col justify-between overflow-y-auto ${
-          isRightDrawerOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div>
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
-                <Database className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 font-heading">Integration Status</h3>
-                <span className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-700">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  1 Connected • Credentials Required
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsRightDrawerOpen(false)}
-              className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors"
-              title="Close drawer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="space-y-2">
-            {/* Database (PostgreSQL) - Genuinely Connected */}
-            <button
-              onClick={() => navigateTo('/connectors')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Database className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">Database (PostgreSQL)</div>
-                  <div className="text-[11px] text-emerald-600 font-medium">Connected & Isolated</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            </button>
-
-            {/* Excel / Photo OCR - Genuinely Ready */}
-            <button
-              onClick={() => navigateTo('/agent?tab=entry')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                  <FileSpreadsheet className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">Smart Document OCR</div>
-                  <div className="text-[11px] text-emerald-600 font-medium">Ready for Upload</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            </button>
-
-            {/* WhatsApp Business - Truthful Status */}
-            <button
-              onClick={() => navigateTo('/connectors')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <MessageCircle className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">WhatsApp Messaging</div>
-                  <div className="text-[10px] text-amber-600 font-medium">Click-to-chat active • API Setup Req</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-            </button>
-
-            {/* Email (Gmail) - Truthful Status */}
-            <button
-              onClick={() => navigateTo('/connectors')}
-              className="w-full text-left p-2.5 rounded-2xl hover:bg-gray-50 flex items-center justify-between transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-900">Email (Gmail API)</div>
-                  <div className="text-[10px] text-gray-400 font-medium">Credentials Setup Required</div>
-                </div>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-            </button>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-          <span>Truthful integration status</span>
-          <button
-            onClick={() => navigateTo('/connectors')}
-            className="font-bold text-purple-700 hover:text-purple-900 transition-colors cursor-pointer"
-          >
-            Configure →
-          </button>
-        </div>
-      </aside>
 
       {/* MAIN VIEWPORT: CENTERED VOICE ORB + ATTENTION & AGENT CENTER */}
       <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 flex-1 flex flex-col items-center justify-center py-6 sm:py-8 space-y-8">
@@ -678,23 +376,26 @@ export default function BizFlowDashboard() {
               <button
                 type="button"
                 onClick={() => navigateTo('/agent')}
-                className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-full shadow-xs transition-all cursor-pointer"
+                className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-full shadow-xs transition-all cursor-pointer inline-flex items-center gap-1"
               >
                 🤖 AI Agent Console
+                {!isAuthenticated && !isSessionLoading && <Lock className="w-3 h-3 opacity-70" />}
               </button>
               <button
                 type="button"
                 onClick={() => navigateTo('/udhaar')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer inline-flex items-center gap-1"
               >
                 👥 Udhaar & Collections
+                {!isAuthenticated && !isSessionLoading && <Lock className="w-3 h-3 text-gray-400" />}
               </button>
               <button
                 type="button"
                 onClick={() => navigateTo('/closing')}
-                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer"
+                className="px-3 py-1 bg-white hover:bg-purple-50 border border-purple-100 rounded-full text-gray-700 shadow-sm transition-all cursor-pointer inline-flex items-center gap-1"
               >
                 📑 Close Today&apos;s Books
+                {!isAuthenticated && !isSessionLoading && <Lock className="w-3 h-3 text-gray-400" />}
               </button>
               <button
                 type="button"
@@ -755,6 +456,70 @@ export default function BizFlowDashboard() {
           </div>
         )}
 
+        {/* GUEST PREVIEW: Agentic OS is members-only */}
+        {!isAuthenticated && !isSessionLoading && (
+          <div
+            id="agentic-locked-preview"
+            className="w-full relative overflow-hidden rounded-3xl border border-purple-200 bg-gradient-to-br from-white via-purple-50/60 to-indigo-50/60 p-6 sm:p-8 shadow-[0_20px_50px_-25px_rgba(109,40,217,0.35)]"
+          >
+            <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-purple-300/30 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-10 w-56 h-56 bg-indigo-300/20 rounded-full blur-3xl" />
+
+            <div className="relative flex flex-col md:flex-row md:items-center gap-6">
+              <div className="flex-1 space-y-3">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-purple-200 text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                  <Lock className="w-3 h-3" />
+                  Members only
+                </span>
+                <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 font-heading">
+                  Unlock the Agentic Operating System
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-600 max-w-xl">
+                  Sign in to see items needing your attention and to run the AI agents on your own private business data.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                  {[
+                    { icon: Paperclip, label: 'Smart Entry Agent', tone: 'text-purple-700 bg-purple-100' },
+                    { icon: Users, label: 'Udhaar & Collections', tone: 'text-indigo-700 bg-indigo-100' },
+                    { icon: FileCheck, label: 'Daily Closing & Leaks', tone: 'text-emerald-700 bg-emerald-100' },
+                  ].map(({ icon: Icon, label, tone }) => (
+                    <div
+                      key={label}
+                      className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-purple-100 text-[11px] font-semibold text-gray-700"
+                    >
+                      <span className={`w-6 h-6 rounded-lg flex items-center justify-center ${tone}`}>
+                        <Icon className="w-3.5 h-3.5" />
+                      </span>
+                      {label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 md:w-52 shrink-0">
+                <Link
+                  id="landing-unlock-sign-in"
+                  href={loginUrlFor('/')}
+                  className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95 active:scale-[0.98] text-white text-sm font-semibold shadow-md transition-all"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Link>
+                <Link
+                  id="landing-unlock-register"
+                  href="/register"
+                  className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white border border-purple-200 hover:bg-purple-50 text-purple-700 text-sm font-semibold transition-all"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Create Free Account
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isAuthenticated && (
+        <>
         {/* SECTION: ITEMS NEEDING OWNER ATTENTION (Primary Priority per spec) */}
         <div className="w-full space-y-4 pt-2">
           <div className="flex items-center justify-between">
@@ -968,6 +733,8 @@ export default function BizFlowDashboard() {
               ))}
             </div>
           </div>
+        )}
+        </>
         )}
       </main>
 

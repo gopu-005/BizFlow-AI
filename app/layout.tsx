@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { BusinessProvider } from '@/components/BusinessProvider';
+import { NavigationDrawers } from '@/components/NavigationDrawers';
 
 export const metadata: Metadata = {
   title: 'BizFlow AI — One-Screen Conversational ERP',
@@ -24,7 +25,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#fbfbfe] text-[#0f172a] antialiased min-h-screen selection:bg-purple-200 selection:text-purple-900">
-        <BusinessProvider>{children}</BusinessProvider>
+        <BusinessProvider>
+          {children}
+          {/* Shared Operations / Connectors side drawers — available on every app page */}
+          <NavigationDrawers />
+        </BusinessProvider>
       </body>
     </html>
   );
