@@ -1,14 +1,20 @@
 export interface Business {
   id: string;
   name: string;
+  legalName?: string;
   type: string;
   currency: string;
   ownerName: string;
   gstNumber?: string;
+  gstin?: string;
   address: string;
   phone: string;
   email: string;
   createdAt: string;
+  status?: 'active' | 'suspended';
+  suspendedReason?: string;
+  suspendedAt?: string;
+  suspendedBy?: string;
 }
 
 export interface Product {
