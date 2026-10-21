@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "npx tsx scripts/smoke-test.mjs",
     "test:auth": "node scripts/test-auth-and-admin.mjs",
+    "test:tenant": "node scripts/test-tenant-isolation.mjs",
     "test:razorpay": "npx tsx scripts/test-razorpay.mjs",
     "test:agent": "node scripts/test-agentic-os.mjs",
     "provision:admin": "node scripts/provision-admin.mjs"

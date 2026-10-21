@@ -19,28 +19,31 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Business, Customer, FollowUpTask } from '@/types/erp';
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 export default function CustomersPage() {
-  const [businessId, setBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness: activeBusiness, businessId, setBusinessId } = useBusiness();
+  const currentBusiness: Business = activeBusiness || {
+    id: businessId || '',
+    name: 'My Business Workspace',
+    type: 'Retail & Commercial',
+    currency: '₹',
+    ownerName: 'Business Owner',
+    gstNumber: '',
+    address: 'India',
+    phone: '+91 90000 00000',
+    email: 'billing@bizflow.in',
+    createdAt: new Date().toISOString(),
+  };
+
   const [tasks, setTasks] = useState<FollowUpTask[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'pending' | 'completed' | 'all'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const currentBusiness: Business = {
-    id: businessId,
-    name: businessId === 'biz_karthik_textiles' ? 'Karthik Textiles & Garments' : 'Sri Murugan Bakery & Sweets',
-    type: businessId === 'biz_karthik_textiles' ? 'Clothing & Retail' : 'Bakery & Sweets',
-    currency: '₹',
-    ownerName: businessId === 'biz_karthik_textiles' ? 'Karthik Ramanathan' : 'Murugan Velayudham',
-    gstNumber: businessId === 'biz_karthik_textiles' ? '33AAAAA0000A1Z5' : '33BBBBB1111B2Z6',
-    address: 'Chennai, Tamil Nadu',
-    phone: '+91 98400 11223',
-    email: 'karthik@textiles.bizflow.in',
-    createdAt: '2024-01-10T10:00:00Z',
-  };
-
   useEffect(() => {
+    if (!businessId) return;
     fetchData();
   }, [businessId]);
 

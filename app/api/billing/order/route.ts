@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSubscriptionOrder } from '@/lib/billing/razorpay';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { businessId = 'biz_karthik_textiles', billingCycle = 'monthly', customerName, customerEmail, customerPhone, customerGstin } = body;
+    const { businessId: requestedBusinessId, billingCycle = 'monthly', customerName, customerEmail, customerPhone, customerGstin } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     const order = createSubscriptionOrder({
       businessId,
       billingCycle,
-      customerName: customerName || 'Karthik Ramanathan',
-      customerEmail: customerEmail || 'karthik@textiles.bizflow.in',
+      customerName: customerName || 'Business Owner',
+      customerEmail: customerEmail || 'billing@bizflow.in',
       customerPhone,
       customerGstin,
     });

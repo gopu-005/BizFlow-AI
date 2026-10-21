@@ -23,9 +23,10 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { DailyClosingReport, MarginAnomaly, PaymentRecord } from '@/types/agent';
 import { Invoice, Expense } from '@/types/erp';
+import { useBusiness } from '@/components/BusinessProvider';
 
 export default function DailyClosingPage() {
-  const [activeBusinessId, setActiveBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness, businessId: activeBusinessId, setBusinessId: setActiveBusinessId } = useBusiness();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [closing, setClosing] = useState<DailyClosingReport | null>(null);
   const [anomalies, setAnomalies] = useState<MarginAnomaly[]>([]);
@@ -48,6 +49,7 @@ export default function DailyClosingPage() {
   });
 
   useEffect(() => {
+    if (!activeBusinessId) return;
     loadClosingData();
   }, [activeBusinessId, selectedDate]);
 
@@ -80,7 +82,7 @@ export default function DailyClosingPage() {
         body: JSON.stringify({
           businessId: activeBusinessId,
           action: 'finalize',
-          payload: { date: selectedDate, verifiedBy: 'Owner Karthik' },
+          payload: { date: selectedDate, verifiedBy: currentBusiness?.ownerName || 'Business Owner' },
         }),
       });
 

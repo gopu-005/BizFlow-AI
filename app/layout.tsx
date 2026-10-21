@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { BusinessProvider } from '@/components/BusinessProvider';
 
 export const metadata: Metadata = {
   title: 'BizFlow AI — One-Screen Conversational ERP',
@@ -23,7 +24,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#fbfbfe] text-[#0f172a] antialiased min-h-screen selection:bg-purple-200 selection:text-purple-900">
-        {children}
+        <BusinessProvider>{children}</BusinessProvider>
       </body>
     </html>
   );

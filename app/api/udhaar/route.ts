@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { AGENT_TOOLS } from '@/lib/agent/tools';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const businessId = searchParams.get('businessId') || 'biz_karthik_textiles';
+    const requestedBusinessId = searchParams.get('businessId');
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
+
     const customerId = searchParams.get('customerId');
 
     if (customerId) {
@@ -48,7 +52,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { businessId = 'biz_karthik_textiles', action, payload } = body;
+    const { businessId: requestedBusinessId, action, payload } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!action) {
       return NextResponse.json({ error: 'Action is required' }, { status: 400 });

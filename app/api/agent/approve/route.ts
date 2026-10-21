@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { AgentExecutionEngine } from '@/lib/agent/engine';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
-      businessId = 'biz_karthik_textiles',
+      businessId: requestedBusinessId,
       runId,
       approvalId,
       status, // 'approved' | 'rejected'
       reason,
     } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!runId || !approvalId || !status) {
       return NextResponse.json({ error: 'runId, approvalId, and status are required.' }, { status: 400 });

@@ -26,8 +26,10 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AgentRun, AgentApproval, AutonomyMode, AgentType, TransactionDraft, DocumentRecord } from '@/types/agent';
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 export default function AgentWorkspacePage() {
-  const [activeBusinessId, setActiveBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness, businessId: activeBusinessId, setBusinessId: setActiveBusinessId } = useBusiness();
   const [activeTab, setActiveTab] = useState<'console' | 'entry' | 'activity'>('console');
   const [agentType, setAgentType] = useState<AgentType>('smart_entry');
   const [autonomyMode, setAutonomyMode] = useState<AutonomyMode>('guarded_autopilot');
@@ -46,6 +48,7 @@ export default function AgentWorkspacePage() {
   const [selectedFileName, setSelectedFileName] = useState('');
 
   useEffect(() => {
+    if (!activeBusinessId) return;
     loadQuota();
     loadRuns();
     loadEntryData();

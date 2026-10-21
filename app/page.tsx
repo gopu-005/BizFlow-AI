@@ -35,40 +35,18 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Business, ConnectorStatus } from '@/types/erp';
 import { voiceManager, VoiceLanguage } from '@/lib/voice/speech';
-import { AgentRun } from '@/types/agent';
+import { useBusiness } from '@/components/BusinessProvider';
 
 export default function BizFlowDashboard() {
   const router = useRouter();
 
-  // Business Context
-  const [businesses, setBusinesses] = useState<Business[]>([
-    {
-      id: 'biz_karthik_textiles',
-      name: 'Karthik Textiles & Garments',
-      type: 'Clothing & Retail',
-      currency: '₹',
-      ownerName: 'Karthik Ramanathan',
-      gstNumber: '33AAAAA0000A1Z5',
-      address: '42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017',
-      phone: '+91 98400 11223',
-      email: 'karthik@textiles.bizflow.in',
-      createdAt: '2024-01-10T10:00:00Z',
-    },
-    {
-      id: 'biz_murugan_bakery',
-      name: 'Sri Murugan Bakery & Sweets',
-      type: 'Bakery & Food Vendor',
-      currency: '₹',
-      ownerName: 'Murugan Velayudham',
-      gstNumber: '33BBBBB1111B2Z6',
-      address: '15 Gandhi Road, Tambaram, Chennai 600045',
-      phone: '+91 94441 55667',
-      email: 'murugan@bakery.bizflow.in',
-      createdAt: '2024-03-01T09:00:00Z',
-    },
-  ]);
-  const [currentBusinessId, setCurrentBusinessId] = useState<string>('biz_karthik_textiles');
-  const currentBusiness = businesses.find((b) => b.id === currentBusinessId) || businesses[0];
+  // Business Context from strictly isolated BusinessProvider
+  const {
+    currentBusiness,
+    businessId: currentBusinessId,
+    setBusinessId: setCurrentBusinessId,
+    accessibleBusinesses: businesses,
+  } = useBusiness();
 
   // Voice Settings (Single unified high-quality voice)
   const [language, setLanguage] = useState<VoiceLanguage>('en');
@@ -90,19 +68,20 @@ export default function BizFlowDashboard() {
     lang: 'en' | 'ta';
   } | null>(null);
 
-  // Connectors Status & Badges
+  // Connectors Status & Badges (Cleanly initialized to 0 for tenant isolation)
   const [connectors, setConnectors] = useState<ConnectorStatus[]>([]);
-  const [followUpsCount, setFollowUpsCount] = useState(3);
-  const [lowStockCount, setLowStockCount] = useState(4);
+  const [followUpsCount, setFollowUpsCount] = useState(0);
+  const [lowStockCount, setLowStockCount] = useState(0);
 
   // Agentic Business Home Metrics & Attention Items
-  const [overdueTotal, setOverdueTotal] = useState(14200);
-  const [unmatchedCount, setUnmatchedCount] = useState(1);
-  const [pendingDraftsCount, setPendingDraftsCount] = useState(1);
+  const [overdueTotal, setOverdueTotal] = useState(0);
+  const [unmatchedCount, setUnmatchedCount] = useState(0);
+  const [pendingDraftsCount, setPendingDraftsCount] = useState(0);
   const [recentAgentRuns, setRecentAgentRuns] = useState<AgentRun[]>([]);
 
   // Initial data loading
   useEffect(() => {
+    if (!currentBusinessId) return;
     loadConnectors();
     loadBadges();
     loadAgenticData();

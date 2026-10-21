@@ -39,8 +39,10 @@ interface CustomerCreditSummary {
   activeCommitment?: PaymentCommitment;
 }
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 export default function UdhaarCollectionsPage() {
-  const [activeBusinessId, setActiveBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness, businessId: activeBusinessId, setBusinessId: setActiveBusinessId } = useBusiness();
   const [credits, setCredits] = useState<CustomerCreditSummary[]>([]);
   const [commitments, setCommitments] = useState<PaymentCommitment[]>([]);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
@@ -103,6 +105,7 @@ export default function UdhaarCollectionsPage() {
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
+    if (!activeBusinessId) return;
     loadData();
   }, [activeBusinessId]);
 

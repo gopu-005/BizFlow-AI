@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAndActivatePayment } from '@/lib/billing/razorpay';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { businessId = 'biz_karthik_textiles', razorpayOrderId, razorpayPaymentId, razorpaySignature, billingCycle = 'monthly' } = body;
+    const { businessId: requestedBusinessId, razorpayOrderId, razorpayPaymentId, razorpaySignature, billingCycle = 'monthly' } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!razorpayOrderId || !razorpayPaymentId) {
       return NextResponse.json({ error: 'Order ID and Payment ID are required' }, { status: 400 });

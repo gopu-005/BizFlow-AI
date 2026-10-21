@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processUserCommand } from '@/lib/ai/router';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, businessId } = await req.json();
+    const { message, businessId: requestedBusinessId } = await req.json();
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const tenantId = businessId || 'biz_karthik_textiles';
+    const { businessId: tenantId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
+
     const response = processUserCommand(message, tenantId);
 
     return NextResponse.json(response);

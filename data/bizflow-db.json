@@ -103,17 +103,95 @@
       "id": "biz_1792556457827_ws1n"
     },
     {
-      "name": "ABC Retailers",
-      "legalName": "ABC Retailers",
-      "ownerName": "Gopi",
+      "name": "Exploit Store",
+      "legalName": "Exploit Store",
+      "ownerName": "Hacker Attempt",
       "type": "Retail & Commercial Services",
-      "email": "gopz0505@gmail.com",
+      "email": "testowner_1792561011827@bizflowtest.in",
       "phone": "+91 90000 00000",
       "address": "Business Registered Address",
       "currency": "INR",
-      "createdAt": "2026-10-21T04:43:28.923Z",
+      "createdAt": "2026-10-21T05:36:52.801Z",
       "status": "active",
-      "id": "biz_1792557808923_5ypv"
+      "id": "biz_1792561012801_gi0u"
+    },
+    {
+      "name": "Anand Medicals & Healthcare",
+      "legalName": "Anand Medicals & Healthcare",
+      "ownerName": "Anand Kumar",
+      "type": "Retail & Commercial Services",
+      "email": "anand_1792561320918@medicals.in",
+      "phone": "+91 98401 99881",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:42:01.024Z",
+      "status": "active",
+      "id": "biz_1792561321024_241v"
+    },
+    {
+      "name": "Devi Handloom Sarees",
+      "legalName": "Devi Handloom Sarees",
+      "ownerName": "Devi Priya",
+      "type": "Retail & Commercial Services",
+      "email": "devi_1792561320918@sarees.in",
+      "phone": "+91 94441 22334",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:42:02.484Z",
+      "status": "active",
+      "id": "biz_1792561322484_8ugb"
+    },
+    {
+      "name": "Anand Medicals & Healthcare",
+      "legalName": "Anand Medicals & Healthcare",
+      "ownerName": "Anand Kumar",
+      "type": "Retail & Commercial Services",
+      "email": "anand_1792561341363@medicals.in",
+      "phone": "+91 98401 99881",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:42:21.454Z",
+      "status": "active",
+      "id": "biz_1792561341454_v1if"
+    },
+    {
+      "name": "Devi Handloom Sarees",
+      "legalName": "Devi Handloom Sarees",
+      "ownerName": "Devi Priya",
+      "type": "Retail & Commercial Services",
+      "email": "devi_1792561341363@sarees.in",
+      "phone": "+91 94441 22334",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:42:21.842Z",
+      "status": "active",
+      "id": "biz_1792561341842_yhkd"
+    },
+    {
+      "name": "Exploit Store",
+      "legalName": "Exploit Store",
+      "ownerName": "Hacker Attempt",
+      "type": "Retail & Commercial Services",
+      "email": "testowner_1792561347247@bizflowtest.in",
+      "phone": "+91 90000 00000",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:42:27.358Z",
+      "status": "active",
+      "id": "biz_1792561347358_ysq3"
+    },
+    {
+      "name": "Verma Electronics & Mobiles",
+      "legalName": "Verma Electronics & Mobiles",
+      "ownerName": "Sanjay Verma",
+      "type": "Retail & Commercial Services",
+      "email": "sanjay_verma_999@vermaelect.in",
+      "phone": "9876543210",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T05:44:16.799Z",
+      "status": "active",
+      "id": "biz_1792561456799_2m0d"
     }
   ],
   "products": [
@@ -772,70 +850,38 @@
       "lastPaymentDate": "2024-10-01T09:12:00Z",
       "createdAt": "2024-01-01T00:00:00Z"
     },
-    "biz_1792557808923_5ypv": {
+    "biz_1792556457827_ws1n": {
       "id": "sub_active_001",
-      "businessId": "biz_1792557808923_5ypv",
+      "businessId": "biz_1792556457827_ws1n",
       "planId": "bizflow-all-in-one",
-      "planName": "BizFlow AI Starter",
+      "planName": "BizFlow AI All-in-One",
       "billingCycle": "monthly",
       "amount": 299,
       "currency": "INR",
       "status": "active",
-      "currentPeriodStart": "2026-10-21T04:46:03.147Z",
-      "currentPeriodEnd": "2026-11-21T04:46:03.147Z",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
       "autoRenew": true,
-      "lastPaymentDate": "2026-10-21T04:46:03.147Z",
-      "createdAt": "2024-01-01T00:00:00Z",
-      "businessName": "ABC Retailers",
-      "customerName": "Karthik Textiles & Garments",
-      "customerEmail": "karthik@textiles.bizflow.in",
-      "customerPhone": "+91 98400 11223",
-      "razorpayPaymentPageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly",
-      "gatewayTransactionRef": "rzp_page_1792557954316",
-      "updatedAt": "2026-10-21T04:46:03.147Z"
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792561456799_2m0d": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792561456799_2m0d",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
     }
   },
   "billingInvoices": [
-    {
-      "id": "binv_1792557963148",
-      "invoiceNumber": "BZF-2024-0009",
-      "businessId": "biz_1792557808923_5ypv",
-      "businessName": "Business Owner",
-      "billingEmail": "billing@bizflow.in",
-      "billingAddress": "India, Chennai, Tamil Nadu - 600001",
-      "planName": "BizFlow AI Starter",
-      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
-      "billingCycle": "monthly",
-      "baseAmount": 253.39,
-      "taxRate": 18,
-      "taxAmount": 45.61,
-      "totalPaid": 299,
-      "currency": "INR",
-      "paymentStatus": "paid",
-      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
-      "gatewayTransactionRef": "rzp_page_1792557954316",
-      "createdAt": "2026-10-21T04:46:03.147Z"
-    },
-    {
-      "id": "binv_1792557954324",
-      "invoiceNumber": "BZF-2024-0008",
-      "businessId": "biz_1792557808923_5ypv",
-      "businessName": "Business Owner",
-      "billingEmail": "billing@bizflow.in",
-      "billingAddress": "India, Chennai, Tamil Nadu - 600001",
-      "planName": "BizFlow AI Starter",
-      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
-      "billingCycle": "monthly",
-      "baseAmount": 253.39,
-      "taxRate": 18,
-      "taxAmount": 45.61,
-      "totalPaid": 299,
-      "currency": "INR",
-      "paymentStatus": "paid",
-      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
-      "gatewayTransactionRef": "rzp_page_1792557954316",
-      "createdAt": "2026-10-21T04:45:54.316Z"
-    },
     {
       "id": "binv_1792556402624",
       "invoiceNumber": "BZF-2024-0007",
@@ -1229,7 +1275,7 @@
   "dailyClosings": [
     {
       "id": "cls_20261021",
-      "businessId": "biz_1792557808923_5ypv",
+      "businessId": "biz_1792561456799_2m0d",
       "date": "2026-10-21",
       "totalSales": 0,
       "totalInvoices": 0,
@@ -1251,7 +1297,7 @@
       "sourcePayments": [],
       "sourceExpenses": [],
       "marginAnomalies": [],
-      "createdAt": "2026-10-21T04:43:32.360Z"
+      "createdAt": "2026-10-21T05:46:04.018Z"
     },
     {
       "id": "cls_20261021",
@@ -1420,12 +1466,90 @@
       "maxStorageMb": 1000,
       "usedStorageMb": 0
     },
-    "biz_1792557808923_5ypv": {
-      "businessId": "biz_1792557808923_5ypv",
+    "biz_1792561012801_gi0u": {
+      "businessId": "biz_1792561012801_gi0u",
       "planName": "BizFlow AI Starter",
       "billingCycle": "monthly",
-      "currentPeriodStart": "2026-10-21T04:43:28.923Z",
-      "currentPeriodEnd": "2026-11-20T04:43:28.923Z",
+      "currentPeriodStart": "2026-10-21T05:36:52.801Z",
+      "currentPeriodEnd": "2026-11-20T05:36:52.801Z",
+      "maxAiRuns": 250,
+      "usedAiRuns": 0,
+      "maxExtractions": 120,
+      "usedExtractions": 0,
+      "maxStorageMb": 1000,
+      "usedStorageMb": 0
+    },
+    "biz_1792561321024_241v": {
+      "businessId": "biz_1792561321024_241v",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:42:01.024Z",
+      "currentPeriodEnd": "2026-11-20T05:42:01.024Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
+    },
+    "biz_1792561322484_8ugb": {
+      "businessId": "biz_1792561322484_8ugb",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:42:02.484Z",
+      "currentPeriodEnd": "2026-11-20T05:42:02.484Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
+    },
+    "biz_1792561341454_v1if": {
+      "businessId": "biz_1792561341454_v1if",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:42:21.454Z",
+      "currentPeriodEnd": "2026-11-20T05:42:21.454Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
+    },
+    "biz_1792561341842_yhkd": {
+      "businessId": "biz_1792561341842_yhkd",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:42:21.842Z",
+      "currentPeriodEnd": "2026-11-20T05:42:21.842Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
+    },
+    "biz_1792561347358_ysq3": {
+      "businessId": "biz_1792561347358_ysq3",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:42:27.358Z",
+      "currentPeriodEnd": "2026-11-20T05:42:27.358Z",
+      "maxAiRuns": 250,
+      "usedAiRuns": 0,
+      "maxExtractions": 120,
+      "usedExtractions": 0,
+      "maxStorageMb": 1000,
+      "usedStorageMb": 0
+    },
+    "biz_1792561456799_2m0d": {
+      "businessId": "biz_1792561456799_2m0d",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T05:44:16.799Z",
+      "currentPeriodEnd": "2026-11-20T05:44:16.799Z",
       "maxAiRuns": 100,
       "usedAiRuns": 0,
       "maxExtractions": 50,
@@ -1444,8 +1568,8 @@
       "status": "active",
       "isEmailVerified": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2026-10-21T04:33:46.687Z",
-      "lastLoginAt": "2026-10-21T04:33:46.687Z"
+      "updatedAt": "2026-10-21T05:42:30.055Z",
+      "lastLoginAt": "2026-10-21T05:42:30.055Z"
     },
     {
       "id": "usr_karthik_01",
@@ -1471,8 +1595,8 @@
       "status": "active",
       "isEmailVerified": true,
       "createdAt": "2024-02-01T00:00:00Z",
-      "updatedAt": "2026-10-21T04:20:59.284Z",
-      "lastLoginAt": "2026-10-21T04:20:59.284Z"
+      "updatedAt": "2026-10-21T05:42:29.654Z",
+      "lastLoginAt": "2026-10-21T05:42:29.654Z"
     },
     {
       "id": "usr_murugan_01",
@@ -1565,16 +1689,96 @@
       "lastLoginAt": "2026-10-21T04:20:58.878Z"
     },
     {
-      "email": "gopz0505@gmail.com",
-      "passwordHash": "24e78238fa413d0bbbce40278e642b88:efdcec1d623376ae6f2c47ebd73786e68c2a1499cd7cf89949536fcea64faab55f677314118f6b9dbb14a217d972fe91ce27d4d0dcc45940be96031b0e97133a",
-      "name": "Gopi",
+      "email": "testowner_1792561011827@bizflowtest.in",
+      "passwordHash": "f4165a2a8298146eb8f8bd34ad690aa3:543f5f857659f070e1b1f5432558c1a166699424c09ab47eb8a682dfaaa6a92ad15ccb879209e785bc98dcbfa8453c519845e9f4b9a22620f7d3ad9a7c544ee3",
+      "name": "Hacker Attempt",
       "role": "business_owner",
-      "businessId": "biz_1792557808923_5ypv",
+      "businessId": "biz_1792561012801_gi0u",
+      "status": "active",
+      "isEmailVerified": true,
+      "id": "usr_1792561012841_rl6nf",
+      "createdAt": "2026-10-21T05:36:52.841Z",
+      "updatedAt": "2026-10-21T05:36:54.742Z",
+      "lastLoginAt": "2026-10-21T05:36:54.370Z"
+    },
+    {
+      "email": "anand_1792561320918@medicals.in",
+      "passwordHash": "fb4bae4eff6a8c2fcb3d1a550dc149a6:3db75d42e1bcf42131c82d6942a029184391481d56b6ed4663e96862d5cab1def11582b10d62d94d1d2a226b5e55c0f5669fec86e6df37eef25b1fb7b128e4c5",
+      "name": "Anand Kumar",
+      "phone": "+91 98401 99881",
+      "role": "business_owner",
+      "businessId": "biz_1792561321024_241v",
       "status": "active",
       "isEmailVerified": false,
-      "id": "usr_1792557809002_1bnrq",
-      "createdAt": "2026-10-21T04:43:29.002Z",
-      "updatedAt": "2026-10-21T04:43:29.002Z"
+      "id": "usr_1792561321060_zs9dn",
+      "createdAt": "2026-10-21T05:42:01.060Z",
+      "updatedAt": "2026-10-21T05:42:01.060Z"
+    },
+    {
+      "email": "devi_1792561320918@sarees.in",
+      "passwordHash": "d58d2fffc7c3c38aa3faafc0ed382317:64e80383817ea6d46a0c8e68758621317ce67aee047a99725d4b2b90846fae937151167a8856dec0d0952c04046bf973133e21a5b8420a41c338991734de3f6f",
+      "name": "Devi Priya",
+      "phone": "+91 94441 22334",
+      "role": "business_owner",
+      "businessId": "biz_1792561322484_8ugb",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792561322522_206ce",
+      "createdAt": "2026-10-21T05:42:02.522Z",
+      "updatedAt": "2026-10-21T05:42:02.522Z"
+    },
+    {
+      "email": "anand_1792561341363@medicals.in",
+      "passwordHash": "347fffd4dfa5443008967fd430ac82b0:ae69832b9d86eed59e60337ceb4738700df532868b4a9d9d7731a54d256d39ada16850364b899e00bc38aa384609d2c394fa784158ce5a6c2bfd5fa962df1d62",
+      "name": "Anand Kumar",
+      "phone": "+91 98401 99881",
+      "role": "business_owner",
+      "businessId": "biz_1792561341454_v1if",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792561341491_i8f89",
+      "createdAt": "2026-10-21T05:42:21.491Z",
+      "updatedAt": "2026-10-21T05:42:21.491Z"
+    },
+    {
+      "email": "devi_1792561341363@sarees.in",
+      "passwordHash": "e73ed238a62726ebae08d98512e57ce4:d11c2d719cabb3dd887aba572f5f41a28c825ccd27b6904111d106ea1c5f5e6195a73e1128106eb19ad92751f26d4df279dd5d8ed6b778e63d4f4760b4194c0d",
+      "name": "Devi Priya",
+      "phone": "+91 94441 22334",
+      "role": "business_owner",
+      "businessId": "biz_1792561341842_yhkd",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792561341881_hlcvq",
+      "createdAt": "2026-10-21T05:42:21.881Z",
+      "updatedAt": "2026-10-21T05:42:21.881Z"
+    },
+    {
+      "email": "testowner_1792561347247@bizflowtest.in",
+      "passwordHash": "08d7804eefd80698cda5ec2933a71f92:b8d13e166ad4f0b5fdd24a4809b01ec4a23fe61095ff69a4c6160364bcfb41ec5040de4307f8238aa4a25a9f7fa24ecd7a325486604f1c2ff300948fddb16775",
+      "name": "Hacker Attempt",
+      "role": "business_owner",
+      "businessId": "biz_1792561347358_ysq3",
+      "status": "active",
+      "isEmailVerified": true,
+      "id": "usr_1792561347396_utszl",
+      "createdAt": "2026-10-21T05:42:27.396Z",
+      "updatedAt": "2026-10-21T05:42:29.288Z",
+      "lastLoginAt": "2026-10-21T05:42:28.949Z"
+    },
+    {
+      "email": "sanjay_verma_999@vermaelect.in",
+      "passwordHash": "753b33a6ee0dd7c9c1c8ddb5192fdae9:36654bce6a382dee618e7f4d7189ef0afef248ddbe2083ca69d30ab2d179f185f90ec01a933c20cbb1e798790177f0e2e4108ce2ba1ed10190d4f0f46eec1ab5",
+      "name": "Sanjay Verma",
+      "phone": "9876543210",
+      "role": "business_owner",
+      "businessId": "biz_1792561456799_2m0d",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792561456900_prxit",
+      "createdAt": "2026-10-21T05:44:16.900Z",
+      "updatedAt": "2026-10-21T05:46:01.468Z",
+      "lastLoginAt": "2026-10-21T05:46:01.468Z"
     }
   ],
   "sessions": [
@@ -1781,16 +1985,6 @@
       "ipAddress": "::1"
     },
     {
-      "id": "sess_1792556665333_ynr2k",
-      "userId": "usr_admin_01",
-      "token": "0e9d746da9628026fab8806c7454872b9183f4b39d6e2c5965c0a8314030c16f",
-      "role": "platform_admin",
-      "expiresAt": "2026-10-28T04:24:25.333Z",
-      "createdAt": "2026-10-21T04:24:25.333Z",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
-      "ipAddress": "::1"
-    },
-    {
       "id": "sess_1792557189426_w83nz",
       "userId": "usr_admin_01",
       "token": "e0f5615bc7dab6bf5b47a179735184b77e5401868126b384496e4dd70eeec3f5",
@@ -1811,13 +2005,132 @@
       "ipAddress": "::1"
     },
     {
-      "id": "sess_1792557809005_1eoxp",
-      "userId": "usr_1792557809002_1bnrq",
-      "token": "7d2dc8e65f6314a332e1b8dd83a7114737b7ff04c805282803a3917468734d28",
+      "id": "sess_1792561014371_hlri3",
+      "userId": "usr_1792561012841_rl6nf",
+      "token": "769be7c3b5ac2efe6131adb6f55862b8fcf8b626221c29a797dceddd5b69b782",
       "role": "business_owner",
-      "businessId": "biz_1792557808923_5ypv",
-      "expiresAt": "2026-10-28T04:43:29.005Z",
-      "createdAt": "2026-10-21T04:43:29.005Z",
+      "businessId": "biz_1792561012801_gi0u",
+      "expiresAt": "2026-10-28T05:36:54.371Z",
+      "createdAt": "2026-10-21T05:36:54.371Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561015145_w89b3",
+      "userId": "usr_staff_01",
+      "token": "8dd61570bd4d64765a462969d22ca0df33652fe87b8cdbb0b4c02ac842afb510",
+      "role": "business_staff",
+      "businessId": "biz_karthik_textiles",
+      "expiresAt": "2026-10-28T05:36:55.145Z",
+      "createdAt": "2026-10-21T05:36:55.145Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561015544_tyw7n",
+      "userId": "usr_admin_01",
+      "token": "01509c3be1affa9443fe4880f0c2753d45b282a88b35a20d814de67d1c3113ee",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T05:36:55.544Z",
+      "createdAt": "2026-10-21T05:36:55.544Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561321062_a0q5t",
+      "userId": "usr_1792561321060_zs9dn",
+      "token": "53ea4422f04d54dbf594d6943774b58ae7e03ab91bb57367be20b2422f9cf006",
+      "role": "business_owner",
+      "businessId": "biz_1792561321024_241v",
+      "expiresAt": "2026-10-28T05:42:01.062Z",
+      "createdAt": "2026-10-21T05:42:01.062Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561322524_ax4jw",
+      "userId": "usr_1792561322522_206ce",
+      "token": "6ef7d54dfa6cc5c10e1f44afaf9432e83997490a1e41c1ff2b3dd8fa6524c173",
+      "role": "business_owner",
+      "businessId": "biz_1792561322484_8ugb",
+      "expiresAt": "2026-10-28T05:42:02.523Z",
+      "createdAt": "2026-10-21T05:42:02.524Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561341492_wuz3y",
+      "userId": "usr_1792561341491_i8f89",
+      "token": "fea18b1a839b146f14f18672b2e1c57927ad18cc37e7b23dd6ed849450107a41",
+      "role": "business_owner",
+      "businessId": "biz_1792561341454_v1if",
+      "expiresAt": "2026-10-28T05:42:21.492Z",
+      "createdAt": "2026-10-21T05:42:21.492Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561341882_m4w5v",
+      "userId": "usr_1792561341881_hlcvq",
+      "token": "9e26cf8337d8b63482aa4daf3b0e9e80bf3041e3289b1f11f64cf228def02ac6",
+      "role": "business_owner",
+      "businessId": "biz_1792561341842_yhkd",
+      "expiresAt": "2026-10-28T05:42:21.882Z",
+      "createdAt": "2026-10-21T05:42:21.882Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561348951_3b7zu",
+      "userId": "usr_1792561347396_utszl",
+      "token": "e57c06cd58dfd48242961b42ffa790ef5f76fe457325f5e0c820125b7c8b62bb",
+      "role": "business_owner",
+      "businessId": "biz_1792561347358_ysq3",
+      "expiresAt": "2026-10-28T05:42:28.950Z",
+      "createdAt": "2026-10-21T05:42:28.951Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561349656_jb07x",
+      "userId": "usr_staff_01",
+      "token": "964ebf4e837a5f3d26bc95f94f4c0a1261d117caa6e05773a4909343c2c3ccb7",
+      "role": "business_staff",
+      "businessId": "biz_karthik_textiles",
+      "expiresAt": "2026-10-28T05:42:29.656Z",
+      "createdAt": "2026-10-21T05:42:29.656Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561350056_9ym1p",
+      "userId": "usr_admin_01",
+      "token": "6f386d6daed3cadfed4be2172b32e0568f7d947a4c973af8d4a83ab889e06b13",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T05:42:30.056Z",
+      "createdAt": "2026-10-21T05:42:30.056Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561456904_basxh",
+      "userId": "usr_1792561456900_prxit",
+      "token": "0a892a032c295bfc3a5835c5ad3a8e57acbae215d8675b651c90a153c34c82a3",
+      "role": "business_owner",
+      "businessId": "biz_1792561456799_2m0d",
+      "expiresAt": "2026-10-28T05:44:16.903Z",
+      "createdAt": "2026-10-21T05:44:16.904Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792561561472_ktu27",
+      "userId": "usr_1792561456900_prxit",
+      "token": "c7f41051f025c0f45304f74190c3793b59dd1c3861ed3bf61fc251db8fcec22c",
+      "role": "business_owner",
+      "businessId": "biz_1792561456799_2m0d",
+      "expiresAt": "2026-10-28T05:46:01.472Z",
+      "createdAt": "2026-10-21T05:46:01.472Z",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
       "ipAddress": "::1"
     }
@@ -1858,6 +2171,24 @@
       "expiresAt": "2026-10-21T05:20:58.602Z",
       "used": true,
       "createdAt": "2026-10-21T04:20:58.602Z"
+    },
+    {
+      "id": "rst_1792561013937_5wdda",
+      "userId": "usr_1792561012841_rl6nf",
+      "email": "testowner_1792561011827@bizflowtest.in",
+      "token": "cd151bb41d1d25a7a9c2087e0efb53f454cb04e4aea23d342041fde160259f4f",
+      "expiresAt": "2026-10-21T06:36:53.937Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:36:53.937Z"
+    },
+    {
+      "id": "rst_1792561348537_23tc2",
+      "userId": "usr_1792561347396_utszl",
+      "email": "testowner_1792561347247@bizflowtest.in",
+      "token": "eb982fc40ff5032f8335dbb531dd5377c13524560c1c68a025514a03b107bcf2",
+      "expiresAt": "2026-10-21T06:42:28.536Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:42:28.537Z"
     }
   ],
   "emailVerificationTokens": [
@@ -1898,51 +2229,219 @@
       "createdAt": "2026-10-21T04:20:59.042Z"
     },
     {
-      "id": "evt_1792557809007_x50s2",
-      "userId": "usr_1792557809002_1bnrq",
-      "email": "gopz0505@gmail.com",
-      "token": "00ace54cffa68d4438731755ed314c9884e40f733dde0aa91b61c2697a286051",
-      "expiresAt": "2026-10-22T04:43:29.007Z",
+      "id": "evt_1792561012843_t3icd",
+      "userId": "usr_1792561012841_rl6nf",
+      "email": "testowner_1792561011827@bizflowtest.in",
+      "token": "dd3e6b040ffb523cd0c3ab3d621edca214e2bc1d84d86f02439753a74ca13496",
+      "expiresAt": "2026-10-22T05:36:52.843Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:36:52.843Z"
+    },
+    {
+      "id": "evt_1792561014704_k3r3g",
+      "userId": "usr_1792561012841_rl6nf",
+      "email": "testowner_1792561011827@bizflowtest.in",
+      "token": "0b1cabf77f42b80154d42621bccb8ef3ac811e7a7a32ab4298ed9ec62b592578",
+      "expiresAt": "2026-10-22T05:36:54.704Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:36:54.704Z"
+    },
+    {
+      "id": "evt_1792561321063_3a8ow",
+      "userId": "usr_1792561321060_zs9dn",
+      "email": "anand_1792561320918@medicals.in",
+      "token": "7c78402fbbe058bc91fc3cc9619f82de1f27ed8f22f65436bba5684903d20a9f",
+      "expiresAt": "2026-10-22T05:42:01.063Z",
       "used": false,
-      "createdAt": "2026-10-21T04:43:29.007Z"
+      "createdAt": "2026-10-21T05:42:01.063Z"
+    },
+    {
+      "id": "evt_1792561322525_qde4b",
+      "userId": "usr_1792561322522_206ce",
+      "email": "devi_1792561320918@sarees.in",
+      "token": "1bf43affffbd99d34e6ecdb2c337e309dc31204b4bc00856ec2e20f41a6a4231",
+      "expiresAt": "2026-10-22T05:42:02.525Z",
+      "used": false,
+      "createdAt": "2026-10-21T05:42:02.525Z"
+    },
+    {
+      "id": "evt_1792561341494_7755g",
+      "userId": "usr_1792561341491_i8f89",
+      "email": "anand_1792561341363@medicals.in",
+      "token": "234ebe0e6c5ff9b581ac51c1f80496c824cefc0e3c0a63b628b9cd2474712bcf",
+      "expiresAt": "2026-10-22T05:42:21.494Z",
+      "used": false,
+      "createdAt": "2026-10-21T05:42:21.494Z"
+    },
+    {
+      "id": "evt_1792561341883_yy27g",
+      "userId": "usr_1792561341881_hlcvq",
+      "email": "devi_1792561341363@sarees.in",
+      "token": "79ba39ced64100c6156cd589f0904a86cb130b95d76abf96076f8d9d66f8daa2",
+      "expiresAt": "2026-10-22T05:42:21.883Z",
+      "used": false,
+      "createdAt": "2026-10-21T05:42:21.883Z"
+    },
+    {
+      "id": "evt_1792561347398_f2u7x",
+      "userId": "usr_1792561347396_utszl",
+      "email": "testowner_1792561347247@bizflowtest.in",
+      "token": "4cf698286d6680fbc1aa226c2d68bf4e3153d1307d3f4e8769c6f9935b8c13e4",
+      "expiresAt": "2026-10-22T05:42:27.398Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:42:27.398Z"
+    },
+    {
+      "id": "evt_1792561349254_hfsoh",
+      "userId": "usr_1792561347396_utszl",
+      "email": "testowner_1792561347247@bizflowtest.in",
+      "token": "7a0cbb6623a6fe9936ba1d1591eb81eb4136bd219dc990ff5f5714e5b2927880",
+      "expiresAt": "2026-10-22T05:42:29.254Z",
+      "used": true,
+      "createdAt": "2026-10-21T05:42:29.254Z"
+    },
+    {
+      "id": "evt_1792561456907_6z63o",
+      "userId": "usr_1792561456900_prxit",
+      "email": "sanjay_verma_999@vermaelect.in",
+      "token": "d198989d83962cc1df56a189aaa6959debf9d557bff048400ed5012a02d4f08b",
+      "expiresAt": "2026-10-22T05:44:16.907Z",
+      "used": false,
+      "createdAt": "2026-10-21T05:44:16.907Z"
     }
   ],
   "adminAuditLogs": [
     {
-      "adminUserId": "system",
-      "adminEmail": "system@bizflow.in",
-      "action": "system_configuration_change",
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "update_subscription_limits",
       "targetEntity": "subscription",
-      "targetId": "biz_1792557808923_5ypv",
+      "targetId": "biz_1792561347358_ysq3",
       "details": {
-        "note": "Subscription updated via Razorpay Payment Page (active)",
-        "clientName": "Karthik Textiles & Garments",
-        "clientEmail": "karthik@textiles.bizflow.in",
-        "plan": "BizFlow AI Starter",
-        "amount": 299,
-        "cycle": "monthly",
-        "pageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly"
+        "businessName": "Exploit Store",
+        "maxAiRuns": 250,
+        "maxExtractions": 120,
+        "maxStorageMb": 1000
       },
-      "id": "audit_1792557963153_oydk6",
-      "timestamp": "2026-10-21T04:46:03.153Z"
+      "id": "audit_1792561352922_b79jc",
+      "timestamp": "2026-10-21T05:42:32.922Z"
     },
     {
-      "adminUserId": "system",
-      "adminEmail": "system@bizflow.in",
-      "action": "system_configuration_change",
-      "targetEntity": "subscription",
-      "targetId": "biz_1792557808923_5ypv",
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "activate_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792561347358_ysq3",
       "details": {
-        "note": "Subscription updated via Razorpay Payment Page (active)",
-        "clientName": "Karthik Textiles & Garments",
-        "clientEmail": "karthik@textiles.bizflow.in",
-        "plan": "BizFlow AI Starter",
-        "amount": 299,
-        "cycle": "monthly",
-        "pageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly"
+        "businessName": "Exploit Store"
       },
-      "id": "audit_1792557954336_cg784",
-      "timestamp": "2026-10-21T04:45:54.336Z"
+      "id": "audit_1792561352616_1z4yv",
+      "timestamp": "2026-10-21T05:42:32.616Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "suspend_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792561347358_ysq3",
+      "details": {
+        "businessName": "Exploit Store",
+        "reason": "Automated test compliance review suspension"
+      },
+      "id": "audit_1792561352244_xkyq6",
+      "timestamp": "2026-10-21T05:42:32.244Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792561350058_plfaq",
+      "timestamp": "2026-10-21T05:42:30.058Z"
+    },
+    {
+      "adminUserId": "usr_1792561347396_utszl",
+      "adminEmail": "testowner_1792561347247@bizflowtest.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "denied",
+        "reason": "Insufficient role - non-admin attempted admin login"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792561349986_gp0e7",
+      "timestamp": "2026-10-21T05:42:29.986Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "update_subscription_limits",
+      "targetEntity": "subscription",
+      "targetId": "biz_1792561012801_gi0u",
+      "details": {
+        "businessName": "Exploit Store",
+        "maxAiRuns": 250,
+        "maxExtractions": 120,
+        "maxStorageMb": 1000
+      },
+      "id": "audit_1792561019710_582u0",
+      "timestamp": "2026-10-21T05:36:59.710Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "activate_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792561012801_gi0u",
+      "details": {
+        "businessName": "Exploit Store"
+      },
+      "id": "audit_1792561019331_dvkf3",
+      "timestamp": "2026-10-21T05:36:59.331Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "suspend_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792561012801_gi0u",
+      "details": {
+        "businessName": "Exploit Store",
+        "reason": "Automated test compliance review suspension"
+      },
+      "id": "audit_1792561018908_mww8k",
+      "timestamp": "2026-10-21T05:36:58.908Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792561015545_ehop7",
+      "timestamp": "2026-10-21T05:36:55.545Z"
+    },
+    {
+      "adminUserId": "usr_1792561012841_rl6nf",
+      "adminEmail": "testowner_1792561011827@bizflowtest.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "denied",
+        "reason": "Insufficient role - non-admin attempted admin login"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792561015472_9nazq",
+      "timestamp": "2026-10-21T05:36:55.472Z"
     },
     {
       "adminUserId": "usr_admin_01",

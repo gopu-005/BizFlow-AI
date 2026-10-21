@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const businessId = searchParams.get('businessId') || 'biz_karthik_textiles';
+  const requestedBusinessId = searchParams.get('businessId');
+  const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+  if (errorResponse) return errorResponse;
+
   const filter = searchParams.get('filter') as 'today' | 'pending' | 'all' | null;
 
   const tasks = db.getFollowUps(businessId, filter || 'pending');
@@ -13,7 +17,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { businessId = 'biz_karthik_textiles', customerId, customerName, customerPhone, scheduledDate, notes } = body;
+    const { businessId: requestedBusinessId, customerId, customerName, customerPhone, scheduledDate, notes } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!customerName || !scheduledDate) {
       return NextResponse.json({ error: 'Customer name and scheduled date are required' }, { status: 400 });

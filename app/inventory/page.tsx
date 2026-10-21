@@ -20,8 +20,10 @@ import { Footer } from '@/components/Footer';
 import { downloadCSV } from '@/lib/erp/pdf-generator';
 import { Product } from '@/types/erp';
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 export default function InventoryPage() {
-  const [businessId, setBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness, businessId, setBusinessId } = useBusiness();
   const [filter, setFilter] = useState<'all' | 'low_stock' | 'out_of_stock'>('all');
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function InventoryPage() {
   const [restockQty, setRestockQty] = useState<Record<string, number>>({});
 
   useEffect(() => {
+    if (!businessId) return;
     fetchProducts();
   }, [businessId, filter]);
 

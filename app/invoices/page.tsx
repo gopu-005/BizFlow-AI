@@ -20,11 +20,26 @@ import { Footer } from '@/components/Footer';
 import { generateInvoicePDF } from '@/lib/erp/pdf-generator';
 import { Business, Invoice, Product } from '@/types/erp';
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 function InvoicesContent() {
   const searchParams = useSearchParams();
   const initialAction = searchParams.get('action');
 
-  const [businessId, setBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness: activeBusiness, businessId, setBusinessId } = useBusiness();
+  const currentBusiness: Business = activeBusiness || {
+    id: businessId || '',
+    name: 'My Business Workspace',
+    type: 'Retail & Commercial',
+    currency: '₹',
+    ownerName: 'Business Owner',
+    gstNumber: '',
+    address: 'India',
+    phone: '+91 90000 00000',
+    email: 'billing@bizflow.in',
+    createdAt: new Date().toISOString(),
+  };
+
   const [activeTab, setActiveTab] = useState<'create' | 'history'>(
     initialAction === 'create' ? 'create' : 'history'
   );
@@ -44,20 +59,8 @@ function InvoicesContent() {
   const [selectedProductToAdd, setSelectedProductToAdd] = useState('');
   const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
 
-  const currentBusiness: Business = {
-    id: businessId,
-    name: businessId === 'biz_karthik_textiles' ? 'Karthik Textiles & Garments' : 'Sri Murugan Bakery & Sweets',
-    type: businessId === 'biz_karthik_textiles' ? 'Clothing & Retail' : 'Bakery & Sweets',
-    currency: '₹',
-    ownerName: businessId === 'biz_karthik_textiles' ? 'Karthik Ramanathan' : 'Murugan Velayudham',
-    gstNumber: businessId === 'biz_karthik_textiles' ? '33AAAAA0000A1Z5' : '33BBBBB1111B2Z6',
-    address: '42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017',
-    phone: '+91 98400 11223',
-    email: 'karthik@textiles.bizflow.in',
-    createdAt: '2024-01-10T10:00:00Z',
-  };
-
   useEffect(() => {
+    if (!businessId) return;
     fetchInvoices();
     fetchProducts();
   }, [businessId]);

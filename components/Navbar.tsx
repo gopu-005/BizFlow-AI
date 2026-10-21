@@ -16,81 +16,38 @@ import {
 } from 'lucide-react';
 import { Business } from '@/types/erp';
 
+import { useBusiness } from './BusinessProvider';
+
 interface NavbarProps {
   currentBusinessId?: string;
   onBusinessChange?: (bizId: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  currentBusinessId = 'biz_karthik_textiles',
+  currentBusinessId,
   onBusinessChange,
 }) => {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [businesses, setBusinesses] = useState<Business[]>([
-    {
-      id: 'biz_karthik_textiles',
-      name: 'Karthik Textiles & Garments',
-      type: 'Clothing & Retail',
-      currency: '₹',
-      ownerName: 'Karthik Ramanathan',
-      gstNumber: '33AAAAA0000A1Z5',
-      address: '42 Ranganathan Street, T. Nagar, Chennai, Tamil Nadu 600017',
-      phone: '+91 98400 11223',
-      email: 'karthik@textiles.bizflow.in',
-      createdAt: '2024-01-10T10:00:00Z',
-    },
-    {
-      id: 'biz_murugan_bakery',
-      name: 'Sri Murugan Bakery & Sweets',
-      type: 'Bakery & Food Vendor',
-      currency: '₹',
-      ownerName: 'Murugan Velayudham',
-      gstNumber: '33BBBBB1111B2Z6',
-      address: '15 Gandhi Road, Tambaram, Chennai 600045',
-      phone: '+91 94441 55667',
-      email: 'murugan@bakery.bizflow.in',
-      createdAt: '2024-03-01T09:00:00Z',
-    },
-  ]);
+  const {
+    currentBusiness,
+    businessId: activeBizId,
+    setBusinessId,
+    accessibleBusinesses,
+    currentUser,
+    isPlatformAdmin,
+  } = useBusiness();
 
-  const [activeBizId, setActiveBizId] = useState(currentBusinessId);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
-    // 1. Load active business from localStorage
-    const saved = localStorage.getItem('bizflow_active_business_id');
-    if (saved) {
-      setActiveBizId(saved);
-      if (onBusinessChange) onBusinessChange(saved);
+    if (currentBusinessId && currentBusinessId !== activeBizId && isPlatformAdmin) {
+      setBusinessId(currentBusinessId);
     }
-
-    // 2. Fetch authenticated session
-    fetch('/api/auth/me')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.success && data.user) {
-          setCurrentUser(data.user);
-          if (data.business) {
-            setBusinesses((prev) => {
-              const exists = prev.find((b) => b.id === data.business.id);
-              if (exists) return prev;
-              return [data.business, ...prev];
-            });
-            if (!saved) {
-              setActiveBizId(data.business.id);
-              if (onBusinessChange) onBusinessChange(data.business.id);
-            }
-          }
-        }
-      })
-      .catch(() => {});
-  }, []);
+  }, [currentBusinessId, activeBizId, isPlatformAdmin, setBusinessId]);
 
   const handleSelectBusiness = (bizId: string) => {
-    setActiveBizId(bizId);
+    setBusinessId(bizId);
     setShowDropdown(false);
-    localStorage.setItem('bizflow_active_business_id', bizId);
     if (onBusinessChange) onBusinessChange(bizId);
   };
 
@@ -98,15 +55,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } finally {
-      localStorage.removeItem('bizflow_active_business_id');
-      setCurrentUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bizflow_active_business_id');
+      }
       setShowDropdown(false);
-      router.push('/login');
-      router.refresh();
+      window.location.href = '/login';
     }
   };
 
-  const currentBusiness = businesses.find((b) => b.id === activeBizId) || businesses[0];
   const displayName = currentUser?.name || currentBusiness?.ownerName || 'User';
   const initial = displayName.charAt(0).toUpperCase();
 
@@ -219,12 +175,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {/* Business Switcher for Multi-Tenant / Admin */}
                   <div className="pt-2 border-t border-gray-100">
                     <div className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      Active Workspace
+                      {accessibleBusinesses.length > 1 ? 'Switch Workspace' : 'Active Workspace'}
                     </div>
-                    {businesses.map((biz) => (
+                    {accessibleBusinesses.map((biz) => (
                       <button
                         key={biz.id}
                         onClick={() => handleSelectBusiness(biz.id)}
+                        disabled={accessibleBusinesses.length <= 1}
                         className={`w-full text-left px-3 py-1.5 rounded-lg flex items-center justify-between transition-colors ${
                           biz.id === activeBizId
                             ? 'bg-purple-50 text-purple-900 font-bold'

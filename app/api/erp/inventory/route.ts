@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const businessId = searchParams.get('businessId') || 'biz_karthik_textiles';
+  const requestedBusinessId = searchParams.get('businessId');
+  const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+  if (errorResponse) return errorResponse;
+
   const filter = searchParams.get('filter'); // 'low_stock' | 'expiring' | null
 
   if (filter === 'low_stock') {
@@ -23,7 +27,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { businessId, productId, stock } = body;
+    const { businessId: requestedBusinessId, productId, stock } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!businessId || !productId || stock === undefined) {
       return NextResponse.json({ error: 'Missing businessId, productId, or stock' }, { status: 400 });

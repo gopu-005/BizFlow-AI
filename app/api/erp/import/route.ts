@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { ImportPreviewRecord } from '@/types/erp';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
-    const { businessId = 'biz_karthik_textiles', records } = (await req.json()) as {
-      businessId: string;
+    const { businessId: requestedBusinessId, records } = (await req.json()) as {
+      businessId?: string;
       records: ImportPreviewRecord[];
     };
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!records || records.length === 0) {
       return NextResponse.json({ error: 'No records to import' }, { status: 400 });

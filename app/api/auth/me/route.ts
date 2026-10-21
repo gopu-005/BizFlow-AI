@@ -12,10 +12,22 @@ export async function GET(req: NextRequest) {
 
     let business = null;
     let quota = null;
+    let accessibleBusinesses: any[] = [];
 
-    if (user.businessId) {
+    if (user.role === 'platform_admin') {
+      accessibleBusinesses = db.getBusinesses();
+      if (user.businessId) {
+        business = db.getBusiness(user.businessId) || accessibleBusinesses[0] || null;
+        quota = db.getQuota(user.businessId);
+      } else {
+        business = accessibleBusinesses[0] || null;
+      }
+    } else if (user.businessId) {
       business = db.getBusiness(user.businessId) || null;
       quota = db.getQuota(user.businessId);
+      if (business) {
+        accessibleBusinesses = [business];
+      }
     }
 
     return NextResponse.json({
@@ -23,6 +35,7 @@ export async function GET(req: NextRequest) {
       user: sanitizedUser,
       business,
       quota,
+      accessibleBusinesses,
     });
   } catch (err: any) {
     console.error('Auth /me error:', err);

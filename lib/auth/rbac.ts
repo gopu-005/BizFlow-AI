@@ -125,3 +125,56 @@ export function requirePlatformAdmin(req: NextRequest): { context?: AuthContext;
     },
   };
 }
+
+/**
+ * Resolves the businessId for a request with strict tenant isolation.
+ * - If user is logged in (business_owner / staff): businessId is ALWAYS forced to user.businessId.
+ *   If requestedBusinessId is provided and does not match user.businessId, returns 403 Forbidden.
+ * - If user is platform_admin: can access requestedBusinessId or defaults.
+ * - If user is not logged in: returns requestedBusinessId || fallbackBusinessId (e.g. for smoke tests / public demo).
+ */
+export function resolveTenantBusinessId(
+  req: NextRequest,
+  requestedBusinessId?: string | null,
+  fallbackBusinessId = 'biz_karthik_textiles'
+): { businessId: string; user?: User; errorResponse?: NextResponse } {
+  const cleanRequestedId =
+    requestedBusinessId &&
+    requestedBusinessId !== 'undefined' &&
+    requestedBusinessId !== 'null' &&
+    requestedBusinessId.trim() !== ''
+      ? requestedBusinessId.trim()
+      : undefined;
+
+  // Check user session first
+  const auth = getSessionFromRequest(req, false);
+  if (auth.user) {
+    const { user } = auth;
+    if (user.role === 'platform_admin') {
+      return { businessId: cleanRequestedId || fallbackBusinessId, user };
+    }
+    // Strict tenant isolation for business owners and staff:
+    if (cleanRequestedId && user.businessId && cleanRequestedId !== user.businessId) {
+      return {
+        businessId: user.businessId,
+        user,
+        errorResponse: NextResponse.json(
+          { error: 'Tenant isolation violation: You do not have permission to access another business records.' },
+          { status: 403 }
+        ),
+      };
+    }
+    if (user.businessId) {
+      return { businessId: user.businessId, user };
+    }
+  }
+
+  // Check admin session
+  const adminAuth = getSessionFromRequest(req, true);
+  if (adminAuth.user && adminAuth.user.role === 'platform_admin') {
+    return { businessId: cleanRequestedId || fallbackBusinessId, user: adminAuth.user };
+  }
+
+  // Unauthenticated fallback (for tests or demo)
+  return { businessId: cleanRequestedId || fallbackBusinessId };
+}

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { RAZORPAY_MONTHLY_PAGE_URL } from '@/types/billing';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
-      businessId,
+      businessId: requestedBusinessId,
       customerName,
       customerEmail,
       customerPhone,
@@ -14,6 +15,9 @@ export async function POST(req: NextRequest) {
       status = 'active',
       billingCycle = 'monthly',
     } = body;
+
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!businessId) {
       return NextResponse.json({ error: 'businessId is required' }, { status: 400 });
@@ -42,7 +46,10 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const businessId = req.nextUrl.searchParams.get('businessId') || 'biz_karthik_textiles';
+    const requestedBusinessId = req.nextUrl.searchParams.get('businessId');
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
+
     const sub = db.getSubscription(businessId);
     return NextResponse.json({
       success: true,

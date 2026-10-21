@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AgentExecutionEngine } from '@/lib/agent/engine';
 import { AgentType, AutonomyMode } from '@/types/agent';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
-      businessId = 'biz_karthik_textiles',
+      businessId: requestedBusinessId,
       agentType = 'general',
       prompt,
       autonomyMode = 'guarded_autopilot',
       documentId,
       initialContext,
     } = body;
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
 
     if (!prompt && !documentId) {
       return NextResponse.json({ error: 'Prompt or documentId is required.' }, { status: 400 });

@@ -41,8 +41,23 @@ const loadRazorpayScript = (): Promise<boolean> => {
   });
 };
 
+import { useBusiness } from '@/components/BusinessProvider';
+
 export default function BillingPage() {
-  const [businessId, setBusinessId] = useState('biz_karthik_textiles');
+  const { currentBusiness: activeBusiness, businessId, setBusinessId } = useBusiness();
+  const currentBusiness: Business = activeBusiness || {
+    id: businessId || '',
+    name: 'My Business Workspace',
+    type: 'Retail & Commercial',
+    currency: '₹',
+    ownerName: 'Business Owner',
+    gstNumber: '',
+    address: 'India',
+    phone: '+91 90000 00000',
+    email: 'billing@bizflow.in',
+    createdAt: new Date().toISOString(),
+  };
+
   const [activeTab, setActiveTab] = useState<'plan' | 'invoices' | 'settings'>('plan');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [isYearlyLoading, setIsYearlyLoading] = useState(false);
@@ -54,37 +69,25 @@ export default function BillingPage() {
   const [paymentSuccessMessage, setPaymentSuccessMessage] = useState<string | null>(null);
   const RAZORPAY_MONTHLY_PAGE = 'https://pages.razorpay.com/lykspirehqbizflowmonthly';
 
-  const currentBusiness: Business = {
-    id: businessId,
-    name:
-      businessId === 'biz_karthik_textiles'
-        ? 'Karthik Textiles & Garments'
-        : 'Sri Murugan Bakery & Sweets',
-    type:
-      businessId === 'biz_karthik_textiles' ? 'Clothing & Retail' : 'Bakery & Sweets',
-    currency: '₹',
-    ownerName:
-      businessId === 'biz_karthik_textiles'
-        ? 'Karthik Ramanathan'
-        : 'Murugan Velayudham',
-    gstNumber:
-      businessId === 'biz_karthik_textiles'
-        ? '33AAAAA0000A1Z5'
-        : '33BBBBB1111B2Z6',
-    address: 'Chennai, Tamil Nadu',
-    phone: '+91 98400 11223',
-    email: 'karthik@textiles.bizflow.in',
-    createdAt: '2024-01-10T10:00:00Z',
-  };
-
   const [legalName, setLegalName] = useState(currentBusiness.name);
   const [gstin, setGstin] = useState(currentBusiness.gstNumber || '');
   const [billingEmail, setBillingEmail] = useState(currentBusiness.email);
   const [addressLine1, setAddressLine1] = useState(currentBusiness.address);
 
+  // Sync state when currentBusiness updates
+  useEffect(() => {
+    if (currentBusiness) {
+      setLegalName(currentBusiness.name);
+      setGstin(currentBusiness.gstNumber || '');
+      setBillingEmail(currentBusiness.email);
+      setAddressLine1(currentBusiness.address);
+    }
+  }, [currentBusiness]);
+
   const [quota, setQuota] = useState<{ usedAiRuns: number; maxAiRuns: number; usedExtractions: number; maxExtractions: number } | null>(null);
 
   useEffect(() => {
+    if (!businessId) return;
     fetchBillingData();
   }, [businessId]);
 

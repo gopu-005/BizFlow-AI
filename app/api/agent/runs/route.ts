@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
+import { resolveTenantBusinessId } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const businessId = searchParams.get('businessId') || 'biz_karthik_textiles';
+    const requestedBusinessId = searchParams.get('businessId');
+    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    if (errorResponse) return errorResponse;
     const runId = searchParams.get('runId');
     const limit = parseInt(searchParams.get('limit') || '50', 10);
 
