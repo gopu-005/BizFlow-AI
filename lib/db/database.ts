@@ -25,6 +25,16 @@ import {
   TenantUsageQuota,
 } from '@/types/agent';
 import {
+  User,
+  UserRole,
+  UserSession,
+  PasswordResetToken,
+  EmailVerificationToken,
+  AdminAuditLog,
+  TeamInvitation,
+  PlatformMetrics,
+} from '@/types/auth';
+import {
   SEED_BUSINESSES,
   SEED_PRODUCTS,
   SEED_CUSTOMERS,
@@ -56,6 +66,12 @@ interface DatabaseSchema {
   paymentRecords: PaymentRecord[];
   dailyClosings: DailyClosingReport[];
   quotas: Record<string, TenantUsageQuota>;
+  users: User[];
+  sessions: UserSession[];
+  passwordResetTokens: PasswordResetToken[];
+  emailVerificationTokens: EmailVerificationToken[];
+  adminAuditLogs: AdminAuditLog[];
+  teamInvitations: TeamInvitation[];
 }
 
 const DB_FILE = path.join(process.cwd(), 'data', 'bizflow-db.json');
@@ -73,8 +89,6 @@ class DatabaseService {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const parsed = JSON.parse(raw);
         return {
-          ...this.initSeedData(),
-          ...parsed,
           businesses: parsed.businesses || [...SEED_BUSINESSES],
           products: parsed.products || [...SEED_PRODUCTS],
           customers: parsed.customers || [...SEED_CUSTOMERS],
@@ -94,6 +108,12 @@ class DatabaseService {
           paymentRecords: parsed.paymentRecords || this.getInitialPaymentRecords(),
           dailyClosings: parsed.dailyClosings || this.getInitialClosings(),
           quotas: parsed.quotas || this.getInitialQuotas(),
+          users: parsed.users && parsed.users.length > 0 ? parsed.users : this.getInitialUsers(),
+          sessions: parsed.sessions || [],
+          passwordResetTokens: parsed.passwordResetTokens || [],
+          emailVerificationTokens: parsed.emailVerificationTokens || [],
+          adminAuditLogs: parsed.adminAuditLogs && parsed.adminAuditLogs.length > 0 ? parsed.adminAuditLogs : this.getInitialAuditLogs(),
+          teamInvitations: parsed.teamInvitations || [],
         };
       }
     } catch (e) {
@@ -453,6 +473,84 @@ class DatabaseService {
     ];
   }
 
+  private getInitialUsers(): User[] {
+    return [
+      {
+        id: 'usr_admin_01',
+        email: 'admin@bizflow.in',
+        passwordHash: 'a1fb15c88be3458fcc33ff5d2f080792:366031ebc4756473d82d86323dc895297871ead9fb8756c021c586555bc87326297a1813e5846529d388d09d183ede27c5d53d58432f7018d4480ab516914e4e',
+        name: 'BizFlow Platform Administrator',
+        role: 'platform_admin',
+        status: 'active',
+        isEmailVerified: true,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+      },
+      {
+        id: 'usr_karthik_01',
+        email: 'karthik@textiles.bizflow.in',
+        passwordHash: '0b7bf1d34e930c848f4bc440ecb1454b:2a85c7edef23907a27353cc011579b92369e71efea2e9838fb3351668db27973f8e204013ed272e2463f0b9697ae9ef46c0677feef146d50607884d4a469b44a',
+        name: 'Karthik Ramanathan',
+        phone: '+91 98400 11223',
+        role: 'business_owner',
+        businessId: 'biz_karthik_textiles',
+        status: 'active',
+        isEmailVerified: true,
+        createdAt: '2024-01-15T00:00:00Z',
+        updatedAt: '2024-01-15T00:00:00Z',
+      },
+      {
+        id: 'usr_staff_01',
+        email: 'staff@textiles.bizflow.in',
+        passwordHash: 'd8d9c9ca0d1ce7e6723ac80bf1f14ec3:a55b30a2eb814bc00a6f0db27f1de3ed3292febaa3316173f39a939e90efdd5b4259834596071176ae3f10ac1938cc257eddba1e2a1c9ec24e53a4f731a02c31',
+        name: 'Senthil Kumar (Billing Staff)',
+        phone: '+91 98400 99887',
+        role: 'business_staff',
+        businessId: 'biz_karthik_textiles',
+        status: 'active',
+        isEmailVerified: true,
+        createdAt: '2024-02-01T00:00:00Z',
+        updatedAt: '2024-02-01T00:00:00Z',
+      },
+      {
+        id: 'usr_murugan_01',
+        email: 'murugan@bakery.bizflow.in',
+        passwordHash: 'd2fb64a40a4d8a4a8030d5e5a7d2a554:e271b380561f94f077cb398e61fad7bdd74d3f5cb2fbfaf55aa9d76f99d578944ee4d6b568875dbb575769e242968be64e50fc1482b5c2c0b3d536460b9a553a',
+        name: 'Murugesan V.',
+        phone: '+91 98840 55443',
+        role: 'business_owner',
+        businessId: 'biz_murugan_bakery',
+        status: 'active',
+        isEmailVerified: true,
+        createdAt: '2024-02-10T00:00:00Z',
+        updatedAt: '2024-02-10T00:00:00Z',
+      },
+    ];
+  }
+
+  private getInitialAuditLogs(): AdminAuditLog[] {
+    return [
+      {
+        id: 'log_init_01',
+        adminUserId: 'usr_admin_01',
+        adminEmail: 'admin@bizflow.in',
+        action: 'provision_admin',
+        targetEntity: 'system',
+        details: { note: 'Initial platform administrator account provisioned securely' },
+        timestamp: '2024-01-01T00:00:00Z',
+      },
+      {
+        id: 'log_init_02',
+        adminUserId: 'usr_admin_01',
+        adminEmail: 'admin@bizflow.in',
+        action: 'system_configuration_change',
+        targetEntity: 'subscription',
+        details: { plan: 'BizFlow AI Starter', price: 299, currency: 'INR' },
+        timestamp: '2024-01-02T10:00:00Z',
+      },
+    ];
+  }
+
   private initSeedData(): DatabaseSchema {
     const initial: DatabaseSchema = {
       businesses: [...SEED_BUSINESSES],
@@ -476,6 +574,12 @@ class DatabaseService {
       paymentRecords: this.getInitialPaymentRecords(),
       dailyClosings: this.getInitialClosings(),
       quotas: this.getInitialQuotas(),
+      users: this.getInitialUsers(),
+      sessions: [],
+      passwordResetTokens: [],
+      emailVerificationTokens: [],
+      adminAuditLogs: this.getInitialAuditLogs(),
+      teamInvitations: [],
     };
     this.saveData(initial);
     return initial;
@@ -543,6 +647,31 @@ class DatabaseService {
       this.saveData(this.data);
       return { allowed: true, remaining: quota.maxExtractions - quota.usedExtractions, quota };
     }
+  }
+
+  public updateQuota(
+    businessId: string,
+    limits: { maxAiRuns?: number; maxExtractions?: number; maxStorageMb?: number }
+  ): TenantUsageQuota {
+    this.assertTenant(businessId);
+    const quota = this.getQuota(businessId);
+    if (limits.maxAiRuns !== undefined) quota.maxAiRuns = limits.maxAiRuns;
+    if (limits.maxExtractions !== undefined) quota.maxExtractions = limits.maxExtractions;
+    if (limits.maxStorageMb !== undefined) quota.maxStorageMb = limits.maxStorageMb;
+    this.saveData(this.data);
+    return quota;
+  }
+
+
+
+  public getAllSubscriptions(): Record<string, Subscription> {
+    return { ...this.data.subscriptions };
+  }
+
+  public getAllAgentRuns(limit = 100): AgentRun[] {
+    return [...this.data.agentRuns]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit);
   }
 
   // --- Agent Runs & Audit Logging ---
@@ -1605,9 +1734,13 @@ class DatabaseService {
   public updateSubscription(businessId: string, updates: Partial<Subscription>): Subscription {
     this.assertTenant(businessId);
     const sub = this.getSubscription(businessId);
-    Object.assign(sub, updates);
+    const updated: Subscription = {
+      ...sub,
+      ...updates,
+    };
+    this.data.subscriptions[businessId] = updated;
     this.saveData(this.data);
-    return sub;
+    return updated;
   }
 
   public getBillingDetails(businessId: string): BillingDetails {
@@ -1752,7 +1885,410 @@ class DatabaseService {
     this.saveData(this.data);
     return { imported, updated };
   }
+
+  // ==========================================
+  // AUTHENTICATION & USER MANAGEMENT METHODS
+  // ==========================================
+
+  public createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): User {
+    const newUser: User = {
+      ...user,
+      id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.data.users.push(newUser);
+    this.saveData(this.data);
+    return newUser;
+  }
+
+  public getUserById(id: string): User | undefined {
+    return this.data.users.find((u) => u.id === id);
+  }
+
+  public getUserByEmail(email: string): User | undefined {
+    return this.data.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  }
+
+  public getUsers(filter?: { businessId?: string; role?: UserRole; search?: string }): User[] {
+    let result = [...this.data.users];
+    if (filter?.businessId) {
+      result = result.filter((u) => u.businessId === filter.businessId);
+    }
+    if (filter?.role) {
+      result = result.filter((u) => u.role === filter.role);
+    }
+    if (filter?.search) {
+      const q = filter.search.toLowerCase();
+      result = result.filter(
+        (u) =>
+          u.name.toLowerCase().includes(q) ||
+          u.email.toLowerCase().includes(q) ||
+          (u.phone && u.phone.includes(q))
+      );
+    }
+    return result;
+  }
+
+  public updateUser(id: string, updates: Partial<User>): User {
+    const userIndex = this.data.users.findIndex((u) => u.id === id);
+    if (userIndex === -1) {
+      throw new Error(`User ${id} not found`);
+    }
+    const updated: User = {
+      ...this.data.users[userIndex],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    this.data.users[userIndex] = updated;
+    this.saveData(this.data);
+    return updated;
+  }
+
+  // ==========================================
+  // SESSION MANAGEMENT METHODS
+  // ==========================================
+
+  public createSession(session: Omit<UserSession, 'id' | 'createdAt'>): UserSession {
+    const newSession: UserSession = {
+      ...session,
+      id: `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.sessions.push(newSession);
+    this.saveData(this.data);
+    return newSession;
+  }
+
+  public getSessionByToken(token: string): UserSession | undefined {
+    const session = this.data.sessions.find((s) => s.token === token);
+    if (!session) return undefined;
+    if (new Date(session.expiresAt) < new Date()) {
+      this.deleteSession(token);
+      return undefined;
+    }
+    return session;
+  }
+
+  public deleteSession(token: string): boolean {
+    const prevLen = this.data.sessions.length;
+    this.data.sessions = this.data.sessions.filter((s) => s.token !== token);
+    if (this.data.sessions.length !== prevLen) {
+      this.saveData(this.data);
+      return true;
+    }
+    return false;
+  }
+
+  public deleteUserSessions(userId: string): number {
+    const prevLen = this.data.sessions.length;
+    this.data.sessions = this.data.sessions.filter((s) => s.userId !== userId);
+    const count = prevLen - this.data.sessions.length;
+    if (count > 0) {
+      this.saveData(this.data);
+    }
+    return count;
+  }
+
+  // ==========================================
+  // PASSWORD RECOVERY METHODS
+  // ==========================================
+
+  public createPasswordResetToken(
+    userId: string,
+    email: string,
+    token: string,
+    expiresAt: string
+  ): PasswordResetToken {
+    this.data.passwordResetTokens.forEach((t) => {
+      if (t.userId === userId) t.used = true;
+    });
+    const resetToken: PasswordResetToken = {
+      id: `rst_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      userId,
+      email,
+      token,
+      expiresAt,
+      used: false,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.passwordResetTokens.push(resetToken);
+    this.saveData(this.data);
+    return resetToken;
+  }
+
+  public getPasswordResetToken(token: string): PasswordResetToken | undefined {
+    const rec = this.data.passwordResetTokens.find((t) => t.token === token && !t.used);
+    if (!rec) return undefined;
+    if (new Date(rec.expiresAt) < new Date()) {
+      rec.used = true;
+      this.saveData(this.data);
+      return undefined;
+    }
+    return rec;
+  }
+
+  public markPasswordResetTokenUsed(token: string): boolean {
+    const rec = this.data.passwordResetTokens.find((t) => t.token === token);
+    if (rec) {
+      rec.used = true;
+      this.saveData(this.data);
+      return true;
+    }
+    return false;
+  }
+
+  // ==========================================
+  // EMAIL VERIFICATION METHODS
+  // ==========================================
+
+  public createEmailVerificationToken(
+    userId: string,
+    email: string,
+    token: string,
+    expiresAt: string
+  ): EmailVerificationToken {
+    this.data.emailVerificationTokens = this.data.emailVerificationTokens || [];
+    this.data.emailVerificationTokens.forEach((t) => {
+      if (t.userId === userId) t.used = true;
+    });
+    const verToken: EmailVerificationToken = {
+      id: `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      userId,
+      email,
+      token,
+      expiresAt,
+      used: false,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.emailVerificationTokens.push(verToken);
+    this.saveData(this.data);
+    return verToken;
+  }
+
+  public getEmailVerificationToken(token: string): EmailVerificationToken | undefined {
+    this.data.emailVerificationTokens = this.data.emailVerificationTokens || [];
+    const rec = this.data.emailVerificationTokens.find((t) => t.token === token && !t.used);
+    if (!rec) return undefined;
+    if (new Date(rec.expiresAt) < new Date()) {
+      rec.used = true;
+      this.saveData(this.data);
+      return undefined;
+    }
+    return rec;
+  }
+
+  public markEmailVerificationTokenUsed(token: string): boolean {
+    this.data.emailVerificationTokens = this.data.emailVerificationTokens || [];
+    const rec = this.data.emailVerificationTokens.find((t) => t.token === token);
+    if (rec) {
+      rec.used = true;
+      this.saveData(this.data);
+      return true;
+    }
+    return false;
+  }
+
+  public verifyUserEmail(userId: string): boolean {
+    const user = this.getUserById(userId);
+    if (user) {
+      user.isEmailVerified = true;
+      user.updatedAt = new Date().toISOString();
+      this.saveData(this.data);
+      return true;
+    }
+    return false;
+  }
+
+  // ==========================================
+  // BUSINESS MANAGEMENT & TENANT CONTROLS
+  // ==========================================
+
+  public getBusinessById(id: string): Business | undefined {
+    return this.getBusiness(id);
+  }
+
+  public createBusiness(business: Omit<Business, 'id'> & { id?: string }): Business {
+    const newBiz: Business = {
+      ...business,
+      id: business.id || `biz_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      status: business.status || 'active',
+    };
+    this.data.businesses.push(newBiz);
+
+    // Initialize usage quota for new business
+    this.data.quotas[newBiz.id] = {
+      businessId: newBiz.id,
+      planName: 'BizFlow AI Starter',
+      billingCycle: 'monthly',
+      currentPeriodStart: new Date().toISOString(),
+      currentPeriodEnd: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
+      maxAiRuns: 100,
+      usedAiRuns: 0,
+      maxExtractions: 50,
+      usedExtractions: 0,
+      maxStorageMb: 500,
+      usedStorageMb: 0,
+    };
+
+    this.saveData(this.data);
+    return newBiz;
+  }
+
+  public updateBusiness(id: string, updates: Partial<Business>): Business {
+    const idx = this.data.businesses.findIndex((b) => b.id === id);
+    if (idx === -1) {
+      throw new Error(`Business ${id} not found`);
+    }
+    this.data.businesses[idx] = {
+      ...this.data.businesses[idx],
+      ...updates,
+    };
+    this.saveData(this.data);
+    return this.data.businesses[idx];
+  }
+
+  public suspendBusiness(businessId: string, reason: string, adminUserId: string): Business {
+    this.assertTenant(businessId);
+    const biz = this.data.businesses.find((b) => b.id === businessId);
+    if (!biz) {
+      throw new Error(`Business ${businessId} not found`);
+    }
+    biz.status = 'suspended';
+    biz.suspendedReason = reason;
+    biz.suspendedAt = new Date().toISOString();
+    biz.suspendedBy = adminUserId;
+
+    const admin = this.getUserById(adminUserId);
+    this.createAdminAuditLog({
+      adminUserId,
+      adminEmail: admin?.email || 'admin@bizflow.in',
+      action: 'suspend_business',
+      targetEntity: 'business',
+      targetId: businessId,
+      details: { businessName: biz.name, reason },
+    });
+
+    this.saveData(this.data);
+    return biz;
+  }
+
+  public activateBusiness(businessId: string, adminUserId: string): Business {
+    this.assertTenant(businessId);
+    const biz = this.data.businesses.find((b) => b.id === businessId);
+    if (!biz) {
+      throw new Error(`Business ${businessId} not found`);
+    }
+    biz.status = 'active';
+    biz.suspendedReason = undefined;
+    biz.suspendedAt = undefined;
+    biz.suspendedBy = undefined;
+
+    const admin = this.getUserById(adminUserId);
+    this.createAdminAuditLog({
+      adminUserId,
+      adminEmail: admin?.email || 'admin@bizflow.in',
+      action: 'activate_business',
+      targetEntity: 'business',
+      targetId: businessId,
+      details: { businessName: biz.name },
+    });
+
+    this.saveData(this.data);
+    return biz;
+  }
+
+  // ==========================================
+  // TEAM INVITATIONS METHODS
+  // ==========================================
+
+  public createTeamInvitation(inv: Omit<TeamInvitation, 'id' | 'createdAt'>): TeamInvitation {
+    const newInv: TeamInvitation = {
+      ...inv,
+      id: `inv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.teamInvitations.push(newInv);
+    this.saveData(this.data);
+    return newInv;
+  }
+
+  public getTeamInvitations(businessId: string): TeamInvitation[] {
+    this.assertTenant(businessId);
+    return this.data.teamInvitations.filter((i) => i.businessId === businessId);
+  }
+
+  public updateTeamInvitation(id: string, updates: Partial<TeamInvitation>): TeamInvitation | undefined {
+    const idx = this.data.teamInvitations.findIndex((i) => i.id === id);
+    if (idx === -1) return undefined;
+    this.data.teamInvitations[idx] = {
+      ...this.data.teamInvitations[idx],
+      ...updates,
+    };
+    this.saveData(this.data);
+    return this.data.teamInvitations[idx];
+  }
+
+  // ==========================================
+  // ADMIN AUDIT LOGS METHODS
+  // ==========================================
+
+  public createAdminAuditLog(log: Omit<AdminAuditLog, 'id' | 'timestamp'>): AdminAuditLog {
+    const newLog: AdminAuditLog = {
+      ...log,
+      id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      timestamp: new Date().toISOString(),
+    };
+    this.data.adminAuditLogs.unshift(newLog);
+    if (this.data.adminAuditLogs.length > 1000) {
+      this.data.adminAuditLogs = this.data.adminAuditLogs.slice(0, 1000);
+    }
+    this.saveData(this.data);
+    return newLog;
+  }
+
+  public getAdminAuditLogs(limit = 100): AdminAuditLog[] {
+    return this.data.adminAuditLogs.slice(0, limit);
+  }
+
+  // ==========================================
+  // PLATFORM METRICS & SAAS ANALYTICS
+  // ==========================================
+
+  public getPlatformMetrics(): PlatformMetrics {
+    const businesses = this.data.businesses;
+    const activeBusinesses = businesses.filter((b) => b.status !== 'suspended').length;
+    const suspendedBusinesses = businesses.filter((b) => b.status === 'suspended').length;
+
+    const users = this.data.users;
+    const activeUsers = users.filter((u) => u.status === 'active').length;
+
+    const subscriptions = Object.values(this.data.subscriptions);
+    const paidSubs = subscriptions.filter((s) => s.status === 'active');
+    const mrr = paidSubs.length * 299;
+
+    const aiRuns = this.data.agentRuns;
+    const failedAiRuns = aiRuns.filter((r) => r.status === 'failed').length;
+    const docs = this.data.documents;
+
+    return {
+      totalBusinesses: businesses.length,
+      activeBusinesses,
+      suspendedBusinesses,
+      totalUsers: users.length,
+      activeUsers,
+      mrr,
+      paidSubscriptionsCount: paidSubs.length,
+      aiWorkflowRunsTotal: aiRuns.length,
+      documentExtractionsTotal: docs.length,
+      failedAgentRunsCount: failedAiRuns,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
 }
 
-// Singleton database instance
-export const db = new DatabaseService();
+// Singleton database instance across Next.js module evaluations
+const globalForDb = globalThis as unknown as { bizflowDb: DatabaseService };
+export const db = globalForDb.bizflowDb || new DatabaseService();
+if (process.env.NODE_ENV !== 'production') globalForDb.bizflowDb = db;
+
