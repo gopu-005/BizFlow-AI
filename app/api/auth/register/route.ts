@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
       user: sanitizedUser,
       business: newTenant,
       emailConfigured: emailResult.configured,
-      redirectTo: '/app',
+      redirectTo: '/',
     });
 
     // 9. Attach HttpOnly SameSite=Lax Secure session cookie

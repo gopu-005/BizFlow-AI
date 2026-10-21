@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
     // Determine appropriate redirect
     const isAdmin = user.role === 'platform_admin';
-    const redirectTo = isAdmin ? '/admin' : '/app';
+    const redirectTo = isAdmin ? '/admin' : '/';
 
     const { passwordHash: _, ...sanitizedUser } = user;
 

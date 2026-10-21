@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Lock, Mail, User, Building, Phone, ArrowRight, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useBusiness } from '@/components/BusinessProvider';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { refreshBusiness } = useBusiness();
   const [name, setName] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [email, setEmail] = useState('');
@@ -66,8 +68,8 @@ export default function RegisterPage() {
         localStorage.setItem('bizflow_active_business_id', data.business.id);
       }
 
-      router.push('/app');
-      router.refresh();
+      // Navigate to main workspace dashboard
+      window.location.href = '/';
     } catch (err: any) {
       setError('Network connection error. Please try again.');
       setLoading(false);
