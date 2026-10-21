@@ -2356,6 +2356,32 @@
   ],
   "dailyClosings": [
     {
+      "id": "cls_20261021",
+      "businessId": "biz_murugan_bakery",
+      "date": "2026-10-21",
+      "totalSales": 0,
+      "totalInvoices": 0,
+      "totalCollections": 0,
+      "totalReceivables": 0,
+      "totalExpenses": 0,
+      "totalTax": 0,
+      "estimatedGrossProfit": 0,
+      "profitMarginPercent": 0,
+      "cashExpected": 0,
+      "cashRecorded": 0,
+      "cashVariance": 0,
+      "unmatchedPaymentsCount": 0,
+      "unmatchedPaymentsAmount": 0,
+      "anomaliesCount": 0,
+      "status": "draft",
+      "summaryText": "Daily closing for 2026-10-21: Total Sales ₹0, Collections ₹0, Expenses ₹0. ✓ Cash perfectly reconciled. ",
+      "sourceInvoices": [],
+      "sourcePayments": [],
+      "sourceExpenses": [],
+      "marginAnomalies": [],
+      "createdAt": "2026-10-21T10:35:07.369Z"
+    },
+    {
       "id": "cls_20241015",
       "businessId": "biz_karthik_textiles",
       "date": "2024-10-15",
@@ -2859,7 +2885,8 @@
       "status": "active",
       "isEmailVerified": true,
       "createdAt": "2024-02-10T00:00:00Z",
-      "updatedAt": "2024-02-10T00:00:00Z"
+      "updatedAt": "2026-10-21T10:35:06.363Z",
+      "lastLoginAt": "2026-10-21T10:35:06.363Z"
     },
     {
       "email": "debug_1792479626426@test.in",
@@ -3355,16 +3382,6 @@
       "ipAddress": "::1"
     },
     {
-      "id": "sess_1792556567384_4dta5",
-      "userId": "usr_admin_01",
-      "token": "59e96b5d8d7ec1f74f52dd7f5131de2909854410862a22a9c3ca8ed3225f93bb",
-      "role": "platform_admin",
-      "expiresAt": "2026-10-28T04:22:47.384Z",
-      "createdAt": "2026-10-21T04:22:47.384Z",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
-      "ipAddress": "::1"
-    },
-    {
       "id": "sess_1792557189426_w83nz",
       "userId": "usr_admin_01",
       "token": "e0f5615bc7dab6bf5b47a179735184b77e5401868126b384496e4dd70eeec3f5",
@@ -3500,17 +3517,6 @@
       "businessId": "biz_1792561456799_2m0d",
       "expiresAt": "2026-10-28T05:44:16.903Z",
       "createdAt": "2026-10-21T05:44:16.904Z",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
-      "ipAddress": "::1"
-    },
-    {
-      "id": "sess_1792561561472_ktu27",
-      "userId": "usr_1792561456900_prxit",
-      "token": "c7f41051f025c0f45304f74190c3793b59dd1c3861ed3bf61fc251db8fcec22c",
-      "role": "business_owner",
-      "businessId": "biz_1792561456799_2m0d",
-      "expiresAt": "2026-10-28T05:46:01.472Z",
-      "createdAt": "2026-10-21T05:46:01.472Z",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
       "ipAddress": "::1"
     },
@@ -3751,6 +3757,17 @@
       "expiresAt": "2026-10-28T09:56:34.003Z",
       "createdAt": "2026-10-21T09:56:34.003Z",
       "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792578906367_cz4xn",
+      "userId": "usr_murugan_01",
+      "token": "3717f93af205ec016675f132f3ab0aaabe937305f058b06261ec2c5ba94b487f",
+      "role": "business_owner",
+      "businessId": "biz_murugan_bakery",
+      "expiresAt": "2026-10-28T10:35:06.367Z",
+      "createdAt": "2026-10-21T10:35:06.367Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
       "ipAddress": "::1"
     }
   ],
