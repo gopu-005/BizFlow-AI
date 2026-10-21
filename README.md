@@ -175,9 +175,21 @@ Open your browser and navigate to:
 
 ---
 
-### 6. Run Smoke Tests
+### 6. Admin Provisioning & Test Suites
 
-To verify that all API endpoints, ERP data routes, and voice utilities pass integrity checks:
+To provision the offline platform administrator account:
+
+```bash
+npm run provision:admin
+```
+
+To run the comprehensive authentication, multi-tenant RBAC, and platform admin test suite (33 tests):
+
+```bash
+npm run test:auth
+```
+
+To run the ERP core smoke tests (21 tests):
 
 ```bash
 npm test
