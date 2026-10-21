@@ -1,0 +1,25 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(self), geolocation=()"
+
+# Fallback rewrite for client-side routing across protected and sub-path routes
+[[redirects]]
+  from = "/app/*"
+  to = "/app"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin"
+  status = 200
