@@ -88,6 +88,32 @@
       "createdAt": "2026-10-21T03:28:21.463Z",
       "status": "active",
       "id": "biz_1792553301464_nflj"
+    },
+    {
+      "name": "Exploit Store",
+      "legalName": "Exploit Store",
+      "ownerName": "Hacker Attempt",
+      "type": "Retail & Commercial Services",
+      "email": "testowner_1792556457591@bizflowtest.in",
+      "phone": "+91 90000 00000",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T04:20:57.827Z",
+      "status": "active",
+      "id": "biz_1792556457827_ws1n"
+    },
+    {
+      "name": "ABC Retailers",
+      "legalName": "ABC Retailers",
+      "ownerName": "Gopi",
+      "type": "Retail & Commercial Services",
+      "email": "gopz0505@gmail.com",
+      "phone": "+91 90000 00000",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T04:43:28.923Z",
+      "status": "active",
+      "id": "biz_1792557808923_5ypv"
     }
   ],
   "products": [
@@ -638,19 +664,262 @@
       "id": "sub_active_001",
       "businessId": "biz_karthik_textiles",
       "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2026-10-21T04:20:02.610Z",
+      "currentPeriodEnd": "2026-11-21T04:20:02.610Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2026-10-21T04:20:02.610Z",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "businessName": "Karthik Textiles & Garments",
+      "customerName": "Karthik Ramanathan",
+      "customerEmail": "karthik@textiles.bizflow.in",
+      "customerPhone": "+91 98400 11223",
+      "razorpayPaymentPageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly",
+      "gatewayTransactionRef": "rzp_page_1792556274743",
+      "updatedAt": "2026-10-21T04:20:02.610Z"
+    },
+    "biz_murugan_bakery": {
+      "id": "sub_active_001",
+      "businessId": "biz_murugan_bakery",
+      "planId": "bizflow-all-in-one",
       "planName": "BizFlow AI All-in-One",
       "billingCycle": "monthly",
       "amount": 299,
       "currency": "INR",
       "status": "active",
-      "currentPeriodStart": "2026-10-21T03:28:44.085Z",
-      "currentPeriodEnd": "2026-11-21T03:28:44.085Z",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
       "autoRenew": true,
-      "lastPaymentDate": "2026-10-21T03:28:44.085Z",
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
       "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792479626504_ml1d": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792479626504_ml1d",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792481373727_16hu": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792481373727_16hu",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792553216681_seh6": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792553216681_seh6",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792553231774_o8lq": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792553231774_o8lq",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792553301464_nflj": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792553301464_nflj",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI All-in-One",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2024-10-01T00:00:00Z",
+      "currentPeriodEnd": "2024-11-01T00:00:00Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2024-10-01T09:12:00Z",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    "biz_1792557808923_5ypv": {
+      "id": "sub_active_001",
+      "businessId": "biz_1792557808923_5ypv",
+      "planId": "bizflow-all-in-one",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "amount": 299,
+      "currency": "INR",
+      "status": "active",
+      "currentPeriodStart": "2026-10-21T04:46:03.147Z",
+      "currentPeriodEnd": "2026-11-21T04:46:03.147Z",
+      "autoRenew": true,
+      "lastPaymentDate": "2026-10-21T04:46:03.147Z",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "businessName": "ABC Retailers",
+      "customerName": "Karthik Textiles & Garments",
+      "customerEmail": "karthik@textiles.bizflow.in",
+      "customerPhone": "+91 98400 11223",
+      "razorpayPaymentPageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly",
+      "gatewayTransactionRef": "rzp_page_1792557954316",
+      "updatedAt": "2026-10-21T04:46:03.147Z"
     }
   },
   "billingInvoices": [
+    {
+      "id": "binv_1792557963148",
+      "invoiceNumber": "BZF-2024-0009",
+      "businessId": "biz_1792557808923_5ypv",
+      "businessName": "Business Owner",
+      "billingEmail": "billing@bizflow.in",
+      "billingAddress": "India, Chennai, Tamil Nadu - 600001",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792557954316",
+      "createdAt": "2026-10-21T04:46:03.147Z"
+    },
+    {
+      "id": "binv_1792557954324",
+      "invoiceNumber": "BZF-2024-0008",
+      "businessId": "biz_1792557808923_5ypv",
+      "businessName": "Business Owner",
+      "billingEmail": "billing@bizflow.in",
+      "billingAddress": "India, Chennai, Tamil Nadu - 600001",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792557954316",
+      "createdAt": "2026-10-21T04:45:54.316Z"
+    },
+    {
+      "id": "binv_1792556402624",
+      "invoiceNumber": "BZF-2024-0007",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792556274743",
+      "createdAt": "2026-10-21T04:20:02.610Z"
+    },
+    {
+      "id": "binv_1792556355282",
+      "invoiceNumber": "BZF-2024-0006",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792556274743",
+      "createdAt": "2026-10-21T04:19:15.282Z"
+    },
+    {
+      "id": "binv_1792556339874",
+      "invoiceNumber": "BZF-2024-0005",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792556274743",
+      "createdAt": "2026-10-21T04:18:59.874Z"
+    },
+    {
+      "id": "binv_1792556274761",
+      "invoiceNumber": "BZF-2024-0004",
+      "businessId": "biz_karthik_textiles",
+      "businessName": "Karthik Textiles & Garments",
+      "billingEmail": "karthik@textiles.bizflow.in",
+      "customerGstin": "33AAAAA0000A1Z5",
+      "billingAddress": "42 Ranganathan Street, Chennai, Tamil Nadu - 600017",
+      "planName": "BizFlow AI Starter",
+      "billingPeriod": "21 Oct 2026 – 21 Nov 2026",
+      "billingCycle": "monthly",
+      "baseAmount": 253.39,
+      "taxRate": 18,
+      "taxAmount": 45.61,
+      "totalPaid": 299,
+      "currency": "INR",
+      "paymentStatus": "paid",
+      "paymentMethod": "Razorpay Payment Page (UPI / Cards / NetBanking)",
+      "gatewayTransactionRef": "rzp_page_1792556274743",
+      "createdAt": "2026-10-21T04:17:54.743Z"
+    },
     {
       "id": "binv_1792553324084",
       "invoiceNumber": "BZF-2024-0003",
@@ -960,6 +1229,32 @@
   "dailyClosings": [
     {
       "id": "cls_20261021",
+      "businessId": "biz_1792557808923_5ypv",
+      "date": "2026-10-21",
+      "totalSales": 0,
+      "totalInvoices": 0,
+      "totalCollections": 0,
+      "totalReceivables": 0,
+      "totalExpenses": 0,
+      "totalTax": 0,
+      "estimatedGrossProfit": 0,
+      "profitMarginPercent": 0,
+      "cashExpected": 0,
+      "cashRecorded": 0,
+      "cashVariance": 0,
+      "unmatchedPaymentsCount": 0,
+      "unmatchedPaymentsAmount": 0,
+      "anomaliesCount": 0,
+      "status": "draft",
+      "summaryText": "Daily closing for 2026-10-21: Total Sales ₹0, Collections ₹0, Expenses ₹0. ✓ Cash perfectly reconciled. ",
+      "sourceInvoices": [],
+      "sourcePayments": [],
+      "sourceExpenses": [],
+      "marginAnomalies": [],
+      "createdAt": "2026-10-21T04:43:32.360Z"
+    },
+    {
+      "id": "cls_20261021",
       "businessId": "biz_karthik_textiles",
       "date": "2026-10-21",
       "totalSales": 0,
@@ -1111,6 +1406,32 @@
       "usedExtractions": 0,
       "maxStorageMb": 1000,
       "usedStorageMb": 0
+    },
+    "biz_1792556457827_ws1n": {
+      "businessId": "biz_1792556457827_ws1n",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T04:20:57.827Z",
+      "currentPeriodEnd": "2026-11-20T04:20:57.827Z",
+      "maxAiRuns": 250,
+      "usedAiRuns": 0,
+      "maxExtractions": 120,
+      "usedExtractions": 0,
+      "maxStorageMb": 1000,
+      "usedStorageMb": 0
+    },
+    "biz_1792557808923_5ypv": {
+      "businessId": "biz_1792557808923_5ypv",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T04:43:28.923Z",
+      "currentPeriodEnd": "2026-11-20T04:43:28.923Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
     }
   },
   "users": [
@@ -1123,8 +1444,8 @@
       "status": "active",
       "isEmailVerified": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2026-10-21T03:28:24.681Z",
-      "lastLoginAt": "2026-10-21T03:28:24.680Z"
+      "updatedAt": "2026-10-21T04:33:46.687Z",
+      "lastLoginAt": "2026-10-21T04:33:46.687Z"
     },
     {
       "id": "usr_karthik_01",
@@ -1150,8 +1471,8 @@
       "status": "active",
       "isEmailVerified": true,
       "createdAt": "2024-02-01T00:00:00Z",
-      "updatedAt": "2026-10-21T03:28:24.135Z",
-      "lastLoginAt": "2026-10-21T03:28:24.135Z"
+      "updatedAt": "2026-10-21T04:20:59.284Z",
+      "lastLoginAt": "2026-10-21T04:20:59.284Z"
     },
     {
       "id": "usr_murugan_01",
@@ -1229,6 +1550,31 @@
       "createdAt": "2026-10-21T03:28:21.533Z",
       "updatedAt": "2026-10-21T03:28:23.745Z",
       "lastLoginAt": "2026-10-21T03:28:23.420Z"
+    },
+    {
+      "email": "testowner_1792556457591@bizflowtest.in",
+      "passwordHash": "e2da078506b45043245e0d9471bd8e93:9643913135a58f1d018c795d3334fb5707b4c76d9a98620b4ee47d11980468acac01623e0c966e523c0d9e483456e1e3d77c2f6d7b1d4fd966664ed160e36e94",
+      "name": "Hacker Attempt",
+      "role": "business_owner",
+      "businessId": "biz_1792556457827_ws1n",
+      "status": "active",
+      "isEmailVerified": true,
+      "id": "usr_1792556457866_3osox",
+      "createdAt": "2026-10-21T04:20:57.866Z",
+      "updatedAt": "2026-10-21T04:20:59.063Z",
+      "lastLoginAt": "2026-10-21T04:20:58.878Z"
+    },
+    {
+      "email": "gopz0505@gmail.com",
+      "passwordHash": "24e78238fa413d0bbbce40278e642b88:efdcec1d623376ae6f2c47ebd73786e68c2a1499cd7cf89949536fcea64faab55f677314118f6b9dbb14a217d972fe91ce27d4d0dcc45940be96031b0e97133a",
+      "name": "Gopi",
+      "role": "business_owner",
+      "businessId": "biz_1792557808923_5ypv",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792557809002_1bnrq",
+      "createdAt": "2026-10-21T04:43:29.002Z",
+      "updatedAt": "2026-10-21T04:43:29.002Z"
     }
   ],
   "sessions": [
@@ -1371,6 +1717,109 @@
       "createdAt": "2026-10-21T03:28:24.683Z",
       "userAgent": "node",
       "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556340464_6dop2",
+      "userId": "usr_admin_01",
+      "token": "2c48eb45de03bd992886bc7cbaf481f6778e197861dec5e20ed9f108d067cddf",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:19:00.464Z",
+      "createdAt": "2026-10-21T04:19:00.464Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556402831_si8b4",
+      "userId": "usr_admin_01",
+      "token": "bcbd989877613242eeef218f897c4fa6dca70f23db620a3134dfbc43b047f721",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:20:02.831Z",
+      "createdAt": "2026-10-21T04:20:02.831Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556458881_nkifc",
+      "userId": "usr_1792556457866_3osox",
+      "token": "aac034c65909ae4e3474c8cddc92a3199c31b27a04d407f5062eb0b2df743f5d",
+      "role": "business_owner",
+      "businessId": "biz_1792556457827_ws1n",
+      "expiresAt": "2026-10-28T04:20:58.881Z",
+      "createdAt": "2026-10-21T04:20:58.881Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556459285_hy4rb",
+      "userId": "usr_staff_01",
+      "token": "c5e0dfa73f2541589f58493d3caf68577b0d2b60b664ed5dab51fb3c0ae8fdc3",
+      "role": "business_staff",
+      "businessId": "biz_karthik_textiles",
+      "expiresAt": "2026-10-28T04:20:59.285Z",
+      "createdAt": "2026-10-21T04:20:59.285Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556459417_awbf0",
+      "userId": "usr_admin_01",
+      "token": "5c4295893267406487bbcb700d3b608cf1913099b96cb19b206d038fec19f8ae",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:20:59.417Z",
+      "createdAt": "2026-10-21T04:20:59.417Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556567384_4dta5",
+      "userId": "usr_admin_01",
+      "token": "59e96b5d8d7ec1f74f52dd7f5131de2909854410862a22a9c3ca8ed3225f93bb",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:22:47.384Z",
+      "createdAt": "2026-10-21T04:22:47.384Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792556665333_ynr2k",
+      "userId": "usr_admin_01",
+      "token": "0e9d746da9628026fab8806c7454872b9183f4b39d6e2c5965c0a8314030c16f",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:24:25.333Z",
+      "createdAt": "2026-10-21T04:24:25.333Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792557189426_w83nz",
+      "userId": "usr_admin_01",
+      "token": "e0f5615bc7dab6bf5b47a179735184b77e5401868126b384496e4dd70eeec3f5",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:33:09.426Z",
+      "createdAt": "2026-10-21T04:33:09.426Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792557226688_zl4bj",
+      "userId": "usr_admin_01",
+      "token": "cc75e959258b717cd41ef5e8d8a4fd34ef369c9441323b0c2be75e1cf5e1d387",
+      "role": "platform_admin",
+      "expiresAt": "2026-10-28T04:33:46.688Z",
+      "createdAt": "2026-10-21T04:33:46.688Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792557809005_1eoxp",
+      "userId": "usr_1792557809002_1bnrq",
+      "token": "7d2dc8e65f6314a332e1b8dd83a7114737b7ff04c805282803a3917468734d28",
+      "role": "business_owner",
+      "businessId": "biz_1792557808923_5ypv",
+      "expiresAt": "2026-10-28T04:43:29.005Z",
+      "createdAt": "2026-10-21T04:43:29.005Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ipAddress": "::1"
     }
   ],
   "passwordResetTokens": [
@@ -1400,6 +1849,15 @@
       "expiresAt": "2026-10-21T04:28:22.888Z",
       "used": true,
       "createdAt": "2026-10-21T03:28:22.888Z"
+    },
+    {
+      "id": "rst_1792556458602_ft7b0",
+      "userId": "usr_1792556457866_3osox",
+      "email": "testowner_1792556457591@bizflowtest.in",
+      "token": "3a879fef0b6569b08fa0468e6d160f1faefc379c107d453b58ba42b3bdc3fe53",
+      "expiresAt": "2026-10-21T05:20:58.602Z",
+      "used": true,
+      "createdAt": "2026-10-21T04:20:58.602Z"
     }
   ],
   "emailVerificationTokens": [
@@ -1420,9 +1878,221 @@
       "expiresAt": "2026-10-22T03:28:23.709Z",
       "used": true,
       "createdAt": "2026-10-21T03:28:23.709Z"
+    },
+    {
+      "id": "evt_1792556457869_mygl6",
+      "userId": "usr_1792556457866_3osox",
+      "email": "testowner_1792556457591@bizflowtest.in",
+      "token": "1f033a5041fbea7f8bde15c6532d6c4a162c8578f44e946b70ed35013d2c6df0",
+      "expiresAt": "2026-10-22T04:20:57.869Z",
+      "used": true,
+      "createdAt": "2026-10-21T04:20:57.869Z"
+    },
+    {
+      "id": "evt_1792556459042_fs4ge",
+      "userId": "usr_1792556457866_3osox",
+      "email": "testowner_1792556457591@bizflowtest.in",
+      "token": "9dd868c01bec57ca272de25162e056ed815c3df2cd6f2392a8c94e68873f83cc",
+      "expiresAt": "2026-10-22T04:20:59.042Z",
+      "used": true,
+      "createdAt": "2026-10-21T04:20:59.042Z"
+    },
+    {
+      "id": "evt_1792557809007_x50s2",
+      "userId": "usr_1792557809002_1bnrq",
+      "email": "gopz0505@gmail.com",
+      "token": "00ace54cffa68d4438731755ed314c9884e40f733dde0aa91b61c2697a286051",
+      "expiresAt": "2026-10-22T04:43:29.007Z",
+      "used": false,
+      "createdAt": "2026-10-21T04:43:29.007Z"
     }
   ],
   "adminAuditLogs": [
+    {
+      "adminUserId": "system",
+      "adminEmail": "system@bizflow.in",
+      "action": "system_configuration_change",
+      "targetEntity": "subscription",
+      "targetId": "biz_1792557808923_5ypv",
+      "details": {
+        "note": "Subscription updated via Razorpay Payment Page (active)",
+        "clientName": "Karthik Textiles & Garments",
+        "clientEmail": "karthik@textiles.bizflow.in",
+        "plan": "BizFlow AI Starter",
+        "amount": 299,
+        "cycle": "monthly",
+        "pageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly"
+      },
+      "id": "audit_1792557963153_oydk6",
+      "timestamp": "2026-10-21T04:46:03.153Z"
+    },
+    {
+      "adminUserId": "system",
+      "adminEmail": "system@bizflow.in",
+      "action": "system_configuration_change",
+      "targetEntity": "subscription",
+      "targetId": "biz_1792557808923_5ypv",
+      "details": {
+        "note": "Subscription updated via Razorpay Payment Page (active)",
+        "clientName": "Karthik Textiles & Garments",
+        "clientEmail": "karthik@textiles.bizflow.in",
+        "plan": "BizFlow AI Starter",
+        "amount": 299,
+        "cycle": "monthly",
+        "pageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly"
+      },
+      "id": "audit_1792557954336_cg784",
+      "timestamp": "2026-10-21T04:45:54.336Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792557226689_rl02p",
+      "timestamp": "2026-10-21T04:33:46.689Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792557189427_0zh0h",
+      "timestamp": "2026-10-21T04:33:09.427Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792556567385_aj6d2",
+      "timestamp": "2026-10-21T04:22:47.385Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "update_subscription_limits",
+      "targetEntity": "subscription",
+      "targetId": "biz_1792556457827_ws1n",
+      "details": {
+        "businessName": "Exploit Store",
+        "maxAiRuns": 250,
+        "maxExtractions": 120,
+        "maxStorageMb": 1000
+      },
+      "id": "audit_1792556460681_7swfu",
+      "timestamp": "2026-10-21T04:21:00.681Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "activate_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792556457827_ws1n",
+      "details": {
+        "businessName": "Exploit Store"
+      },
+      "id": "audit_1792556460507_hv7fv",
+      "timestamp": "2026-10-21T04:21:00.507Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "suspend_business",
+      "targetEntity": "business",
+      "targetId": "biz_1792556457827_ws1n",
+      "details": {
+        "businessName": "Exploit Store",
+        "reason": "Automated test compliance review suspension"
+      },
+      "id": "audit_1792556460314_hvnue",
+      "timestamp": "2026-10-21T04:21:00.314Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792556459418_7cqfk",
+      "timestamp": "2026-10-21T04:20:59.418Z"
+    },
+    {
+      "adminUserId": "usr_1792556457866_3osox",
+      "adminEmail": "testowner_1792556457591@bizflowtest.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "denied",
+        "reason": "Insufficient role - non-admin attempted admin login"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792556459361_yxz69",
+      "timestamp": "2026-10-21T04:20:59.361Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792556402832_ywwju",
+      "timestamp": "2026-10-21T04:20:02.832Z"
+    },
+    {
+      "adminUserId": "system",
+      "adminEmail": "system@bizflow.in",
+      "action": "system_configuration_change",
+      "targetEntity": "subscription",
+      "targetId": "biz_karthik_textiles",
+      "details": {
+        "note": "Subscription updated via Razorpay Payment Page (active)",
+        "clientName": "Karthik Ramanathan",
+        "clientEmail": "karthik@textiles.bizflow.in",
+        "plan": "BizFlow AI Starter",
+        "amount": 299,
+        "cycle": "monthly",
+        "pageUrl": "https://pages.razorpay.com/lykspirehqbizflowmonthly"
+      },
+      "id": "audit_1792556402627_cswss",
+      "timestamp": "2026-10-21T04:20:02.627Z"
+    },
+    {
+      "adminUserId": "usr_admin_01",
+      "adminEmail": "admin@bizflow.in",
+      "action": "admin_login",
+      "targetEntity": "system",
+      "details": {
+        "outcome": "success",
+        "userAgent": "node"
+      },
+      "ipAddress": "::1",
+      "id": "audit_1792556340466_cpko6",
+      "timestamp": "2026-10-21T04:19:00.466Z"
+    },
     {
       "adminUserId": "usr_admin_01",
       "adminEmail": "admin@bizflow.in",

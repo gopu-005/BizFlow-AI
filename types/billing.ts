@@ -28,22 +28,31 @@ export const BIZFLOW_PLAN: SubscriptionPlan = {
   ],
 };
 
+export const RAZORPAY_MONTHLY_PAGE_URL = 'https://pages.razorpay.com/lykspirehqbizflowmonthly';
+
 export interface Subscription {
   id: string;
   businessId: string;
+  businessName?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   planId: 'bizflow-all-in-one';
   planName: string;
   billingCycle: 'monthly' | 'annual';
   amount: number;
   currency: 'INR';
-  status: 'active' | 'pending' | 'cancelled' | 'past_due';
+  status: 'active' | 'pending' | 'cancelled' | 'past_due' | 'under_process';
   currentPeriodStart: string;
   currentPeriodEnd: string;
   autoRenew: boolean;
   razorpaySubscriptionId?: string;
   razorpayCustomerId?: string;
+  razorpayPaymentPageUrl?: string;
+  gatewayTransactionRef?: string;
   lastPaymentDate?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface BillingDetails {

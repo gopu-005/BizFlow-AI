@@ -131,8 +131,8 @@ export default function AdminSubscriptionsPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-white/5 text-gray-400 border-b border-white/10">
               <tr>
-                <th className="py-3 px-5 font-semibold">Tenant Name</th>
-                <th className="py-3 px-5 font-semibold">Plan & Billing Cycle</th>
+                <th className="py-3 px-5 font-semibold">Tenant & Client Details</th>
+                <th className="py-3 px-5 font-semibold">Plan & Gateway</th>
                 <th className="py-3 px-5 font-semibold">AI Runs Quota</th>
                 <th className="py-3 px-5 font-semibold">OCR Extractions</th>
                 <th className="py-3 px-5 font-semibold">Status</th>
@@ -144,11 +144,17 @@ export default function AdminSubscriptionsPage() {
                 <tr key={sub.businessId} className="hover:bg-white/5 transition-colors">
                   <td className="py-3.5 px-5">
                     <div className="font-semibold text-white">{sub.businessName}</div>
-                    <div className="text-[11px] text-gray-500 font-mono">{sub.businessId}</div>
+                    <div className="text-[11px] text-purple-300 font-medium">{sub.customerName || 'Business Client'}</div>
+                    <div className="text-[10px] text-gray-400 truncate max-w-[220px]">
+                      {sub.customerEmail || 'billing@bizflow.in'} {sub.customerPhone ? `• ${sub.customerPhone}` : ''}
+                    </div>
                   </td>
                   <td className="py-3.5 px-5">
                     <div className="font-medium text-purple-200">₹{sub.priceMonthly}/mo</div>
-                    <div className="text-[11px] text-gray-400 capitalize">{sub.billingCycle} cycle</div>
+                    <div className="text-[10px] text-gray-400 capitalize">{sub.billingCycle} billing</div>
+                    <div className="text-[10px] text-indigo-400 font-mono mt-0.5 truncate max-w-[180px]" title={sub.gatewayTransactionRef || 'Razorpay Page'}>
+                      Ref: {sub.gatewayTransactionRef || 'rzp_monthly_page'}
+                    </div>
                   </td>
                   <td className="py-3.5 px-5">
                     <div className="flex items-center gap-2">
@@ -167,9 +173,15 @@ export default function AdminSubscriptionsPage() {
                     </div>
                   </td>
                   <td className="py-3.5 px-5">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                      <CheckCircle2 className="w-3 h-3" /> Active
-                    </span>
+                    {sub.status === 'under_process' ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                        <Clock className="w-3 h-3 animate-spin" /> Under Process
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                        <CheckCircle2 className="w-3 h-3" /> Active
+                      </span>
+                    )}
                   </td>
                   <td className="py-3.5 px-5 text-right">
                     <button

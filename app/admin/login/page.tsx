@@ -38,8 +38,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.push('/admin');
-      router.refresh();
+      window.location.href = '/admin/subscriptions';
     } catch (err: any) {
       setError('Network connection error. Please try again.');
       setLoading(false);
@@ -84,6 +83,7 @@ export default function AdminLoginPage() {
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
+                  id="admin-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-purple-200 mb-1.5">
+              <label className="block text-xs font-medium text-purple-200 mb-1.5" htmlFor="admin-password">
                 Security Password
               </label>
               <div className="relative">
@@ -104,6 +104,7 @@ export default function AdminLoginPage() {
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
+                  id="admin-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -124,6 +125,7 @@ export default function AdminLoginPage() {
 
             <div className="pt-2">
               <button
+                id="admin-login-submit"
                 type="submit"
                 disabled={loading}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-700 via-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-purple-900/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50 group"

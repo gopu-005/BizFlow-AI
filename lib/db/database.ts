@@ -12,7 +12,7 @@ import {
   ConnectorStatus,
   ImportPreviewRecord,
 } from '@/types/erp';
-import { Subscription, BillingInvoice, BillingDetails, BIZFLOW_PLAN } from '@/types/billing';
+import { Subscription, BillingInvoice, BillingDetails, BIZFLOW_PLAN, RAZORPAY_MONTHLY_PAGE_URL } from '@/types/billing';
 import {
   AgentRun,
   AgentApproval,
@@ -660,6 +660,13 @@ class DatabaseService {
     if (limits.maxStorageMb !== undefined) quota.maxStorageMb = limits.maxStorageMb;
     this.saveData(this.data);
     return quota;
+  }
+
+  public setQuota(
+    businessId: string,
+    limits: { maxAiRuns?: number; maxExtractions?: number; maxStorageMb?: number }
+  ): TenantUsageQuota {
+    return this.updateQuota(businessId, limits);
   }
 
 
@@ -1739,6 +1746,97 @@ class DatabaseService {
       ...updates,
     };
     this.data.subscriptions[businessId] = updated;
+    this.saveData(this.data);
+    return updated;
+  }
+
+  public recordPaymentPageSubscription(params: {
+    businessId: string;
+    customerName?: string;
+    customerEmail?: string;
+    customerPhone?: string;
+    paymentId?: string;
+    status?: 'active' | 'pending' | 'under_process';
+    billingCycle?: 'monthly' | 'annual';
+  }): Subscription {
+    this.assertTenant(params.businessId);
+    const biz = this.getBusiness(params.businessId);
+    const now = new Date();
+    const periodEnd = new Date(now);
+    if (params.billingCycle === 'annual') {
+      periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+    } else {
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
+    }
+
+    const currentSub = this.getSubscription(params.businessId);
+    const updated: Subscription = {
+      ...currentSub,
+      businessId: params.businessId,
+      businessName: biz?.name || currentSub.businessName || 'Business Tenant',
+      customerName: params.customerName || biz?.ownerName || currentSub.customerName,
+      customerEmail: params.customerEmail || biz?.email || currentSub.customerEmail,
+      customerPhone: params.customerPhone || biz?.phone || currentSub.customerPhone,
+      planId: 'bizflow-all-in-one',
+      planName: BIZFLOW_PLAN.name,
+      billingCycle: params.billingCycle || 'monthly',
+      amount: params.billingCycle === 'annual' ? BIZFLOW_PLAN.annualPrice : BIZFLOW_PLAN.monthlyPrice,
+      currency: 'INR',
+      status: params.status || 'active',
+      currentPeriodStart: now.toISOString(),
+      currentPeriodEnd: periodEnd.toISOString(),
+      autoRenew: true,
+      razorpayPaymentPageUrl: RAZORPAY_MONTHLY_PAGE_URL,
+      gatewayTransactionRef: params.paymentId || currentSub.gatewayTransactionRef || `rzp_page_${Date.now()}`,
+      lastPaymentDate: now.toISOString(),
+      updatedAt: now.toISOString(),
+    };
+
+    this.data.subscriptions[params.businessId] = updated;
+
+    // Generate verified billing tax invoice if active
+    if (params.status !== 'pending' && params.status !== 'under_process') {
+      const totalPaid = updated.amount;
+      const baseAmount = Math.round((totalPaid / 1.18) * 100) / 100;
+      const taxAmount = Math.round((totalPaid - baseAmount) * 100) / 100;
+
+      this.createBillingInvoice(params.businessId, {
+        planName: BIZFLOW_PLAN.name,
+        billingCycle: updated.billingCycle,
+        baseAmount,
+        taxRate: 18,
+        taxAmount,
+        totalPaid,
+        paymentMethod: 'Razorpay Payment Page (UPI / Cards / NetBanking)',
+        gatewayTransactionRef: updated.gatewayTransactionRef,
+      });
+
+      // Update quota to full active entitlement
+      this.updateQuota(params.businessId, {
+        maxAiRuns: 100,
+        maxExtractions: 50,
+        maxStorageMb: 500,
+      });
+    }
+
+    // Admin audit logging
+    this.createAdminAuditLog({
+      adminUserId: 'system',
+      adminEmail: 'system@bizflow.in',
+      action: 'system_configuration_change',
+      targetEntity: 'subscription',
+      targetId: params.businessId,
+      details: {
+        note: `Subscription updated via Razorpay Payment Page (${params.status || 'active'})`,
+        clientName: updated.customerName,
+        clientEmail: updated.customerEmail,
+        plan: updated.planName,
+        amount: updated.amount,
+        cycle: updated.billingCycle,
+        pageUrl: RAZORPAY_MONTHLY_PAGE_URL,
+      },
+    });
+
     this.saveData(this.data);
     return updated;
   }

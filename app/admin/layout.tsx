@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     try {
       const res = await fetch('/api/admin/metrics');
       if (res.status === 401 || res.status === 403) {
-        router.push('/admin/login');
+        window.location.href = '/admin/login';
         return;
       }
       // Also get admin identity from /api/auth/me
@@ -44,10 +44,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (meRes.ok && meData.user && meData.user.role === 'platform_admin') {
         setAdminUser(meData.user);
       } else {
-        router.push('/admin/login');
+        window.location.href = '/admin/login';
       }
     } catch {
-      router.push('/admin/login');
+      window.location.href = '/admin/login';
     } finally {
       setLoading(false);
     }

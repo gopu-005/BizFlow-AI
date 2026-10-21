@@ -44,13 +44,15 @@ const loadRazorpayScript = (): Promise<boolean> => {
 export default function BillingPage() {
   const [businessId, setBusinessId] = useState('biz_karthik_textiles');
   const [activeTab, setActiveTab] = useState<'plan' | 'invoices' | 'settings'>('plan');
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [isYearlyLoading, setIsYearlyLoading] = useState(false);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [invoices, setInvoices] = useState<BillingInvoice[]>([]);
   const [billingDetails, setBillingDetails] = useState<BillingDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentSuccessMessage, setPaymentSuccessMessage] = useState<string | null>(null);
+  const RAZORPAY_MONTHLY_PAGE = 'https://pages.razorpay.com/lykspirehqbizflowmonthly';
 
   const currentBusiness: Business = {
     id: businessId,
@@ -174,6 +176,34 @@ export default function BillingPage() {
     } finally {
       setIsProcessingPayment(false);
     }
+  };
+
+  const handleMonthlyRedirect = async () => {
+    setIsProcessingPayment(true);
+    try {
+      // Record client subscription intent & details in database so it is stored and viewed in Admin Panel
+      await fetch('/api/billing/page-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessId,
+          customerName: legalName || currentBusiness.ownerName,
+          customerEmail: billingEmail || currentBusiness.email,
+          customerPhone: currentBusiness.phone,
+          billingCycle: 'monthly',
+          status: 'active',
+        }),
+      });
+    } catch (e) {
+      console.warn('Failed to pre-record subscription:', e);
+    }
+    // Redirect directly to the requested Razorpay Payment Page for the 299 monthly plan
+    window.location.href = RAZORPAY_MONTHLY_PAGE;
+  };
+
+  const handleYearlyClick = () => {
+    setBillingCycle('annual');
+    setIsYearlyLoading(true);
   };
 
   const handleCheckout = async (redirectDirectly: boolean = false) => {
@@ -361,25 +391,39 @@ export default function BillingPage() {
             <div className="flex items-center justify-center">
               <div className="flex items-center bg-white p-1 rounded-2xl border border-purple-200 shadow-xs">
                 <button
-                  onClick={() => setBillingCycle('monthly')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${billingCycle === 'monthly'
+                  onClick={() => {
+                    setBillingCycle('monthly');
+                    setIsYearlyLoading(false);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    billingCycle === 'monthly'
                       ? 'bg-purple-600 text-white shadow-sm'
                       : 'text-gray-600 hover:text-purple-600'
-                    }`}
+                  }`}
                 >
                   Monthly Billing (₹299/mo)
                 </button>
                 <button
-                  onClick={() => setBillingCycle('annual')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === 'annual'
+                  onClick={handleYearlyClick}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingCycle === 'annual'
                       ? 'bg-purple-600 text-white shadow-sm'
                       : 'text-gray-600 hover:text-purple-600'
-                    }`}
+                  }`}
                 >
-                  <span>Annual Billing (₹2,999/yr)</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase tracking-wide">
-                    Save 17%
-                  </span>
+                  {isYearlyLoading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                      <span className="italic font-semibold">*Currently under process*</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Annual Billing (₹2,999/yr)</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase tracking-wide">
+                        Save 17%
+                      </span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -418,6 +462,14 @@ export default function BillingPage() {
                   </div>
                 </div>
 
+                {/* Notice banner if yearly is selected */}
+                {(billingCycle === 'annual' || isYearlyLoading) && (
+                  <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200 flex items-center gap-2.5 text-purple-900 animate-in fade-in duration-200">
+                    <Loader2 className="w-4 h-4 animate-spin text-purple-600 shrink-0" />
+                    <span className="text-xs font-semibold italic">*Currently under process*</span>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {BIZFLOW_PLAN.features.map((feature, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 text-xs text-gray-700">
@@ -431,35 +483,51 @@ export default function BillingPage() {
 
                 {/* Primary Payment CTA Buttons */}
                 <div className="pt-4 border-t border-purple-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  {/* Button 1: Embedded Razorpay Modal */}
-                  <button
-                    onClick={() => handleCheckout(false)}
-                    disabled={isProcessingPayment}
-                    className="flex-1 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-sm shadow-md shadow-purple-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                  >
-                    {isProcessingPayment ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Connecting to Razorpay...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="w-4 h-4" />
-                        Pay with Razorpay (UPI, Cards, NetBanking)
-                      </>
-                    )}
-                  </button>
+                  {billingCycle === 'annual' || isYearlyLoading ? (
+                    <button
+                      disabled
+                      className="flex-1 px-5 py-3.5 rounded-xl bg-purple-100 border border-purple-300 text-purple-800 font-bold text-sm shadow-xs flex items-center justify-center gap-2 cursor-not-allowed"
+                    >
+                      <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
+                      <span className="italic">*Currently under process*</span>
+                    </button>
+                  ) : (
+                    <>
+                      {/* Button 1: Redirect to Razorpay Monthly Hosted Page (₹299) */}
+                      <button
+                        onClick={handleMonthlyRedirect}
+                        disabled={isProcessingPayment}
+                        className="flex-1 px-5 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-sm shadow-md shadow-purple-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        title="Redirect to Razorpay Payment Page: https://pages.razorpay.com/lykspirehqbizflowmonthly"
+                      >
+                        {isProcessingPayment ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Connecting to Razorpay...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="w-4 h-4" />
+                            <span>Subscribe for ₹299/month (Razorpay Page)</span>
+                            <ExternalLink className="w-4 h-4 ml-1" />
+                          </>
+                        )}
+                      </button>
 
-                  {/* Button 2: Direct Redirect to Razorpay Site */}
-                  <button
-                    onClick={() => handleCheckout(true)}
-                    disabled={isProcessingPayment}
-                    className="px-5 py-3 rounded-xl bg-white hover:bg-purple-50 border border-purple-300 text-purple-800 font-bold text-sm shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
-                    title="Open Razorpay Site directly in new tab"
-                  >
-                    <span>Pay on Razorpay Site</span>
-                    <ExternalLink className="w-4 h-4 text-purple-600" />
-                  </button>
+                      {/* Button 2: Direct link to Razorpay Payment Page */}
+                      <a
+                        href={RAZORPAY_MONTHLY_PAGE}
+                        onClick={handleMonthlyRedirect}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-3.5 rounded-xl bg-white hover:bg-purple-50 border border-purple-300 text-purple-800 font-bold text-sm shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        title="Open Razorpay Payment Page in new tab"
+                      >
+                        <span>Open Razorpay Page</span>
+                        <ExternalLink className="w-4 h-4 text-purple-600" />
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
 
