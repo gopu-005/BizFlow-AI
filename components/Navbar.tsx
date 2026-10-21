@@ -2,10 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Sparkles,
   ChevronDown,
   CheckCircle2,
+  User,
+  Settings,
+  Users,
+  Shield,
+  LogOut,
+  LogIn,
 } from 'lucide-react';
 import { Business } from '@/types/erp';
 
@@ -18,6 +25,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentBusinessId = 'biz_karthik_textiles',
   onBusinessChange,
 }) => {
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [businesses, setBusinesses] = useState<Business[]>([
     {
       id: 'biz_karthik_textiles',
@@ -46,24 +55,60 @@ export const Navbar: React.FC<NavbarProps> = ({
   ]);
 
   const [activeBizId, setActiveBizId] = useState(currentBusinessId);
-  const [showBusinessSwitcher, setShowBusinessSwitcher] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
+    // 1. Load active business from localStorage
     const saved = localStorage.getItem('bizflow_active_business_id');
     if (saved) {
       setActiveBizId(saved);
       if (onBusinessChange) onBusinessChange(saved);
     }
+
+    // 2. Fetch authenticated session
+    fetch('/api/auth/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.success && data.user) {
+          setCurrentUser(data.user);
+          if (data.business) {
+            setBusinesses((prev) => {
+              const exists = prev.find((b) => b.id === data.business.id);
+              if (exists) return prev;
+              return [data.business, ...prev];
+            });
+            if (!saved) {
+              setActiveBizId(data.business.id);
+              if (onBusinessChange) onBusinessChange(data.business.id);
+            }
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleSelectBusiness = (bizId: string) => {
     setActiveBizId(bizId);
-    setShowBusinessSwitcher(false);
+    setShowDropdown(false);
     localStorage.setItem('bizflow_active_business_id', bizId);
     if (onBusinessChange) onBusinessChange(bizId);
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      localStorage.removeItem('bizflow_active_business_id');
+      setCurrentUser(null);
+      setShowDropdown(false);
+      router.push('/login');
+      router.refresh();
+    }
+  };
+
   const currentBusiness = businesses.find((b) => b.id === activeBizId) || businesses[0];
+  const displayName = currentUser?.name || currentBusiness?.ownerName || 'User';
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <header className="relative z-30 w-full bg-white/80 backdrop-blur-md border-b border-purple-100/80 shadow-xs transition-all">
@@ -103,49 +148,122 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="sm:hidden text-xs">Plan</span>
           </Link>
 
-          {/* 3. Profile / Business Switcher Button */}
-          <div className="relative">
-            <button
-              onClick={() => setShowBusinessSwitcher(!showBusinessSwitcher)}
-              className="flex items-center gap-2 p-1.5 pl-2.5 rounded-2xl bg-white border border-purple-100 shadow-xs hover:border-purple-300 transition-all"
-              title="Business Profile & Switcher"
-            >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white text-[11px] font-bold flex items-center justify-center shadow-inner">
-                {currentBusiness.ownerName.charAt(0)}
-              </div>
-              <span className="hidden sm:inline text-xs font-semibold text-gray-700 max-w-[120px] truncate">
-                {currentBusiness.name.split(' ')[0]}
-              </span>
-              <ChevronDown className="w-3 h-3 text-gray-400 mr-0.5" />
-            </button>
-
-            {showBusinessSwitcher && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-50 text-xs space-y-1 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="px-2 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  Active Business
+          {/* 3. Profile / Auth Button */}
+          {currentUser ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center gap-2 p-1.5 pl-2.5 rounded-2xl bg-white border border-purple-100 shadow-xs hover:border-purple-300 transition-all"
+                title="Account & Business Profile"
+              >
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white text-[11px] font-bold flex items-center justify-center shadow-inner">
+                  {initial}
                 </div>
-                {businesses.map((biz) => (
-                  <button
-                    key={biz.id}
-                    onClick={() => handleSelectBusiness(biz.id)}
-                    className={`w-full text-left p-2 rounded-lg flex items-center justify-between transition-colors ${
-                      biz.id === activeBizId
-                        ? 'bg-purple-50 text-purple-900 font-bold'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
+                <span className="hidden sm:inline text-xs font-semibold text-gray-700 max-w-[120px] truncate">
+                  {displayName.split(' ')[0]}
+                </span>
+                <ChevronDown className="w-3 h-3 text-gray-400 mr-0.5" />
+              </button>
+
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 text-xs space-y-1 animate-in fade-in slide-in-from-top-2 duration-150">
+                  {/* User Header */}
+                  <div className="px-3 py-2 border-b border-gray-100 mb-1">
+                    <div className="font-bold text-gray-900 truncate">{currentUser.name}</div>
+                    <div className="text-[11px] text-gray-400 truncate">{currentUser.email}</div>
+                    <span className="inline-block mt-1 px-2 py-0.2 rounded-full bg-purple-50 text-purple-700 text-[9px] font-bold uppercase tracking-wider border border-purple-200">
+                      {currentUser.role?.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <Link
+                    href="/profile"
+                    onClick={() => setShowDropdown(false)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-700 hover:bg-purple-50 hover:text-purple-900 transition-colors"
                   >
-                    <div>
-                      <div>{biz.name}</div>
-                      <div className="text-[10px] text-gray-400 font-normal">{biz.type}</div>
+                    <User className="w-4 h-4 text-purple-600" />
+                    <span>Account Profile</span>
+                  </Link>
+
+                  <Link
+                    href="/settings"
+                    onClick={() => setShowDropdown(false)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-700 hover:bg-purple-50 hover:text-purple-900 transition-colors"
+                  >
+                    <Settings className="w-4 h-4 text-purple-600" />
+                    <span>Business Settings</span>
+                  </Link>
+
+                  <Link
+                    href="/team"
+                    onClick={() => setShowDropdown(false)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-700 hover:bg-purple-50 hover:text-purple-900 transition-colors"
+                  >
+                    <Users className="w-4 h-4 text-purple-600" />
+                    <span>Team & Permissions</span>
+                  </Link>
+
+                  {/* Platform Admin Link if authorized */}
+                  {currentUser.role === 'platform_admin' && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setShowDropdown(false)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-900/10 text-purple-900 font-semibold hover:bg-purple-900/20 transition-colors"
+                    >
+                      <Shield className="w-4 h-4 text-purple-700" />
+                      <span>Platform Admin Portal</span>
+                    </Link>
+                  )}
+
+                  {/* Business Switcher for Multi-Tenant / Admin */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Active Workspace
                     </div>
-                    {biz.id === activeBizId && (
-                      <CheckCircle2 className="w-4 h-4 text-purple-600" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+                    {businesses.map((biz) => (
+                      <button
+                        key={biz.id}
+                        onClick={() => handleSelectBusiness(biz.id)}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg flex items-center justify-between transition-colors ${
+                          biz.id === activeBizId
+                            ? 'bg-purple-50 text-purple-900 font-bold'
+                            : 'hover:bg-gray-50 text-gray-700'
+                        }`}
+                      >
+                        <div className="truncate max-w-[170px]">
+                          <div className="truncate">{biz.name}</div>
+                          <div className="text-[10px] text-gray-400 font-normal truncate">{biz.type}</div>
+                        </div>
+                        {biz.id === activeBizId && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Sign out */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-purple-600 hover:bg-purple-700 text-xs font-semibold text-white transition-all shadow-xs"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>
