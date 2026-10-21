@@ -34,6 +34,7 @@ import { AiVoiceOrb } from '@/components/AiVoiceOrb';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Business, ConnectorStatus } from '@/types/erp';
+import { AgentRun } from '@/types/agent';
 import { voiceManager, VoiceLanguage } from '@/lib/voice/speech';
 import { useBusiness } from '@/components/BusinessProvider';
 

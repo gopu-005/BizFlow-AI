@@ -17,17 +17,31 @@ import {
 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { ConnectorStatus } from '@/types/erp';
+import { Business, ConnectorStatus } from '@/types/erp';
 
 import { useBusiness } from '@/components/BusinessProvider';
 
 export default function ConnectorsPage() {
-  const { currentBusiness, businessId, setBusinessId } = useBusiness();
+  const { currentBusiness: activeBusiness, businessId, setBusinessId } = useBusiness();
+  const currentBusiness: Business = activeBusiness || {
+    id: businessId || '',
+    name: 'My Business Workspace',
+    type: 'Retail & Commercial',
+    currency: '₹',
+    ownerName: 'Business Owner',
+    gstNumber: '',
+    address: 'India',
+    phone: '+91 90000 00000',
+    email: 'billing@bizflow.in',
+    createdAt: new Date().toISOString(),
+  };
+
   const [connectors, setConnectors] = useState<ConnectorStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'email' | 'whatsapp' | 'database'>('all');
 
   useEffect(() => {
+    if (!businessId) return;
     fetchConnectors();
   }, [businessId]);
 
@@ -115,7 +129,7 @@ export default function ConnectorsPage() {
             <div className="p-3 bg-purple-50/50 rounded-xl text-xs space-y-1.5 border border-purple-100/60">
               <div className="flex justify-between text-gray-700">
                 <span>Account:</span>
-                <span className="font-semibold text-gray-900">{currentBusiness.email || 'connected@business.in'}</span>
+                <span className="font-semibold text-gray-900">{currentBusiness?.email || 'connected@business.in'}</span>
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Unread Supplier Invoices:</span>
@@ -158,7 +172,7 @@ export default function ConnectorsPage() {
             <div className="p-3 bg-emerald-50/40 rounded-xl text-xs space-y-1.5 border border-emerald-100">
               <div className="flex justify-between text-gray-700">
                 <span>Business Phone:</span>
-                <span className="font-semibold text-gray-900">{currentBusiness.phone || '+91 90000 00000'}</span>
+                <span className="font-semibold text-gray-900">{currentBusiness?.phone || '+91 90000 00000'}</span>
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Pending Inquiries:</span>

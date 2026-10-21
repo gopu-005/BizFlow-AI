@@ -192,6 +192,32 @@
       "createdAt": "2026-10-21T05:44:16.799Z",
       "status": "active",
       "id": "biz_1792561456799_2m0d"
+    },
+    {
+      "name": "Anand Medicals & Healthcare",
+      "legalName": "Anand Medicals & Healthcare",
+      "ownerName": "Anand Kumar",
+      "type": "Retail & Commercial Services",
+      "email": "anand_1792563859877@medicals.in",
+      "phone": "+91 98401 99881",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T06:24:20.967Z",
+      "status": "active",
+      "id": "biz_1792563860968_5cud"
+    },
+    {
+      "name": "Devi Handloom Sarees",
+      "legalName": "Devi Handloom Sarees",
+      "ownerName": "Devi Priya",
+      "type": "Retail & Commercial Services",
+      "email": "devi_1792563859877@sarees.in",
+      "phone": "+91 94441 22334",
+      "address": "Business Registered Address",
+      "currency": "INR",
+      "createdAt": "2026-10-21T06:24:23.797Z",
+      "status": "active",
+      "id": "biz_1792563863797_3dxg"
     }
   ],
   "products": [
@@ -1556,6 +1582,32 @@
       "usedExtractions": 0,
       "maxStorageMb": 500,
       "usedStorageMb": 0
+    },
+    "biz_1792563860968_5cud": {
+      "businessId": "biz_1792563860968_5cud",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T06:24:20.968Z",
+      "currentPeriodEnd": "2026-11-20T06:24:20.968Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
+    },
+    "biz_1792563863797_3dxg": {
+      "businessId": "biz_1792563863797_3dxg",
+      "planName": "BizFlow AI Starter",
+      "billingCycle": "monthly",
+      "currentPeriodStart": "2026-10-21T06:24:23.797Z",
+      "currentPeriodEnd": "2026-11-20T06:24:23.797Z",
+      "maxAiRuns": 100,
+      "usedAiRuns": 0,
+      "maxExtractions": 50,
+      "usedExtractions": 0,
+      "maxStorageMb": 500,
+      "usedStorageMb": 0
     }
   },
   "users": [
@@ -1779,6 +1831,32 @@
       "createdAt": "2026-10-21T05:44:16.900Z",
       "updatedAt": "2026-10-21T05:46:01.468Z",
       "lastLoginAt": "2026-10-21T05:46:01.468Z"
+    },
+    {
+      "email": "anand_1792563859877@medicals.in",
+      "passwordHash": "f8fff174f8ed64989d0980e9e0e65215:aefb90e2f24891339b10795c4ba00151f6b6790d5d8acb53918da9ca56340cd18774e517174bbab084c23b1bd017c98825d1219c6a2a17334670d965411e75e3",
+      "name": "Anand Kumar",
+      "phone": "+91 98401 99881",
+      "role": "business_owner",
+      "businessId": "biz_1792563860968_5cud",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792563861055_xv7ry",
+      "createdAt": "2026-10-21T06:24:21.056Z",
+      "updatedAt": "2026-10-21T06:24:21.056Z"
+    },
+    {
+      "email": "devi_1792563859877@sarees.in",
+      "passwordHash": "4ae203d664545f144922c18912e5506b:33a078add8d73020c94a5606f06e555a1251c160614baffb34856cbdfdd59b252b8e77ec0300424ee9745f85bfd62a6f6920e5dda5eeb7e0adb2ebd601df5794",
+      "name": "Devi Priya",
+      "phone": "+91 94441 22334",
+      "role": "business_owner",
+      "businessId": "biz_1792563863797_3dxg",
+      "status": "active",
+      "isEmailVerified": false,
+      "id": "usr_1792563863869_w2ncq",
+      "createdAt": "2026-10-21T06:24:23.869Z",
+      "updatedAt": "2026-10-21T06:24:23.869Z"
     }
   ],
   "sessions": [
@@ -2133,6 +2211,28 @@
       "createdAt": "2026-10-21T05:46:01.472Z",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
       "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792563861059_r9hsn",
+      "userId": "usr_1792563861055_xv7ry",
+      "token": "e5d4147c687c5b13ea6822eb2541af0d1026c5ca863be951f78f3a7880e149cd",
+      "role": "business_owner",
+      "businessId": "biz_1792563860968_5cud",
+      "expiresAt": "2026-10-28T06:24:21.058Z",
+      "createdAt": "2026-10-21T06:24:21.059Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
+    },
+    {
+      "id": "sess_1792563863872_0vft3",
+      "userId": "usr_1792563863869_w2ncq",
+      "token": "001b7712ee5e299617f4e68e873a293bfab3a148c357616ee4d68ea293b02b90",
+      "role": "business_owner",
+      "businessId": "biz_1792563863797_3dxg",
+      "expiresAt": "2026-10-28T06:24:23.872Z",
+      "createdAt": "2026-10-21T06:24:23.872Z",
+      "userAgent": "node",
+      "ipAddress": "::1"
     }
   ],
   "passwordResetTokens": [
@@ -2308,6 +2408,24 @@
       "expiresAt": "2026-10-22T05:44:16.907Z",
       "used": false,
       "createdAt": "2026-10-21T05:44:16.907Z"
+    },
+    {
+      "id": "evt_1792563861063_skqx4",
+      "userId": "usr_1792563861055_xv7ry",
+      "email": "anand_1792563859877@medicals.in",
+      "token": "aa0aa1af4d938c71ac01cf21e962405c64b6bd436dd66381df073dc14bdcdc0d",
+      "expiresAt": "2026-10-22T06:24:21.062Z",
+      "used": false,
+      "createdAt": "2026-10-21T06:24:21.063Z"
+    },
+    {
+      "id": "evt_1792563863875_4i8w1",
+      "userId": "usr_1792563863869_w2ncq",
+      "email": "devi_1792563859877@sarees.in",
+      "token": "a49eb81a6ea88df3a28d2d68bcda187f6dabdbba6062f0f20427f870f4730f82",
+      "expiresAt": "2026-10-22T06:24:23.875Z",
+      "used": false,
+      "createdAt": "2026-10-21T06:24:23.875Z"
     }
   ],
   "adminAuditLogs": [
