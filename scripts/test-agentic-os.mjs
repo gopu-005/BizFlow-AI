@@ -1,10 +1,26 @@
 /**
  * BizFlow AI Agentic Operating System - Automated End-to-End Test Suite
- * Tests all three agents, shared execution engine, policies, quotas, and database methods.
+ * Tests:
+ * 1. Requirement 1: All agentic endpoints strictly require a logged-in session (401 when unauthenticated)
+ * 2. Authenticated execution of all three agents, shared execution engine, policies, quotas, and database methods.
  */
 
 const BASE_URL = 'http://localhost:3000';
 const BUSINESS_ID = 'biz_karthik_textiles';
+
+function extractCookie(res, cookieName) {
+  if (typeof res.headers.getSetCookie === 'function') {
+    const cookies = res.headers.getSetCookie();
+    for (const c of cookies) {
+      const match = c.match(new RegExp(`${cookieName}=([^;]+)`));
+      if (match) return match[1];
+    }
+  }
+  const raw = res.headers.get('set-cookie');
+  if (!raw) return null;
+  const match = raw.match(new RegExp(`${cookieName}=([^;]+)`));
+  return match ? match[1] : null;
+}
 
 async function runTests() {
   console.log('====================================================');
@@ -26,9 +42,63 @@ async function runTests() {
     }
   }
 
-  // 1. Quota & Subscription API
-  await test('Server-Enforced Quota endpoint (/api/agent/quota)', async () => {
+  // 1. Requirement 1 Enforcement: Reject all unauthenticated access to agentic features
+  await test('Agentic Protection: Reject unauthenticated quota access (/api/agent/quota)', async () => {
     const res = await fetch(`${BASE_URL}/api/agent/quota?businessId=${BUSINESS_ID}`);
+    if (res.status !== 401) throw new Error(`Expected 401 Unauthorized, got ${res.status}`);
+  });
+
+  await test('Agentic Protection: Reject unauthenticated agent run (/api/agent/run)', async () => {
+    const res = await fetch(`${BASE_URL}/api/agent/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ businessId: BUSINESS_ID, prompt: 'test' }),
+    });
+    if (res.status !== 401) throw new Error(`Expected 401 Unauthorized, got ${res.status}`);
+  });
+
+  await test('Agentic Protection: Reject unauthenticated smart entry (/api/entry)', async () => {
+    const res = await fetch(`${BASE_URL}/api/entry`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ businessId: BUSINESS_ID, action: 'extract', payload: {} }),
+    });
+    if (res.status !== 401) throw new Error(`Expected 401 Unauthorized, got ${res.status}`);
+  });
+
+  await test('Agentic Protection: Reject unauthenticated udhaar access (/api/udhaar)', async () => {
+    const res = await fetch(`${BASE_URL}/api/udhaar?businessId=${BUSINESS_ID}`);
+    if (res.status !== 401) throw new Error(`Expected 401 Unauthorized, got ${res.status}`);
+  });
+
+  await test('Agentic Protection: Reject unauthenticated daily closing access (/api/closing)', async () => {
+    const res = await fetch(`${BASE_URL}/api/closing?businessId=${BUSINESS_ID}`);
+    if (res.status !== 401) throw new Error(`Expected 401 Unauthorized, got ${res.status}`);
+  });
+
+  // 2. Authenticate as business owner
+  let sessionCookie = '';
+  await test('Authenticate as business owner (Karthik Textiles)', async () => {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'karthik@textiles.bizflow.in', password: 'Karthik@123' }),
+    });
+    if (!res.ok) throw new Error(`Login failed with status ${res.status}`);
+    sessionCookie = extractCookie(res, 'bizflow_session');
+    if (!sessionCookie) throw new Error('Missing bizflow_session cookie');
+  });
+
+  const authHeaders = {
+    'Content-Type': 'application/json',
+    Cookie: `bizflow_session=${sessionCookie}`,
+  };
+
+  // 3. Quota & Subscription API (Authenticated)
+  await test('Server-Enforced Quota endpoint (/api/agent/quota)', async () => {
+    const res = await fetch(`${BASE_URL}/api/agent/quota?businessId=${BUSINESS_ID}`, {
+      headers: { Cookie: `bizflow_session=${sessionCookie}` },
+    });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error('Failed to fetch quota');
     if (!data.quota || data.quota.maxAiRuns !== 100 || data.quota.maxExtractions !== 50) {
@@ -39,12 +109,12 @@ async function runTests() {
     }
   });
 
-  // 2. Shared Agent Engine - Smart Entry Workflow
+  // 4. Shared Agent Engine - Smart Entry Workflow
   let smartEntryRunId = '';
   await test('Smart Entry Agent: Natural language expense draft', async () => {
     const res = await fetch(`${BASE_URL}/api/agent/run`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         agentType: 'smart_entry',
@@ -63,13 +133,13 @@ async function runTests() {
     if (lastStep.status !== 'completed') throw new Error(`Last step status was ${lastStep.status}`);
   });
 
-  // 3. Smart Document Extraction & Stock Safety Check
+  // 5. Smart Document Extraction & Stock Safety Check
   let createdDraftId = '';
   await test('Smart Entry Agent: Document extraction & Stock non-increment policy', async () => {
     const rawBill = `TAX INVOICE #INV-TEST-99\nSupplier: Sivam Silk Weavers\nDate: 2024-10-15\nSilk Stoles x 10 @ 650\nGST: 325\nTotal: ₹6,825`;
     const res = await fetch(`${BASE_URL}/api/entry`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'extract',
@@ -88,11 +158,11 @@ async function runTests() {
     createdDraftId = data.draft.id;
   });
 
-  // 4. Duplicate Transaction Detection
+  // 6. Duplicate Transaction Detection
   await test('Smart Entry Agent: Duplicate transaction detector', async () => {
     const res = await fetch(`${BASE_URL}/api/entry`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'check_duplicate',
@@ -111,12 +181,12 @@ async function runTests() {
     }
   });
 
-  // 5. Commit Draft to Ledger
+  // 7. Commit Draft to Ledger
   await test('Smart Entry Agent: Commit draft to ledger (without inventory inflation)', async () => {
     if (!createdDraftId) throw new Error('No draft ID available');
     const res = await fetch(`${BASE_URL}/api/entry`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'commit_draft',
@@ -128,9 +198,11 @@ async function runTests() {
     if (!data.committedRecord) throw new Error('Expected committedRecord in response');
   });
 
-  // 6. Udhaar & Collection Agent - Credit Ledger & Aging
+  // 8. Udhaar & Collection Agent - Credit Ledger & Aging
   await test('Udhaar Agent: Retrieve customer credit ledgers & 4 aging buckets', async () => {
-    const res = await fetch(`${BASE_URL}/api/udhaar?businessId=${BUSINESS_ID}`);
+    const res = await fetch(`${BASE_URL}/api/udhaar?businessId=${BUSINESS_ID}`, {
+      headers: { Cookie: `bizflow_session=${sessionCookie}` },
+    });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error('Failed to fetch udhaar ledgers');
     if (!data.credits || data.credits.length === 0) throw new Error('No customer credits returned');
@@ -143,11 +215,11 @@ async function runTests() {
     }
   });
 
-  // 7. Udhaar Agent - Payment Commitment
+  // 9. Udhaar Agent - Payment Commitment
   await test('Udhaar Agent: Schedule payment promise/commitment', async () => {
     const res = await fetch(`${BASE_URL}/api/udhaar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'create_commitment',
@@ -168,11 +240,11 @@ async function runTests() {
     }
   });
 
-  // 8. Udhaar Agent - WhatsApp Click-to-Chat Link Generation
+  // 10. Udhaar Agent - WhatsApp Click-to-Chat Link Generation
   await test('Udhaar Agent: Generate WhatsApp reminder & wa.me click-to-chat link', async () => {
     const res = await fetch(`${BASE_URL}/api/udhaar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'prepare_reminder',
@@ -192,12 +264,12 @@ async function runTests() {
     }
   });
 
-  // 9. Udhaar Agent - Transactional Verified Payment Recording
+  // 11. Udhaar Agent - Transactional Verified Payment Recording
   const uniqueRef = `PAY-TEST-${Date.now().toString().slice(-6)}`;
   await test('Udhaar Agent: Transactional payment recording & balance deduction', async () => {
     const res = await fetch(`${BASE_URL}/api/udhaar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'record_payment',
@@ -216,11 +288,11 @@ async function runTests() {
     }
   });
 
-  // 10. Udhaar Agent - Prevent Duplicate Payment
+  // 12. Udhaar Agent - Prevent Duplicate Payment
   await test('Udhaar Agent: Duplicate payment prevention for identical reference number', async () => {
     const res = await fetch(`${BASE_URL}/api/udhaar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'record_payment',
@@ -238,9 +310,11 @@ async function runTests() {
     }
   });
 
-  // 11. Daily Closing Agent - Calculation & Reconciliation
+  // 13. Daily Closing Agent - Calculation & Reconciliation
   await test('Daily Closing Agent: End-of-day reconciliation & cash variance', async () => {
-    const res = await fetch(`${BASE_URL}/api/closing?businessId=${BUSINESS_ID}&date=2024-10-15`);
+    const res = await fetch(`${BASE_URL}/api/closing?businessId=${BUSINESS_ID}&date=2024-10-15`, {
+      headers: { Cookie: `bizflow_session=${sessionCookie}` },
+    });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.error || 'Failed to fetch closing');
     if (!data.closing || typeof data.closing.totalSales !== 'number') {
@@ -251,11 +325,11 @@ async function runTests() {
     }
   });
 
-  // 12. Profit Leak Agent - Margin Anomaly Detection
+  // 14. Profit Leak Agent - Margin Anomaly Detection
   await test('Daily Closing Agent: Detect margin anomalies below 15%', async () => {
     const res = await fetch(`${BASE_URL}/api/closing`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         businessId: BUSINESS_ID,
         action: 'detect_anomalies',
@@ -269,20 +343,19 @@ async function runTests() {
     }
   });
 
-  // 13. Tenant Isolation Guard
-  await test('Tenant Isolation Guard: Reject request with missing/invalid businessId', async () => {
+  // 15. Tenant Isolation Guard: Cross-tenant access is rejected with 403
+  await test('Tenant Isolation Guard: Reject cross-tenant access attempt (?businessId=biz_murugan_bakery)', async () => {
     const res = await fetch(`${BASE_URL}/api/agent/run`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
-        businessId: '', // Invalid tenant!
+        businessId: 'biz_murugan_bakery', // Attempting to access another business!
         agentType: 'smart_entry',
         prompt: 'test',
       }),
     });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      throw new Error('Empty businessId should be rejected by tenant isolation assert');
+    if (res.status !== 403) {
+      throw new Error(`Expected 403 Forbidden for cross-tenant request, got ${res.status}`);
     }
   });
 

@@ -489,7 +489,9 @@ async function runAuthAndAdminTests() {
   });
 
   await test('Regression: AI Agent quota verification endpoint', async () => {
-    const res = await fetch(`${BASE_URL}/api/agent/quota?businessId=biz_karthik_textiles`);
+    const res = await fetch(`${BASE_URL}/api/agent/quota?businessId=biz_karthik_textiles`, {
+      headers: { Cookie: `bizflow_admin_session=${adminSessionCookie}` },
+    });
     if (res.status !== 200) throw new Error(`Agent quota failed with status ${res.status}`);
     const data = await res.json();
     if (!data.quota || data.quota.maxAiRuns !== 100) {
