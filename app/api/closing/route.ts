@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
-import { resolveTenantBusinessId } from '@/lib/auth/rbac';
+import { requireAgenticAccess } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const requestedBusinessId = searchParams.get('businessId');
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     const date = searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { businessId: requestedBusinessId, action, payload = {} } = body;
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     if (!action) {

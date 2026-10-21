@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { AgentExecutionEngine } from '@/lib/agent/engine';
-import { resolveTenantBusinessId } from '@/lib/auth/rbac';
+import { requireAgenticAccess } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       status, // 'approved' | 'rejected'
       reason,
     } = body;
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     if (!runId || !approvalId || !status) {

@@ -178,3 +178,28 @@ export function resolveTenantBusinessId(
   // Unauthenticated fallback (for tests or demo)
   return { businessId: cleanRequestedId || fallbackBusinessId };
 }
+
+/**
+ * Strict tenant resolution for Agentic OS features (AI Agent Workspace, Smart Entry,
+ * Udhaar & Collections, Daily Closing). Identical to resolveTenantBusinessId, except that
+ * unauthenticated visitors are REJECTED with 401 instead of falling back to the public demo tenant.
+ */
+export function requireAgenticAccess(
+  req: NextRequest,
+  requestedBusinessId?: string | null
+): { businessId: string; user?: User; errorResponse?: NextResponse } {
+  const result = resolveTenantBusinessId(req, requestedBusinessId);
+  if (result.errorResponse) return result;
+
+  if (!result.user) {
+    return {
+      businessId: '',
+      errorResponse: NextResponse.json(
+        { error: 'Sign in required. Agentic features are only available to logged-in users.', code: 'AUTH_REQUIRED' },
+        { status: 401 }
+      ),
+    };
+  }
+
+  return result;
+}

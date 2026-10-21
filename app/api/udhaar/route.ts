@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/database';
 import { AGENT_TOOLS } from '@/lib/agent/tools';
-import { resolveTenantBusinessId } from '@/lib/auth/rbac';
+import { requireAgenticAccess } from '@/lib/auth/rbac';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const requestedBusinessId = searchParams.get('businessId');
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     const customerId = searchParams.get('customerId');
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { businessId: requestedBusinessId, action, payload } = body;
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     if (!action) {

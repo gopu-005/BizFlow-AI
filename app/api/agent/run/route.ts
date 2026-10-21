@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AgentExecutionEngine } from '@/lib/agent/engine';
 import { AgentType, AutonomyMode } from '@/types/agent';
-import { resolveTenantBusinessId } from '@/lib/auth/rbac';
+import { requireAgenticAccess } from '@/lib/auth/rbac';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       documentId,
       initialContext,
     } = body;
-    const { businessId, errorResponse } = resolveTenantBusinessId(req, requestedBusinessId);
+    const { businessId, errorResponse } = requireAgenticAccess(req, requestedBusinessId);
     if (errorResponse) return errorResponse;
 
     if (!prompt && !documentId) {
