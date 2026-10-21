@@ -8,8 +8,10 @@
     "start": "set PORT=8080&& next start",
     "lint": "next lint",
     "test": "npx tsx scripts/smoke-test.mjs",
+    "test:auth": "node scripts/test-auth-and-admin.mjs",
     "test:razorpay": "npx tsx scripts/test-razorpay.mjs",
-    "test:agent": "node scripts/test-agentic-os.mjs"
+    "test:agent": "node scripts/test-agentic-os.mjs",
+    "provision:admin": "node scripts/provision-admin.mjs"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "^14.2.24",
